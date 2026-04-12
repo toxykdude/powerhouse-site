@@ -1,0 +1,275 @@
+---
+interface Props {
+  planName?: string;
+}
+const { planName } = Astro.props;
+
+const plans = [
+  "Plan Mensual",
+  "Plan Power (Mensual + Suplementos)",
+  "Plan Personalizado",
+];
+
+const whatsappBase = "https://wa.me/573154711900?text=";
+---
+
+<form class="signup-form" id="signup-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="nombre" class="form-label">Nombre</label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+        autocomplete="given-name"
+        placeholder="Tu nombre completo"
+        class="form-input"
+      />
+    </div>
+    <div class="form-group">
+      <label for="telefono" class="form-label">Telefono</label>
+      <input
+        type="tel"
+        id="telefono"
+        name="telefono"
+        required
+        autocomplete="tel"
+        placeholder="+57 315 471 1900"
+        class="form-input"
+      />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email" class="form-label">Email</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      required
+      autocomplete="email"
+      placeholder="tu@email.com"
+      class="form-input"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="plan" class="form-label">Plan</label>
+    <div class="select-wrapper">
+      <select id="plan" name="plan" required class="form-select">
+        <option value="" disabled selected>Selecciona un plan</option>
+        {plans.map((p) => (
+          <option value={p} selected={planName === p}>{p}</option>
+        ))}
+      </select>
+      <svg
+        class="select-chevron"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+  </div>
+
+  <button type="submit" class="form-submit">
+    <span class="submit-text">Inscribirme Ahora</span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="submit-icon"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  </button>
+</form>
+
+<script define:vars={{ whatsappBase }}>
+function initSignupForm() {
+  const form = document.getElementById("signup-form");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const nombre = form.nombre.value.trim();
+    const telefono = form.telefono.value.trim();
+    const email = form.email.value.trim();
+    const plan = form.plan.value;
+
+    if (!nombre || !telefono || !email || !plan) return;
+
+    const message =
+      "Hola PowerHouse! Quiero inscribirme.\n\n" +
+      "Nombre: " + nombre + "\n" +
+      "Telefono: " + telefono + "\n" +
+      "Email: " + email + "\n" +
+      "Plan: " + plan;
+
+    const encoded = encodeURIComponent(message);
+    window.open(whatsappBase + encoded, "_blank");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initSignupForm);
+document.addEventListener("astro:page-load", initSignupForm);
+</script>
+
+<style>
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: fadeInUp 0.8s ease both;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--light);
+  border: 1px solid var(--lighter);
+  border-radius: 3px;
+  color: var(--offwhite);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: var(--gray);
+  opacity: 0.5;
+}
+
+.form-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 200, 50, 0.1);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  padding-right: 44px;
+  background: var(--light);
+  border: 1px solid var(--lighter);
+  border-radius: 3px;
+  color: var(--offwhite);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 200, 50, 0.1);
+}
+
+.form-select option {
+  background: var(--light);
+  color: var(--offwhite);
+}
+
+.select-chevron {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+  pointer-events: none;
+}
+
+.form-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 8px;
+}
+
+.form-submit:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(232, 200, 50, 0.2);
+}
+
+.form-submit:active {
+  transform: translateY(0);
+}
+
+.submit-icon {
+  transition: transform 0.3s ease;
+}
+
+.form-submit:hover .submit-icon {
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .form-submit {
+    width: 100%;
+  }
+}
+</style>

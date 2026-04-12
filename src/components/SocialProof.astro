@@ -1,0 +1,146 @@
+---
+const stats = [
+  { value: 96, suffix: "%", label: "de miembros nos recomiendan" },
+  { value: 20, suffix: "+", label: "resenas verificadas" },
+  { value: null, display: "5am-10pm", label: "horario extendido" },
+  { value: 16, suffix: "+", label: "anos de experiencia" },
+];
+---
+
+<section class="social-proof">
+  <div class="stats-grid">
+    {stats.map((stat, i) => (
+      <div class="stat-item" style={`--stagger: ${i * 0.2}s`}>
+        <div class="stat-value">
+          {stat.value !== null ? (
+            <span
+              class="counter"
+              data-target={stat.value}
+              data-suffix={stat.suffix}
+            >
+              0{stat.suffix}
+            </span>
+          ) : (
+            <span class="counter-static">{stat.display}</span>
+          )}
+        </div>
+        <div class="stat-label">{stat.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+function initCounters() {
+  const counters = document.querySelectorAll<HTMLElement>(".counter");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        if (el.dataset.animated === "true") return;
+
+        el.dataset.animated = "true";
+        const target = parseInt(el.dataset.target || "0", 10);
+        const suffix = el.dataset.suffix || "";
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function update(now: number) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(eased * target);
+          el.textContent = `${current}${suffix}`;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+        observer.unobserve(el);
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  counters.forEach((c) => observer.observe(c));
+}
+
+document.addEventListener("DOMContentLoaded", initCounters);
+document.addEventListener("astro:page-load", initCounters);
+</script>
+
+<style>
+.social-proof {
+  padding: 80px 0;
+  background: var(--black);
+  border-top: 1px solid var(--lighter);
+  border-bottom: 1px solid var(--lighter);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.stat-item {
+  text-align: center;
+  animation: fadeInUp 0.8s ease var(--stagger) both;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.counter-static {
+  font-size: 2.5rem;
+}
+
+.stat-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 24px;
+  }
+  .stat-value {
+    font-size: 2.5rem;
+  }
+  .counter-static {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 16px;
+  }
+  .stat-value {
+    font-size: 2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+  }
+}
+</style>

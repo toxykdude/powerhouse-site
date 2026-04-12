@@ -1,0 +1,158 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  bio: string;
+  specialties: string[];
+  order: number;
+  photo?: string;
+}
+const { name, role, bio, specialties, order, photo } = Astro.props;
+---
+
+<article
+  class="trainer-card"
+  style={`--stagger: ${order * 0.15}s`}
+>
+  <div class="trainer-photo">
+    {photo ? (
+      <img src={photo} alt={name} loading="lazy" />
+    ) : (
+      <div class="trainer-photo-placeholder" />
+    )}
+  </div>
+  <div class="trainer-info">
+    <h3 class="trainer-name">{name}</h3>
+    <span class="trainer-role">{role}</span>
+    <p class="trainer-bio">{bio}</p>
+    <div class="trainer-specialties">
+      {specialties.map((s) => (
+        <span class="specialty-tag">{s}</span>
+      ))}
+    </div>
+  </div>
+</article>
+
+<style>
+.trainer-card {
+  background: var(--light);
+  border: 1px solid var(--lighter);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+  animation: fadeInUp 0.8s ease var(--stagger) both;
+}
+
+.trainer-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(232, 200, 50, 0.08);
+}
+
+.trainer-photo {
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(
+    145deg,
+    var(--lighter) 0%,
+    var(--light) 40%,
+    var(--black) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.trainer-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.6s ease;
+}
+
+.trainer-card:hover .trainer-photo img {
+  transform: scale(1.05);
+}
+
+.trainer-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--light) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.trainer-photo-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.trainer-info {
+  padding: 28px 24px 32px;
+}
+
+.trainer-name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--offwhite);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.trainer-role {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.trainer-bio {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.trainer-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.specialty-tag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 5px 12px;
+  border: 1px solid rgba(232, 200, 50, 0.25);
+  border-radius: 2px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.trainer-card:hover .specialty-tag {
+  border-color: rgba(232, 200, 50, 0.5);
+  background: rgba(232, 200, 50, 0.05);
+}
+
+@media (max-width: 768px) {
+  .trainer-photo {
+    height: 240px;
+  }
+  .trainer-info {
+    padding: 20px 18px 24px;
+  }
+  .trainer-name {
+    font-size: 1.25rem;
+  }
+}
+</style>

@@ -4,17 +4,18 @@ import { getCollection, getEntry, render } from "astro:content";
 import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getCollection("blog");
-  return posts.map((post) => ({
-    params: { slug: post.data.slug || post.id },
-  }));
+	const posts = await getCollection("blog");
+
+	return posts.map((post: any) => ({
+		params: { slug: post.data.slug || post.id },
+	}));
 };
 
 const { slug } = Astro.params;
 const post = await getEntry("blog", slug);
 
 if (!post) {
-  return Astro.redirect("/blog");
+	return Astro.redirect("/blog");
 }
 
 const { Content } = await render(post);
@@ -24,216 +25,231 @@ const category = post.data.category;
 const date = post.data.date;
 const featuredImage = post.data.featuredImage;
 const excerpt = post.data.excerpt;
+
+function resolveImageUrl(img: any): string {
+	if (!img) return "";
+	if (typeof img === "string") return img;
+	if (typeof img === "object" && img !== null && img.src) return img.src;
+	return String(img);
+}
+function formatDate(dateStr: string | Date): string {
+	const d = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
+	return d.toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
+}
 ---
 
 <Base
-  title={title}
-  description={excerpt || `${title} — PowerHouse Gym Manizales`}
-  image={featuredImage || undefined}
-  articleType={true}
-  jsonLd={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": title,
-    "datePublished": date,
-    "dateModified": date,
-    "author": { "@type": "Organization", "name": "PowerHouse Gym Manizales", "url": "https://powerhousegym.co" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "PowerHouse Gym Manizales",
-      "logo": { "@type": "ImageObject", "url": "https://powerhousegym.co/images/logo.png" }
-    },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": `https://powerhousegym.co/blog/${slug}` }
-  })}
+	title={title}
+	description={excerpt || `${title} — PowerHouse Gym Manizales`}
+	image={featuredImage || undefined}
+	articleType={true}
+	jsonLd={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Article",
+		"headline": title,
+		"datePublished": date || undefined,
+		"dateModified": date || undefined,
+		"author": {
+			"@type": "Organization",
+			"name": "PowerHouse Gym Manizales",
+			"url": "https://powerhousegym.co"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "PowerHouse Gym Manizales",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://powerhousegym.co/images/logo.png"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": `https://powerhousegym.co/blog/${slug}`
+		}
+	})}
 >
-  <article class="post-page">
-    <div class="post-page__inner">
-      <a class="post-page__back" href="/blog">← Volver al blog</a>
-      <header class="post-page__header">
-        {category && <span class="post-page__category">{category}</span>}
-        <h1 class="post-page__title">{title}</h1>
-        <time class="post-page__date" datetime={date}>
-          {new Date(date).toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" })}
-        </time>
-      </header>
-      {featuredImage && (
-        <div class="post-page__image">
-          <img src={featuredImage} alt={title} width="1200" height="630" loading="lazy" />
-        </div>
-      )}
-      <div class="post-page__body">
-        <Content />
-      </div>
-      <footer class="post-page__footer">
-        <div class="post-page__footer-inner">
-          <p class="post-page__footer-text">¿Te gustó este artículo? ¡Comparte tu experiencia en PowerHouse Gym!</p>
-          <a href="https://wa.me/573154711900" class="post-page__footer-cta" target="_blank" rel="noopener">ESCRÍBENOS POR WHATSAPP</a>
-        </div>
-      </footer>
-    </div>
-  </article>
+	<article class="post-page">
+		<div class="post-page__inner">
+			<a class="post-page__back" href="/blog">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+				Volver al blog
+			</a>
+
+			<header class="post-page__header">
+				{category && (
+					<span class="post-page__category">{category}</span>
+				)}
+				<h1 class="post-page__title">{title}</h1>
+				{date && (
+					<time class="post-page__date" datetime={typeof date === 'string' ? date : new Date(date).toISOString()}>
+						{formatDate(date)}
+					</time>
+				)}
+			</header>
+
+			{featuredImage && (
+				<div class="post-page__image">
+					<img src={resolveImageUrl(featuredImage)} alt={title} width="1200" height="630" />
+				</div>
+			)}
+
+			<div class="post-page__body">
+				<Content />
+			</div>
+		</div>
+	</article>
 </Base>
 
 <style>
-  .post-page {
-    padding: 8rem 1.5rem 4rem;
-    min-height: 100vh;
-    background: var(--brand-black);
-  }
-  .post-page__inner {
-    max-width: 48rem;
-    margin: 0 auto;
-  }
-  .post-page__back {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: rgba(240, 237, 232, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 2.5rem;
-    transition: color 0.3s;
-  }
-  .post-page__back:hover { color: var(--brand-gold); }
-  .post-page__header {
-    margin-bottom: 2.5rem;
-  }
-  .post-page__category {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    background: rgba(232, 200, 50, 0.1);
-    padding: 0.3rem 0.85rem;
-    border: 1px solid rgba(232, 200, 50, 0.2);
-    margin-bottom: 1.25rem;
-  }
-  .post-page__title {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    line-height: 0.95;
-    color: var(--brand-white);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  .post-page__date {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: rgba(240, 237, 232, 0.4);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .post-page__image {
-    margin-bottom: 3rem;
-    border: 1px solid rgba(232, 200, 50, 0.1);
-  }
-  .post-page__image img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1200 / 630;
-    object-fit: cover;
-  }
-  .post-page__body {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: rgba(240, 237, 232, 0.75);
-    line-height: 1.85;
-  }
-  .post-page__body :global(h1) {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    color: var(--brand-white);
-    text-transform: uppercase;
-    margin-top: 3rem;
-    margin-bottom: 1.25rem;
-  }
-  .post-page__body :global(h2) {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  .post-page__body :global(h3) {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    color: var(--brand-white);
-    text-transform: uppercase;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-  }
-  .post-page__body :global(p) {
-    margin-bottom: 1.25rem;
-  }
-  .post-page__body :global(ul),
-  .post-page__body :global(ol) {
-    margin-bottom: 1.25rem;
-    padding-left: 1.5rem;
-  }
-  .post-page__body :global(li) {
-    margin-bottom: 0.5rem;
-  }
-  .post-page__body :global(strong) {
-    color: var(--brand-gold);
-  }
-  .post-page__body :global(blockquote) {
-    border-left: 3px solid var(--brand-gold);
-    padding: 1rem 1.5rem;
-    margin: 2rem 0;
-    background: rgba(232, 200, 50, 0.03);
-    color: rgba(240, 237, 232, 0.85);
-    font-style: italic;
-  }
-  .post-page__body :global(a) {
-    color: var(--brand-gold);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .post-page__body :global(a:hover) {
-    opacity: 0.8;
-  }
-  .post-page__body :global(img) {
-    border: 1px solid rgba(232, 200, 50, 0.1);
-    margin: 2rem 0;
-  }
-  .post-page__body :global(code) {
-    background: rgba(232, 200, 50, 0.1);
-    padding: 0.15rem 0.4rem;
-    font-size: 0.8rem;
-  }
-  .post-page__body :global(hr) {
-    border: none;
-    border-top: 1px solid rgba(232, 200, 50, 0.1);
-    margin: 2.5rem 0;
-  }
+	.post-page {
+		background: var(--brand-black);
+		min-height: 70vh;
+		padding: 8rem 1.5rem 6rem;
+	}
 
-  /* FOOTER CTA */
-  .post-page__footer {
-    margin-top: 4rem;
-    border-top: 1px solid rgba(232, 200, 50, 0.1);
-    padding-top: 3rem;
-    text-align: center;
-  }
-  .post-page__footer-text {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: rgba(240, 237, 232, 0.5);
-    margin-bottom: 1.5rem;
-  }
-  .post-page__footer-cta {
-    display: inline-block;
-    background: var(--brand-gold);
-    color: var(--brand-black);
-    font-family: var(--font-display);
-    font-size: 1rem;
-    padding: 0.75rem 2rem;
-    text-transform: uppercase;
-    transition: all 0.3s;
-  }
-  .post-page__footer-cta:hover {
-    background: var(--brand-white);
-  }
+	.post-page__inner {
+		max-width: 48rem;
+		margin: 0 auto;
+	}
+
+	.post-page__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.6);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		text-decoration: none;
+		transition: color 0.3s ease;
+		margin-bottom: 3rem;
+	}
+
+	.post-page__back:hover {
+		color: var(--brand-gold);
+	}
+
+	.post-page__header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.post-page__category {
+		display: inline-block;
+		align-self: flex-start;
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		padding: 0.25rem 0.75rem;
+	}
+
+	.post-page__title {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 5vw, 3.75rem);
+		color: var(--brand-white);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		line-height: 1.1;
+	}
+
+	.post-page__date {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.post-page__image {
+		margin-bottom: 3rem;
+		border: 1px solid rgba(232, 200, 50, 0.1);
+		overflow: hidden;
+	}
+
+	.post-page__image img {
+		width: 100%;
+		display: block;
+	}
+
+	.post-page__body {
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: var(--brand-white);
+		line-height: 1.85;
+	}
+
+	.post-page__body :global(h2) {
+		font-family: var(--font-display);
+		font-size: 2rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+	}
+
+	.post-page__body :global(h3) {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-white);
+		text-transform: uppercase;
+		margin-top: 2.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.post-page__body :global(p) {
+		margin-bottom: 1.5rem;
+	}
+
+	.post-page__body :global(ul),
+	.post-page__body :global(ol) {
+		padding-left: 1.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.post-page__body :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.post-page__body :global(blockquote) {
+		border-left: 4px solid var(--brand-red);
+		padding-left: 1.5rem;
+		margin: 2rem 0;
+		font-style: italic;
+		color: rgba(240, 237, 232, 0.6);
+	}
+
+	.post-page__body :global(a) {
+		color: var(--brand-gold);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		transition: opacity 0.2s ease;
+	}
+
+	.post-page__body :global(a:hover) {
+		opacity: 0.8;
+	}
+
+	.post-page__body :global(img) {
+		max-width: 100%;
+		border: 1px solid rgba(232, 200, 50, 0.1);
+		margin: 2rem 0;
+	}
+
+	.post-page__body :global(strong) {
+		color: var(--brand-white);
+		font-weight: 700;
+	}
+
+	@media (max-width: 768px) {
+		.post-page {
+			padding: 6rem 1.25rem 4rem;
+		}
+	}
 </style>

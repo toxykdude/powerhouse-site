@@ -3,266 +3,420 @@ import Base from "../../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort(
-  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+	(a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
 );
 
-// Extract unique categories
-const categories = [...new Set(posts.map((p) => p.data.category))];
+function formatDate(dateStr: string | Date): string {
+	const d = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
+	return d.toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
+}
+
+/**
+ * Resolve featured_image which can be a string URL or a JSON object {src: "..."}.
+ */
+function resolveImageUrl(img: any): string {
+	if (!img) return "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop";
+	if (typeof img === "string") return img;
+	if (typeof img === "object" && img !== null && img.src) return img.src;
+	return String(img);
+}
+const categories = ["Todos", "Nutrición", "Entrenamiento", "Motivación", "Suplementación"];
 ---
 
-<Base
-  seoTitle="Blog de Entrenamiento y Nutrición | PowerHouse Manizales"
-  description="Artículos sobre entrenamiento, nutrición, suplementación y motivación para alcanzar tus metas fitness en Manizales. Tips del equipo PowerHouse Gym."
->
-  <!-- HERO -->
-  <section class="blog-hero">
-    <div class="blog-hero__inner">
-      <p class="blog-hero__tagline">BLOG POWERHOUSE</p>
-      <h1 class="blog-hero__title">CONOCIMIENTO QUE<br />TRANSFORMA</h1>
-      <p class="blog-hero__subtitle">Entrenamiento · Nutrición · Motivación · Suplementación</p>
-    </div>
-  </section>
+<Base title="Blog de Entrenamiento y Nutrición" description="Artículos sobre entrenamiento, nutrición, suplementación y motivación para alcanzar tu mejor versión. Escritos por expertos de PowerHouse Gym Manizales.">
+	<div class="blog-page">
+		<div class="blog-page__hero">
+			<span class="blog-page__tagline">Contenido Elite</span>
+			<h1>POWER BLOG</h1>
+			<p>Consejos de expertos para potenciar tu rendimiento y mentalidad.</p>
+		</div>
 
-  <!-- CATEGORY FILTER -->
-  <section class="blog-filter">
-    <div class="blog-filter__inner">
-      <button class="blog-filter__btn blog-filter__btn--active" data-category="all">Todos</button>
-      {categories.map((cat) => (
-        <button class="blog-filter__btn" data-category={cat}>{cat}</button>
-      ))}
-    </div>
-  </section>
+		<div class="blog-page__filters" id="blogFilters">
+			<div class="blog-page__categories">
+				{categories.map((cat) => (
+					<button class={`blog-page__cat-btn ${cat === "Todos" ? "blog-page__cat-btn--active" : ""}`} data-category={cat}>
+						{cat}
+					</button>
+				))}
+			</div>
+			<div class="blog-page__search">
+				<svg class="blog-page__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+				<input type="text" id="blogSearch" placeholder="BUSCAR ARTICULO..." />
+			</div>
+		</div>
 
-  <!-- POST GRID -->
-  <section class="blog-grid">
-    <div class="blog-grid__inner">
-      {posts.map((post) => (
-        <a href={`/blog/${post.data.slug}`} class="blog-card" data-category={post.data.category}>
-          <div class="blog-card__image">
-            {post.data.featuredImage ? (
-              <img src={post.data.featuredImage} alt={post.data.title} loading="lazy" />
-            ) : (
-              <div class="blog-card__placeholder"></div>
-            )}
-            <span class="blog-card__badge">{post.data.category}</span>
-          </div>
-          <div class="blog-card__body">
-            <time class="blog-card__date" datetime={post.data.date}>
-              {new Date(post.data.date).toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" })}
-            </time>
-            <h2 class="blog-card__title">{post.data.title}</h2>
-            <p class="blog-card__excerpt">
-              {post.data.excerpt || `Descubre más sobre ${post.data.title.toLowerCase()} en el blog de PowerHouse Gym.`}
-            </p>
-            <span class="blog-card__link">Leer más →</span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
+		{posts && posts.length > 0 ? (
+			<div class="blog-page__grid" id="blogGrid">
+				{posts.map((post: any) => {
+					const title = post.data.title || "";
+					const category = post.data.category || "";
+					const date = post.data.date;
+				const featuredImage = resolveImageUrl(post.data.featuredImage);
+					const slug = post.data.slug;
+					const excerpt = post.data.excerpt || "";
+					const searchBody = excerpt.toLowerCase();
+
+					return (
+						<article class="blog-card" data-category={category} data-title={title.toLowerCase()} data-body={searchBody}>
+							<div class="blog-card__image">
+								<img src={featuredImage} alt={title} width="800" height="450" loading="lazy" referrerpolicy="no-referrer" />
+								<div class="blog-card__image-gradient"></div>
+								<div class="blog-card__category-badge">{category || "General"}</div>
+							</div>
+							<div class="blog-card__body">
+								<div class="blog-card__meta">
+									<span class="blog-card__date">{date ? formatDate(date) : ""}</span>
+									<span class="blog-card__cat-label">{category || "General"}</span>
+								</div>
+								<h3 class="blog-card__title">{title}</h3>
+								<p class="blog-card__excerpt">{excerpt}...</p>
+								<a href={`/blog/${slug}`} class="blog-card__link">
+									LEER MAS
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+								</a>
+							</div>
+						</article>
+					);
+				})}
+			</div>
+		) : (
+			<div class="blog-page__empty">
+				<h3>No se encontraron articulos</h3>
+				<p>Proximamente publicaremos contenido para ti.</p>
+				<p style="color: rgba(240, 237, 232, 0.4); font-size: 0.875rem;">Mientras tanto, visita nuestras redes sociales.</p>
+			</div>
+		)}
+	</div>
 </Base>
 
 <style>
-  /* HERO */
-  .blog-hero {
-    padding: 10rem 1.5rem 4rem;
-    background: var(--brand-black);
-    text-align: center;
-  }
-  .blog-hero__inner {
-    max-width: 56rem;
-    margin: 0 auto;
-  }
-  .blog-hero__tagline {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--brand-gold);
-    margin-bottom: 1.25rem;
-  }
-  .blog-hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    line-height: 0.95;
-    color: var(--brand-white);
-    margin-bottom: 1.25rem;
-  }
-  .blog-hero__subtitle {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: rgba(240, 237, 232, 0.5);
-    letter-spacing: 0.1em;
-  }
+	.blog-page {
+		padding-top: 8rem;
+		padding-bottom: 6rem;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+		background: var(--brand-black);
+	}
 
-  /* FILTER */
-  .blog-filter {
-    padding: 2rem 1.5rem;
-    background: #050505;
-    border-bottom: 1px solid rgba(232, 200, 50, 0.08);
-  }
-  .blog-filter__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .blog-filter__btn {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: rgba(240, 237, 232, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    background: transparent;
-    border: 1px solid rgba(232, 200, 50, 0.15);
-    padding: 0.5rem 1.25rem;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  .blog-filter__btn:hover,
-  .blog-filter__btn--active {
-    color: var(--brand-black);
-    background: var(--brand-gold);
-    border-color: var(--brand-gold);
-  }
+	.blog-page__hero {
+		max-width: 80rem;
+		margin: 0 auto;
+		text-align: center;
+		margin-bottom: 5rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
 
-  /* GRID */
-  .blog-grid {
-    padding: 4rem 1.5rem 6rem;
-    background: #050505;
-  }
-  .blog-grid__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
+	.blog-page__tagline {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+	}
 
-  /* CARD */
-  .blog-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(232, 200, 50, 0.08);
-    overflow: hidden;
-    transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-  }
-  .blog-card:hover {
-    border-color: rgba(232, 200, 50, 0.25);
-    transform: translateY(-4px);
-  }
-  .blog-card__image {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: #111;
-  }
-  .blog-card__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-  }
-  .blog-card:hover .blog-card__image img {
-    transform: scale(1.05);
-  }
-  .blog-card__placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1a1a1a, #222);
-  }
-  .blog-card__badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    background: rgba(10, 10, 10, 0.85);
-    padding: 0.25rem 0.75rem;
-    border: 1px solid rgba(232, 200, 50, 0.3);
-  }
-  .blog-card__body {
-    padding: 1.5rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .blog-card__date {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: rgba(240, 237, 232, 0.35);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .blog-card__title {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    color: var(--brand-white);
-    text-transform: uppercase;
-    line-height: 1.2;
-    margin-bottom: 0.75rem;
-  }
-  .blog-card__excerpt {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: rgba(240, 237, 232, 0.5);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .blog-card__link {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: opacity 0.3s;
-  }
-  .blog-card:hover .blog-card__link {
-    opacity: 0.8;
-  }
+	.blog-page__hero h1 {
+		font-family: var(--font-display);
+		font-size: clamp(4.5rem, 10vw, 9rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
 
-  @media (max-width: 1024px) {
-    .blog-grid__inner { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .blog-grid__inner { grid-template-columns: 1fr; }
-    .blog-hero__title { font-size: clamp(2rem, 10vw, 3.5rem); }
-  }
+	.blog-page__hero p {
+		font-family: var(--font-mono);
+		font-size: 1.125rem;
+		color: rgba(240, 237, 232, 0.6);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		max-width: 40rem;
+	}
+
+	.blog-page__filters {
+		max-width: 80rem;
+		margin: 0 auto 4rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 2rem;
+		padding-bottom: 3rem;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+		flex-wrap: wrap;
+	}
+
+	.blog-page__categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		justify-content: center;
+	}
+
+	.blog-page__cat-btn {
+		padding: 0.5rem 1.5rem;
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		background: transparent;
+		color: rgba(240, 237, 232, 0.6);
+	}
+
+	.blog-page__cat-btn:hover {
+		color: var(--brand-gold);
+	}
+
+	.blog-page__cat-btn--active {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.blog-page__search {
+		position: relative;
+		width: 100%;
+		max-width: 24rem;
+	}
+
+	.blog-page__search-icon {
+		position: absolute;
+		left: 1rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: rgba(232, 200, 50, 0.5);
+	}
+
+	.blog-page__search input {
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 1rem 1rem 1rem 3rem;
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: var(--brand-white);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		outline: none;
+		transition: border-color 0.3s ease;
+	}
+
+	.blog-page__search input::placeholder {
+		color: rgba(240, 237, 232, 0.3);
+	}
+
+	.blog-page__search input:focus {
+		border-color: var(--brand-gold);
+	}
+
+	.blog-page__grid {
+		max-width: 80rem;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 3rem;
+	}
+
+	.blog-card {
+		display: flex;
+		flex-direction: column;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.1);
+		overflow: hidden;
+		transition: all 0.5s ease;
+	}
+
+	.blog-card:hover {
+		border-color: rgba(232, 200, 50, 0.5);
+		transform: translateY(-5px);
+	}
+
+	.blog-card__image {
+		aspect-ratio: 16/9;
+		position: relative;
+		overflow: hidden;
+		background: rgba(232, 200, 50, 0.05);
+	}
+
+	.blog-card__image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1);
+		opacity: 0.8;
+		transition: all 0.7s ease;
+	}
+
+	.blog-card:hover .blog-card__image img {
+		transform: scale(1.1);
+		filter: grayscale(0);
+	}
+
+	.blog-card__image-gradient {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, #0a0a0a, transparent);
+		pointer-events: none;
+	}
+
+	.blog-card__category-badge {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		font-family: var(--font-display);
+		font-size: 0.875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		padding: 0.25rem 0.75rem;
+		z-index: 1;
+	}
+
+	.blog-card__body {
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		flex: 1;
+	}
+
+	.blog-card__meta {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+	}
+
+	.blog-card__title {
+		font-family: var(--font-display);
+		font-size: 1.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		line-height: 1.2;
+		transition: color 0.3s ease;
+	}
+
+	.blog-card:hover .blog-card__title {
+		color: var(--brand-white);
+	}
+
+	.blog-card__excerpt {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.6;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		flex: 1;
+	}
+
+	.blog-card__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		transition: gap 0.3s ease;
+		margin-top: auto;
+		padding-top: 1rem;
+		text-decoration: none;
+	}
+
+	.blog-card__link:hover {
+		gap: 1.5rem;
+	}
+
+	.blog-page__empty {
+		max-width: 80rem;
+		margin: 0 auto;
+		text-align: center;
+		padding: 8rem 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.blog-page__empty h3 {
+		font-family: var(--font-display);
+		font-size: 2.25rem;
+		color: rgba(240, 237, 232, 0.2);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.blog-page__empty p {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.6);
+	}
+
+	@media (max-width: 1024px) {
+		.blog-page__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.blog-page__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.blog-page__filters {
+			flex-direction: column;
+		}
+	}
 </style>
 
 <script>
-  // Client-side category filter
-  const buttons = document.querySelectorAll('.blog-filter__btn');
-  const cards = document.querySelectorAll('.blog-card');
+	const catBtns = document.querySelectorAll('.blog-page__cat-btn');
+	const searchInput = document.getElementById('blogSearch') as HTMLInputElement;
+	const cards = document.querySelectorAll('.blog-card');
 
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const category = btn.getAttribute('data-category');
+	let activeCategory = 'Todos';
 
-      // Update active button
-      buttons.forEach((b) => b.classList.remove('blog-filter__btn--active'));
-      btn.classList.add('blog-filter__btn--active');
+	catBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			catBtns.forEach(b => b.classList.remove('blog-page__cat-btn--active'));
+			btn.classList.add('blog-page__cat-btn--active');
+			activeCategory = (btn as HTMLElement).getAttribute('data-category') || 'Todos';
+			filterCards();
+		});
+	});
 
-      // Filter cards
-      cards.forEach((card) => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-          (card as HTMLElement).style.display = '';
-        } else {
-          (card as HTMLElement).style.display = 'none';
-        }
-      });
-    });
-  });
+	searchInput?.addEventListener('input', filterCards);
+
+	function filterCards() {
+		const query = (searchInput?.value || '').toLowerCase();
+		let visibleCount = 0;
+
+		cards.forEach(card => {
+			const cardEl = card as HTMLElement;
+			const category = cardEl.getAttribute('data-category') || '';
+			const title = cardEl.getAttribute('data-title') || '';
+			const body = cardEl.getAttribute('data-body') || '';
+
+			const matchCat = activeCategory === 'Todos' || category === activeCategory;
+			const matchSearch = !query || title.includes(query) || body.includes(query);
+
+			if (matchCat && matchSearch) {
+				cardEl.style.display = '';
+				visibleCount++;
+			} else {
+				cardEl.style.display = 'none';
+			}
+		});
+	}
 </script>

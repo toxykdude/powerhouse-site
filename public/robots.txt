@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+Disallow: /_emdash/
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: GoogleBot
+Allow: /
+
+User-agent: BingBot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+Sitemap: https://powerhousegym.co/sitemap.xml

@@ -1,491 +1,723 @@
 ---
 import Base from "../layouts/Base.astro";
-import { getCollection } from "astro:content";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
-).slice(0, 3);
+const trainers = [
+	{
+		name: "Juan Manuel Cano",
+		role: "Founder & CEO de PowerHouse",
+		bio: "Fisiculturista con 16 años de experiencia en el gremio. Fundador de PowerHouse Gym Manizales.",
+		specialties: ["Fisiculturismo", "Hipertrofia", "Nutrición Deportiva", "Transformación Corporal"],
+		photo: "/uploads/juan-manoel-cano.png",
+	},
+	{
+		name: "Esteban Morales Sánchez",
+		role: "Entrenador Personal PowerHouse",
+		bio: "Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. 500+ clientes transformados.",
+		specialties: ["Biomecánica", "Pérdida de Peso", "Fuerza", "Prevención de Lesiones"],
+		photo: "/uploads/esteban-morales.png",
+	},
+	{
+		name: "Harold Giraldo",
+		role: "Preparador Físico",
+		bio: "Preparador Físico y Tecnólogo en Entrenamiento Deportivo con amplio conocimiento en funcional y musculación.",
+		specialties: ["Funcional", "Musculación", "Wellness", "Core"],
+		photo: "/uploads/harold-giraldo.png",
+	},
+];
 
-const faqJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "¿Cuánto cuesta la mensualidad en PowerHouse Gym?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Desde $69.900 COP/mes. Contamos con planes mensuales, trimestrales y anuales para adaptarnos a tu presupuesto."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cuáles son los horarios?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Lunes a Viernes 5:00am–10:00pm, Sábados y Domingos 9:00am–2:00pm."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Necesito firmar contrato?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No, en PowerHouse Gym no tienes contratos a largo plazo. Tu membresía es flexible y puedes cancelar cuando quieras."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Dónde queda PowerHouse Gym?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Estamos ubicados en el Parque de la Mujer, Avenida Santander, Manizales, Caldas, Colombia."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Ofrecen entrenamiento personalizado?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Sí, ofrecemos entrenamiento semi-personalizado incluido en todos nuestros planes. Nuestros instructores te guían para que alcances tus metas de forma segura y efectiva."
-      }
-    }
-  ]
-});
+const features = [
+	{ text: "Máquinas de Tráfico Pesado", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11"/><rect x="2" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="5" height="16" rx="1"/><line x1="7" y1="12" x2="17" y2="12"/></svg>' },
+	{ text: "Suplementación In-House", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 2h3v20h-3z"/><path d="M15.5 6h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3"/><path d="M8.5 6h-3A2 2 0 0 0 3.5 8v8a2 2 0 0 0 2 2h3"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>' },
+	{ text: "Sin Contratos ni Papeleo", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' },
+	{ text: "Entrenadores Siempre Presentes", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
+	{ text: "Horario Privilegiado (5am–10pm)", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' },
+	{ text: "Entrenamiento Semi-Personalizado", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>' },
+];
 ---
 
 <Base
-  seoTitle="Gimnasio PowerHouse Manizales | Sin Contrato · 5am–10pm"
-  description="Gimnasio PowerHouse en Manizales. Entrenamiento semi-personalizado sin contrato. Horarios: Lun–Vie 5am–10pm, Sáb–Dom 9am–2pm. Parque de la Mujer. ¡Inscríbete hoy!"
-  jsonLd={faqJsonLd}
+	seoTitle="Gimnasio PowerHouse Manizales | Sin Contrato · 5am–10pm"
+	description="Gimnasio en Manizales sin contrato ni documentos. Entrenamiento semipersonalizado, equipos de tráfico pesado, horario 5am–10pm. Parque de la Mujer, Avenida Santander."
+	jsonLd={`{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cuánto cuesta el gimnasio PowerHouse en Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "PowerHouse Gym Manizales ofrece planes mensuales desde $69.900 COP y quincenales desde $9.900 COP. No requiere contratos ni documentos. Contáctanos al +57 315 471 1900 para conocer los precios actuales."}}, {"@type": "Question", "name": "¿Cuál es el horario de PowerHouse Gym Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "Lunes a viernes: 5:00am – 10:00pm. Sábados y domingos: 9:00am – 2:00pm. Ubicados en Avenida Santander, Parque de la Mujer, Manizales."}}, {"@type": "Question", "name": "¿PowerHouse Gym tiene contrato o permanencia?", "acceptedAnswer": {"@type": "Answer", "text": "No. PowerHouse Gym Manizales no exige contratos, documentos ni cláusulas de permanencia. Puedes inscribirte y cancelar cuando quieras."}}, {"@type": "Question", "name": "¿Dónde queda PowerHouse Gym en Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "Estamos ubicados en la Avenida Santander, Parque de la Mujer, Manizales, Caldas, Colombia. Coordenadas: 5.0649845, -75.4998569."}}, {"@type": "Question", "name": "¿Qué incluye el entrenamiento en PowerHouse Gym?", "acceptedAnswer": {"@type": "Answer", "text": "Entrenamiento semipersonalizado con seguimiento constante de entrenadores certificados, equipos de tráfico pesado, zona de cardio con vista a la ciudad, asesoría en nutrición y suplementación."}}]}`}
 >
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero__overlay"></div>
-    <div class="hero__content">
-      <p class="hero__tagline">GIMNASIO EN MANIZALES</p>
-      <h1 class="hero__title">FORJA TU VERSIÓN<br />MÁS FUERTE</h1>
-      <p class="hero__subtitle">Entrenamiento semi-personalizado · Sin contratos · Resultados reales</p>
-      <a href="/planes" class="hero__cta">VER PLANES</a>
-    </div>
-  </section>
+	<section class="hero">
+		<div class="hero__bg">
+			<div class="hero__overlay"></div>
+			<img
+				src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop"
+				alt="Gimnasio PowerHouse Manizales - Sala de entrenamiento"
+				width="2070"
+				height="1380"
+				referrerpolicy="no-referrer"
+			/>
+		</div>
+		<div class="hero__content">
+			<h1 class="hero__headline">FORJA TU VERSIÓN MÁS FUERTE</h1>
+			<p class="hero__subhead">Gimnasio en Manizales · Entrenamiento semi-personalizado · Sin contratos</p>
+			<div class="hero__ctas">
+				<a href="/planes" class="btn-gold" style="font-size: 1.5rem; padding: 1rem 3rem;">VER PLANES</a>
+				<a href="/nosotros" class="btn-outline" style="font-size: 1.5rem; padding: 1rem 3rem;">CONOCE EL GYM</a>
+			</div>
+		</div>
+		<div class="hero__scroll">
+			<span class="hero__scroll-text">Desliza</span>
+			<div class="hero__scroll-line"></div>
+		</div>
+	</section>
 
-  <!-- POR QUÉ POWERHOUSE -->
-  <section class="features">
-    <div class="features__inner">
-      <h2 class="section-title">POR QUÉ POWERHOUSE</h2>
-      <div class="features__grid">
-        <div class="features__card">
-          <div class="features__icon">🏋️</div>
-          <h3 class="features__card-title">SIN CONTRATOS</h3>
-          <p class="features__card-text">Tu membresía es flexible. Paga mes a mes, trimestre o año. Sin letras pequeñas, sin sorpresas. Cancela cuando quieras.</p>
-        </div>
-        <div class="features__card">
-          <div class="features__icon">💪</div>
-          <h3 class="features__card-title">ENTRENAMIENTO SEMI-PERSONALIZADO</h3>
-          <p class="features__card-text">Instructores certificados que te guían en cada sesión. Rutinas adaptadas a tu nivel y objetivos. No estás solo en esto.</p>
-        </div>
-        <div class="features__card">
-          <div class="features__icon">⏰</div>
-          <h3 class="features__card-title">HORARIOS EXTENDIDOS</h3>
-          <p class="features__card-text">Lunes a Viernes 5am–10pm. Sábados y Domingos 9am–2pm. Entrena cuando te convenga, incluso los fines de semana.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+	<div class="ticker">
+		<div class="ticker__track">
+			{[0, 1].map(() => (
+				<div class="ticker__items">
+					{features.map((f) => (
+						<div class="ticker__item">
+							<span class="ticker__icon-bg" set:html={f.icon} />
+							<span class="ticker__text">{f.text}</span>
+							<span class="ticker__sep">/</span>
+						</div>
+					))}
+				</div>
+			))}
+		</div>
+	</div>
 
-  <!-- BLOG PREVIEW -->
-  <section class="blog-preview">
-    <div class="blog-preview__inner">
-      <h2 class="section-title">ÚLTIMOS DEL BLOG</h2>
-      <p class="blog-preview__subtitle">Conocimiento que transforma tu entrenamiento</p>
-      <div class="blog-preview__grid">
-        {posts.map((post) => (
-          <a href={`/blog/${post.data.slug}`} class="blog-preview__card">
-            <div class="blog-preview__card-image">
-              {post.data.featuredImage ? (
-                <img src={post.data.featuredImage} alt={post.data.title} loading="lazy" />
-              ) : (
-                <div class="blog-preview__card-placeholder"></div>
-              )}
-            </div>
-            <div class="blog-preview__card-body">
-              <span class="blog-preview__card-category">{post.data.category}</span>
-              <h3 class="blog-preview__card-title">{post.data.title}</h3>
-              <p class="blog-preview__card-excerpt">
-                {post.data.excerpt || `Descubre más sobre ${post.data.title.toLowerCase()} en PowerHouse Gym.`}
-              </p>
-              <span class="blog-preview__card-link">Leer más →</span>
-            </div>
-          </a>
-        ))}
-      </div>
-      <a href="/blog" class="blog-preview__cta">VER TODOS LOS ARTÍCULOS</a>
-    </div>
-  </section>
+	<section class="about">
+		<div class="about__bg-text">POWER</div>
+		<div class="about__inner">
+			<div class="about__text">
+				<h2 class="section-title">NUESTRA FILOSOFÍA</h2>
+				<p class="about__quote">"En PowerHouse no solo construyes músculo. Construyes <span class="about__quote-accent">disciplina</span>, confianza y una versión más fuerte de ti mismo."</p>
+				<div class="about__divider"></div>
+				<p class="about__description">Ubicados en el corazón de Manizales, somos el refugio de quienes buscan resultados reales. Sin contratos abusivos, sin complicaciones. Solo hierro, sudor y progreso constante.</p>
+				<a href="/nosotros" class="about__link">
+					LEER MÁS
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+				</a>
+			</div>
+			<div class="about__visual">
+				<div class="about__image-wrap">
+					<img
+						src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop"
+						alt="Gym Interior"
+						referrerpolicy="no-referrer"
+					/>
+					<div class="about__image-gradient"></div>
+				</div>
+				<div class="about__badge">EST. 2024</div>
+			</div>
+		</div>
+	</section>
 
-  <!-- ABOUT PREVIEW -->
-  <section class="about-preview">
-    <div class="about-preview__inner">
-      <div class="about-preview__image">
-        <div class="about-preview__image-placeholder">
-          <span>POWERHOUSE GYM</span>
-        </div>
-      </div>
-      <div class="about-preview__content">
-        <h2 class="section-title">QUIÉNES SOMOS</h2>
-        <p class="about-preview__text">
-          En PowerHouse Gym Manizales creemos que el verdadero cambio empieza con disciplina, consistencia y la comunidad correcta. Somos más que un gimnasio — somos el lugar donde forjas tu versión más fuerte.
-        </p>
-        <p class="about-preview__text">
-          Ubicados en el corazón de Manizales, en el Parque de la Mujer, ofrecemos un espacio con equipamiento de primer nivel, instructores certificados y una comunidad que te motiva a dar lo mejor de ti cada día.
-        </p>
-        <a href="/nosotros" class="about-preview__cta">CONÓCENOS</a>
-      </div>
-    </div>
-  </section>
+	<section class="trainers">
+		<div class="trainers__inner">
+			<div class="trainers__header">
+				<div>
+					<span class="trainers__tagline">El Equipo</span>
+					<h2 class="section-title" style="margin-bottom: 0;">ENTRENADORES ELITE</h2>
+				</div>
+				<p class="trainers__aside">Profesionales certificados con años de experiencia en transformación física y rendimiento deportivo.</p>
+			</div>
+			<div class="trainers__grid">
+				{trainers.map((trainer, idx) => (
+					<article class="trainer-card" style={`animation-delay: ${idx * 0.15}s`}>
+						<div class="trainer-card__photo">
+							<img src={trainer.photo} alt={trainer.name} loading="lazy" />
+							<div class="trainer-card__photo-gradient"></div>
+						</div>
+						<div class="trainer-card__info">
+							<h3 class="trainer-card__name">{trainer.name}</h3>
+							<span class="trainer-card__role">{trainer.role}</span>
+							<p class="trainer-card__bio">{trainer.bio}</p>
+							<div class="trainer-card__specialties">
+								{trainer.specialties.map((s) => (
+									<span class="trainer-card__tag">{s}</span>
+								))}
+							</div>
+						</div>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
 
-  <!-- FAQ -->
-  <section class="faq">
-    <div class="faq__inner">
-      <h2 class="section-title">PREGUNTAS FRECUENTES</h2>
-      <div class="faq__list">
-        <details class="faq__item">
-          <summary class="faq__question">¿Cuánto cuesta la mensualidad en PowerHouse Gym?</summary>
-          <p class="faq__answer">Desde $69.900 COP/mes. Contamos con planes mensuales, trimestrales y anuales para adaptarnos a tu presupuesto.</p>
-        </details>
-        <details class="faq__item">
-          <summary class="faq__question">¿Cuáles son los horarios?</summary>
-          <p class="faq__answer">Lunes a Viernes 5:00am–10:00pm, Sábados y Domingos 9:00am–2:00pm.</p>
-        </details>
-        <details class="faq__item">
-          <summary class="faq__question">¿Necesito firmar contrato?</summary>
-          <p class="faq__answer">No, en PowerHouse Gym no tienes contratos a largo plazo. Tu membresía es flexible y puedes cancelar cuando quieras.</p>
-        </details>
-        <details class="faq__item">
-          <summary class="faq__question">¿Dónde queda PowerHouse Gym?</summary>
-          <p class="faq__answer">Estamos ubicados en el Parque de la Mujer, Avenida Santander, Manizales, Caldas, Colombia.</p>
-        </details>
-        <details class="faq__item">
-          <summary class="faq__question">¿Ofrecen entrenamiento personalizado?</summary>
-          <p class="faq__answer">Sí, ofrecemos entrenamiento semi-personalizado incluido en todos nuestros planes. Nuestros instructores te guían para que alcances tus metas de forma segura y efectiva.</p>
-        </details>
-      </div>
-    </div>
-  </section>
+	<section class="social-proof">
+		<div class="stats-grid">
+			<div class="stat-item">
+				<div class="stat-value">96%</div>
+				<p class="stat-label">De miembros nos recomiendan</p>
+			</div>
+			<div class="stat-item">
+				<div class="stat-value">20+</div>
+				<p class="stat-label">Reseñas verificadas</p>
+			</div>
+			<div class="stat-item">
+				<div class="stat-value">500+</div>
+				<p class="stat-label">Vidas transformadas</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="cta-band">
+		<div class="cta-band__bg-text">JOIN THE POWERHOUSE</div>
+		<div class="cta-band__content">
+			<h2>¿LISTO PARA EMPEZAR?</h2>
+			<p>No dejes para mañana la versión que puedes empezar a construir hoy.</p>
+			<a href="/planes" class="cta-band__btn">VER PLANES DE MEMBRESÍA</a>
+		</div>
+	</section>
 </Base>
 
 <style>
-  /* HERO */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-    overflow: hidden;
-  }
-  .hero__overlay {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 80%, rgba(232, 200, 50, 0.08) 0%, transparent 60%);
-  }
-  .hero__content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 2rem;
-    max-width: 56rem;
-  }
-  .hero__tagline {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--brand-gold);
-    margin-bottom: 1.5rem;
-  }
-  .hero__title {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 10vw, 7rem);
-    line-height: 0.95;
-    color: var(--brand-white);
-    margin-bottom: 1.5rem;
-  }
-  .hero__subtitle {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: rgba(240, 237, 232, 0.6);
-    letter-spacing: 0.05em;
-    margin-bottom: 2.5rem;
-  }
-  .hero__cta {
-    display: inline-block;
-    background: var(--brand-gold);
-    color: var(--brand-black);
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    padding: 1rem 3rem;
-    text-transform: uppercase;
-    transition: all 0.3s;
-  }
-  .hero__cta:hover {
-    background: var(--brand-white);
-    transform: translateY(-2px);
-  }
+	.hero {
+		position: relative;
+		height: 100vh;
+		min-height: 700px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
 
-  /* FEATURES */
-  .features {
-    padding: 6rem 1.5rem;
-    background: var(--brand-black);
-  }
-  .features__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .features__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-  .features__card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(232, 200, 50, 0.1);
-    padding: 2.5rem 2rem;
-    text-align: center;
-    transition: all 0.3s;
-  }
-  .features__card:hover {
-    border-color: rgba(232, 200, 50, 0.3);
-    transform: translateY(-4px);
-  }
-  .features__icon {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .features__card-title {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    letter-spacing: 0.05em;
-  }
-  .features__card-text {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: rgba(240, 237, 232, 0.6);
-    line-height: 1.7;
-  }
+	.hero__bg {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
 
-  /* BLOG PREVIEW */
-  .blog-preview {
-    padding: 6rem 1.5rem;
-    background: #050505;
-  }
-  .blog-preview__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .blog-preview__subtitle {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: rgba(240, 237, 232, 0.5);
-    margin-top: 0.75rem;
-    letter-spacing: 0.1em;
-  }
-  .blog-preview__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-  .blog-preview__card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(232, 200, 50, 0.08);
-    overflow: hidden;
-    text-align: left;
-    transition: all 0.3s;
-  }
-  .blog-preview__card:hover {
-    border-color: rgba(232, 200, 50, 0.25);
-    transform: translateY(-4px);
-  }
-  .blog-preview__card-image {
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: #111;
-  }
-  .blog-preview__card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-  }
-  .blog-preview__card:hover .blog-preview__card-image img {
-    transform: scale(1.05);
-  }
-  .blog-preview__card-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1a1a1a, #222);
-  }
-  .blog-preview__card-body {
-    padding: 1.5rem;
-  }
-  .blog-preview__card-category {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    background: rgba(232, 200, 50, 0.1);
-    padding: 0.25rem 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .blog-preview__card-title {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    color: var(--brand-white);
-    text-transform: uppercase;
-    line-height: 1.2;
-    margin-bottom: 0.75rem;
-  }
-  .blog-preview__card-excerpt {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: rgba(240, 237, 232, 0.5);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .blog-preview__card-link {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: opacity 0.3s;
-  }
-  .blog-preview__card:hover .blog-preview__card-link {
-    opacity: 0.8;
-  }
-  .blog-preview__cta {
-    display: inline-block;
-    margin-top: 3rem;
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    color: var(--brand-gold);
-    text-transform: uppercase;
-    border: 1px solid var(--brand-gold);
-    padding: 0.75rem 2rem;
-    transition: all 0.3s;
-  }
-  .blog-preview__cta:hover {
-    background: var(--brand-gold);
-    color: var(--brand-black);
-  }
+	.hero__bg img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1);
+		opacity: 0.4;
+		transform: scale(1.1);
+		animation: pulseSlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
 
-  /* ABOUT PREVIEW */
-  .about-preview {
-    padding: 6rem 1.5rem;
-    background: var(--brand-black);
-  }
-  .about-preview__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-  .about-preview__image-placeholder {
-    aspect-ratio: 4 / 3;
-    background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
-    border: 1px solid rgba(232, 200, 50, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .about-preview__image-placeholder span {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: rgba(232, 200, 50, 0.3);
-    letter-spacing: 0.2em;
-  }
-  .about-preview__text {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: rgba(240, 237, 232, 0.65);
-    line-height: 1.8;
-    margin-bottom: 1.25rem;
-  }
-  .about-preview__cta {
-    display: inline-block;
-    margin-top: 1rem;
-    background: var(--brand-gold);
-    color: var(--brand-black);
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    padding: 0.75rem 2rem;
-    text-transform: uppercase;
-    transition: all 0.3s;
-  }
-  .about-preview__cta:hover {
-    background: var(--brand-white);
-  }
+	.hero__overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to bottom, rgba(13,13,13,0.4) 0%, rgba(13,13,13,0.6) 50%, rgba(13,13,13,1) 100%);
+		z-index: 1;
+	}
 
-  /* FAQ */
-  .faq {
-    padding: 6rem 1.5rem;
-    background: #050505;
-  }
-  .faq__inner {
-    max-width: 48rem;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .faq__list {
-    margin-top: 3rem;
-    text-align: left;
-  }
-  .faq__item {
-    border-bottom: 1px solid rgba(232, 200, 50, 0.1);
-    padding: 1.25rem 0;
-  }
-  .faq__question {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--brand-white);
-    cursor: pointer;
-    list-style: none;
-    padding-right: 1rem;
-    transition: color 0.3s;
-  }
-  .faq__question::-webkit-details-marker { display: none; }
-  .faq__question::marker { content: ''; }
-  .faq__question:hover { color: var(--brand-gold); }
-  .faq__answer {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: rgba(240, 237, 232, 0.55);
-    line-height: 1.7;
-    margin-top: 0.75rem;
-    padding: 0.75rem 0;
-  }
+	.hero__content {
+		position: relative;
+		z-index: 2;
+		max-width: 80rem;
+		padding: 0 1.5rem;
+		text-align: center;
+	}
 
-  @media (max-width: 768px) {
-    .features__grid { grid-template-columns: 1fr; }
-    .blog-preview__grid { grid-template-columns: 1fr; }
-    .about-preview__inner { grid-template-columns: 1fr; gap: 2rem; }
-    .hero__title { font-size: clamp(2.5rem, 12vw, 4rem); }
-  }
+	.hero__headline {
+		font-family: var(--font-display);
+		font-size: clamp(4.5rem, 12vw, 12rem);
+		color: var(--brand-gold);
+		line-height: 0.85;
+		margin-bottom: 1.5rem;
+		text-transform: uppercase;
+	}
+
+	.hero__subhead {
+		font-family: var(--font-mono);
+		font-size: clamp(1rem, 2vw, 1.25rem);
+		color: rgba(240, 237, 232, 0.8);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-bottom: 3rem;
+	}
+
+	.hero__ctas {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.hero__scroll {
+		position: absolute;
+		bottom: 2.5rem;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+		color: rgba(232, 200, 50, 0.5);
+	}
+
+	.hero__scroll-text {
+		font-size: 0.625rem;
+		text-transform: uppercase;
+		letter-spacing: 0.3em;
+		font-family: var(--font-mono);
+	}
+
+	.hero__scroll-line {
+		width: 1px;
+		height: 3rem;
+		background: linear-gradient(to bottom, rgba(232, 200, 50, 0.5), transparent);
+	}
+
+	.ticker {
+		background: var(--brand-gold);
+		padding: 1.5rem 0;
+		overflow: hidden;
+		border-top: 1px solid rgba(13, 13, 13, 0.1);
+		border-bottom: 1px solid rgba(13, 13, 13, 0.1);
+	}
+
+	.ticker__track {
+		display: flex;
+		white-space: nowrap;
+		animation: marquee 18s linear infinite;
+	}
+
+	.ticker__items {
+		display: flex;
+		gap: 3rem;
+		align-items: center;
+		padding: 0 1.5rem;
+	}
+
+	.ticker__item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-black);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.ticker__icon-bg {
+		background: var(--brand-black);
+		color: var(--brand-gold);
+		padding: 0.25rem;
+		border-radius: 2px;
+		display: flex;
+	}
+
+	.ticker__sep {
+		color: rgba(13, 13, 13, 0.2);
+		margin-left: 2rem;
+	}
+
+	.about {
+		padding: 8rem 1.5rem;
+		background: var(--brand-black);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.about__bg-text {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-family: var(--font-display);
+		font-size: 30rem;
+		color: var(--brand-gold);
+		opacity: 0.05;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.about__inner {
+		max-width: 80rem;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 5rem;
+		align-items: center;
+		position: relative;
+		z-index: 1;
+	}
+
+	.about__text {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.about__quote {
+		font-family: var(--font-display);
+		font-size: clamp(2rem, 4vw, 3rem);
+		color: var(--brand-white);
+		line-height: 1.2;
+	}
+
+	.about__quote-accent {
+		color: var(--brand-gold);
+	}
+
+	.about__divider {
+		width: 6rem;
+		height: 2px;
+		background: var(--brand-gold);
+	}
+
+	.about__description {
+		font-family: var(--font-mono);
+		font-size: 1.125rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.7;
+		max-width: 32rem;
+	}
+
+	.about__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		transition: gap 0.3s ease;
+	}
+
+	.about__link:hover {
+		gap: 1.5rem;
+	}
+
+	.about__visual {
+		position: relative;
+	}
+
+	.about__image-wrap {
+		aspect-ratio: 4/5;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		overflow: hidden;
+		background: rgba(232, 200, 50, 0.1);
+	}
+
+	.about__image-wrap img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1);
+		opacity: 0.8;
+		transition: transform 0.7s ease;
+	}
+
+	.about__image-wrap:hover img {
+		transform: scale(1.1);
+	}
+
+	.about__image-gradient {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, var(--brand-black), transparent);
+		opacity: 0.6;
+		pointer-events: none;
+	}
+
+	.about__badge {
+		position: absolute;
+		bottom: -2.5rem;
+		left: -2.5rem;
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		font-family: var(--font-display);
+		font-size: 2.5rem;
+		padding: 2rem 3rem;
+	}
+
+	.trainers {
+		padding: 8rem 1.5rem;
+		background: #0a0a0a;
+	}
+
+	.trainers__inner {
+		max-width: 80rem;
+		margin: 0 auto;
+	}
+
+	.trainers__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		margin-bottom: 5rem;
+		gap: 2rem;
+	}
+
+	.trainers__tagline {
+		font-family: var(--font-mono);
+			font-size: 0.875rem;
+			color: var(--brand-gold);
+			text-transform: uppercase;
+			letter-spacing: 0.5em;
+			display: block;
+			margin-bottom: 1rem;
+		}
+
+	.trainers__aside {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		text-align: right;
+		max-width: 24rem;
+	}
+
+	.trainers__grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+
+	.trainer-card {
+		position: relative;
+		background: var(--brand-black);
+		border: 1px solid rgba(232, 200, 50, 0.1);
+		overflow: hidden;
+		transition: all 0.5s ease;
+	}
+
+	.trainer-card:hover {
+		transform: translateY(-10px);
+		border-color: rgba(232, 200, 50, 0.5);
+	}
+
+	.trainer-card__photo {
+		aspect-ratio: 3/4;
+		position: relative;
+		overflow: hidden;
+		background: rgba(232, 200, 50, 0.05);
+	}
+
+	.trainer-card__photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.7s ease;
+	}
+
+	.trainer-card:hover .trainer-card__photo img {
+		transform: scale(1.1);
+	}
+
+	.trainer-card__photo-gradient {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, var(--brand-black), transparent);
+		z-index: 1;
+	}
+
+	.trainer-card__info {
+		padding: 1.5rem;
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.trainer-card__name {
+		font-family: var(--font-display);
+		font-size: 1.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+	}
+
+	.trainer-card__role {
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		color: var(--brand-red);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.trainer-card__bio {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.6;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.trainer-card__specialties {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding-top: 1rem;
+	}
+
+	.trainer-card__tag {
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		border: 1px solid rgba(240, 237, 232, 0.2);
+		padding: 0.25rem 0.5rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		color: rgba(240, 237, 232, 0.4);
+	}
+
+	.social-proof {
+		padding: 5rem 0;
+		border-top: 1px solid rgba(232, 200, 50, 0.1);
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+		background: var(--brand-black);
+	}
+
+	.stats-grid {
+		max-width: 80rem;
+		margin: 0 auto;
+		padding: 0 1.5rem;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 3rem;
+		text-align: center;
+	}
+
+	.stat-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.stat-value {
+		font-family: var(--font-display);
+		font-size: clamp(3rem, 6vw, 4.5rem);
+		color: var(--brand-gold);
+		line-height: 1;
+	}
+
+	.stat-label {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.6);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.cta-band {
+		padding: 6rem 1.5rem;
+		background: var(--brand-red);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.cta-band__bg-text {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-family: var(--font-display);
+		font-size: 20rem;
+		color: white;
+		opacity: 0.1;
+		pointer-events: none;
+		user-select: none;
+		white-space: nowrap;
+	}
+
+	.cta-band__content {
+		max-width: 64rem;
+		margin: 0 auto;
+		text-align: center;
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.cta-band__content h2 {
+		font-family: var(--font-display);
+		font-size: clamp(3rem, 8vw, 5rem);
+		color: white;
+		text-transform: uppercase;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+
+	.cta-band__content p {
+		font-family: var(--font-mono);
+		font-size: clamp(1rem, 2vw, 1.25rem);
+		color: rgba(255, 255, 255, 0.8);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.cta-band__btn {
+		display: inline-block;
+		background: white;
+		color: var(--brand-red);
+		font-family: var(--font-display);
+		font-size: 1.875rem;
+		padding: 1.25rem 4rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		margin-top: 1rem;
+	}
+
+	.cta-band__btn:hover {
+		background: var(--brand-black);
+		color: white;
+	}
+
+	@keyframes pulseSlow {
+		0%, 100% { transform: scale(1.1); }
+		50% { transform: scale(1.15); }
+	}
+
+	@media (max-width: 1024px) {
+		.trainers__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero__headline {
+			font-size: clamp(3rem, 15vw, 6rem);
+		}
+
+		.hero__ctas {
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.about__inner {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+		}
+
+		.about__badge {
+			display: none;
+		}
+
+		.trainers__header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.trainers__aside {
+			text-align: left;
+		}
+
+		.trainers__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.stats-grid {
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+
+		.cta-band__bg-text {
+			font-size: 8rem;
+		}
+	}
 </style>

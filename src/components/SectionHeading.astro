@@ -1,0 +1,48 @@
+---
+interface Props {
+  tagline?: string;
+  title: string;
+  description?: string;
+  align?: "left" | "center";
+  light?: boolean;
+}
+const { tagline, title, description, align = "center", light = false } = Astro.props;
+---
+
+<div class:list={["section-heading", `align-${align}`, { light }]}>
+  {tagline && <span class="section-tagline">{tagline}</span>}
+  <h2 class="section-title">{title}</h2>
+  {description && <p class="section-desc">{description}</p>}
+</div>
+
+<style>
+.section-heading {
+  margin-bottom: var(--spacing-3xl);
+}
+.align-center { text-align: center; }
+.align-left { text-align: left; }
+.section-tagline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: var(--spacing-md);
+  padding: 6px 16px;
+  border: 1px solid rgba(232, 200, 50, 0.3);
+}
+.section-title {
+  color: var(--offwhite);
+  margin-bottom: var(--spacing-md);
+}
+.section-desc {
+  font-size: var(--font-size-lg);
+  color: var(--gray);
+  max-width: 600px;
+  line-height: 1.8;
+}
+.align-center .section-desc { margin: 0 auto; }
+.light .section-title { color: var(--offwhite); }
+</style>
