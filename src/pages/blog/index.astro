@@ -1,0 +1,268 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+
+// Extract unique categories
+const categories = [...new Set(posts.map((p) => p.data.category))];
+---
+
+<Base
+  seoTitle="Blog de Entrenamiento y Nutrición | PowerHouse Manizales"
+  description="Artículos sobre entrenamiento, nutrición, suplementación y motivación para alcanzar tus metas fitness en Manizales. Tips del equipo PowerHouse Gym."
+>
+  <!-- HERO -->
+  <section class="blog-hero">
+    <div class="blog-hero__inner">
+      <p class="blog-hero__tagline">BLOG POWERHOUSE</p>
+      <h1 class="blog-hero__title">CONOCIMIENTO QUE<br />TRANSFORMA</h1>
+      <p class="blog-hero__subtitle">Entrenamiento · Nutrición · Motivación · Suplementación</p>
+    </div>
+  </section>
+
+  <!-- CATEGORY FILTER -->
+  <section class="blog-filter">
+    <div class="blog-filter__inner">
+      <button class="blog-filter__btn blog-filter__btn--active" data-category="all">Todos</button>
+      {categories.map((cat) => (
+        <button class="blog-filter__btn" data-category={cat}>{cat}</button>
+      ))}
+    </div>
+  </section>
+
+  <!-- POST GRID -->
+  <section class="blog-grid">
+    <div class="blog-grid__inner">
+      {posts.map((post) => (
+        <a href={`/blog/${post.data.slug}`} class="blog-card" data-category={post.data.category}>
+          <div class="blog-card__image">
+            {post.data.featuredImage ? (
+              <img src={post.data.featuredImage} alt={post.data.title} loading="lazy" />
+            ) : (
+              <div class="blog-card__placeholder"></div>
+            )}
+            <span class="blog-card__badge">{post.data.category}</span>
+          </div>
+          <div class="blog-card__body">
+            <time class="blog-card__date" datetime={post.data.date}>
+              {new Date(post.data.date).toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" })}
+            </time>
+            <h2 class="blog-card__title">{post.data.title}</h2>
+            <p class="blog-card__excerpt">
+              {post.data.excerpt || `Descubre más sobre ${post.data.title.toLowerCase()} en el blog de PowerHouse Gym.`}
+            </p>
+            <span class="blog-card__link">Leer más →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .blog-hero {
+    padding: 10rem 1.5rem 4rem;
+    background: var(--brand-black);
+    text-align: center;
+  }
+  .blog-hero__inner {
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+  .blog-hero__tagline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: 1.25rem;
+  }
+  .blog-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 0.95;
+    color: var(--brand-white);
+    margin-bottom: 1.25rem;
+  }
+  .blog-hero__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.5);
+    letter-spacing: 0.1em;
+  }
+
+  /* FILTER */
+  .blog-filter {
+    padding: 2rem 1.5rem;
+    background: #050505;
+    border-bottom: 1px solid rgba(232, 200, 50, 0.08);
+  }
+  .blog-filter__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .blog-filter__btn {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: transparent;
+    border: 1px solid rgba(232, 200, 50, 0.15);
+    padding: 0.5rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .blog-filter__btn:hover,
+  .blog-filter__btn--active {
+    color: var(--brand-black);
+    background: var(--brand-gold);
+    border-color: var(--brand-gold);
+  }
+
+  /* GRID */
+  .blog-grid {
+    padding: 4rem 1.5rem 6rem;
+    background: #050505;
+  }
+  .blog-grid__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  /* CARD */
+  .blog-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(232, 200, 50, 0.08);
+    overflow: hidden;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .blog-card:hover {
+    border-color: rgba(232, 200, 50, 0.25);
+    transform: translateY(-4px);
+  }
+  .blog-card__image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #111;
+  }
+  .blog-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .blog-card:hover .blog-card__image img {
+    transform: scale(1.05);
+  }
+  .blog-card__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a1a, #222);
+  }
+  .blog-card__badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: rgba(10, 10, 10, 0.85);
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(232, 200, 50, 0.3);
+  }
+  .blog-card__body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .blog-card__date {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(240, 237, 232, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .blog-card__title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--brand-white);
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .blog-card__excerpt {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(240, 237, 232, 0.5);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .blog-card__link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: opacity 0.3s;
+  }
+  .blog-card:hover .blog-card__link {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-grid__inner { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .blog-grid__inner { grid-template-columns: 1fr; }
+    .blog-hero__title { font-size: clamp(2rem, 10vw, 3.5rem); }
+  }
+</style>
+
+<script>
+  // Client-side category filter
+  const buttons = document.querySelectorAll('.blog-filter__btn');
+  const cards = document.querySelectorAll('.blog-card');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+
+      // Update active button
+      buttons.forEach((b) => b.classList.remove('blog-filter__btn--active'));
+      btn.classList.add('blog-filter__btn--active');
+
+      // Filter cards
+      cards.forEach((card) => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          (card as HTMLElement).style.display = '';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

@@ -1,0 +1,477 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  seoTitle="Planes y Membresías | PowerHouse Gym Manizales"
+  description="Planes de membresía desde $69.900 COP/mes. Sin contratos, entrenamiento semi-personalizado incluido. Gimnasio PowerHouse en Manizales."
+>
+  <!-- HERO -->
+  <section class="planes-hero">
+    <div class="planes-hero__inner">
+      <p class="planes-hero__tagline">MEMBRESÍAS</p>
+      <h1 class="planes-hero__title">ELIGE TU PLAN</h1>
+      <p class="planes-hero__subtitle">Sin contratos a largo plazo · Cancela cuando quieras · Entrenamiento semi-personalizado incluido</p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing">
+    <div class="pricing__inner">
+      <div class="pricing__grid">
+        <!-- MENSUAL -->
+        <div class="pricing__card">
+          <div class="pricing__card-header">
+            <h3 class="pricing__card-name">MENSUAL</h3>
+            <div class="pricing__card-price">
+              <span class="pricing__card-currency">$</span>
+              <span class="pricing__card-amount">69.900</span>
+              <span class="pricing__card-period">COP/mes</span>
+            </div>
+          </div>
+          <ul class="pricing__card-features">
+            <li>✓ Acceso completo al gimnasio</li>
+            <li>✓ Entrenamiento semi-personalizado</li>
+            <li>✓ Todas las áreas de entrenamiento</li>
+            <li>✓ Horarios extendidos 5am–10pm</li>
+            <li>✓ Sin contrato a largo plazo</li>
+          </ul>
+          <a href="#signup-form" class="pricing__card-cta">INSCRIBIRME</a>
+        </div>
+
+        <!-- TRIMESTRAL -->
+        <div class="pricing__card pricing__card--popular">
+          <div class="pricing__card-badge">POPULAR</div>
+          <div class="pricing__card-header">
+            <h3 class="pricing__card-name">TRIMESTRAL</h3>
+            <div class="pricing__card-price">
+              <span class="pricing__card-currency">$</span>
+              <span class="pricing__card-amount">59.900</span>
+              <span class="pricing__card-period">COP/mes</span>
+            </div>
+            <p class="pricing__card-billing">Facturado $179.700 cada 3 meses</p>
+          </div>
+          <ul class="pricing__card-features">
+            <li>✓ Acceso completo al gimnasio</li>
+            <li>✓ Entrenamiento semi-personalizado</li>
+            <li>✓ Todas las áreas de entrenamiento</li>
+            <li>✓ Horarios extendidos 5am–10pm</li>
+            <li>✓ Planificación nutricional básica</li>
+            <li>✓ Sin contrato a largo plazo</li>
+          </ul>
+          <a href="#signup-form" class="pricing__card-cta pricing__card-cta--gold">INSCRIBIRME</a>
+        </div>
+
+        <!-- ANUAL -->
+        <div class="pricing__card">
+          <div class="pricing__card-header">
+            <h3 class="pricing__card-name">ANUAL</h3>
+            <div class="pricing__card-price">
+              <span class="pricing__card-currency">$</span>
+              <span class="pricing__card-amount">51.666</span>
+              <span class="pricing__card-period">COP/mes</span>
+            </div>
+            <p class="pricing__card-billing">Facturado $620.000 una vez al año</p>
+          </div>
+          <ul class="pricing__card-features">
+            <li>✓ Acceso completo al gimnasio</li>
+            <li>✓ Entrenamiento semi-personalizado</li>
+            <li>✓ Todas las áreas de entrenamiento</li>
+            <li>✓ Horarios extendidos 5am–10pm</li>
+            <li>✓ Planificación nutricional completa</li>
+            <li>✓ Seguimiento mensual de progreso</li>
+            <li>✓ 2 sesiones de asesoría personalizada</li>
+          </ul>
+          <a href="#signup-form" class="pricing__card-cta">INSCRIBIRME</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNUP FORM -->
+  <section class="signup" id="signup-form">
+    <div class="signup__inner">
+      <h2 class="section-title">INSCRIBIRME</h2>
+      <p class="signup__subtitle">Completa el formulario y nos pondremos en contacto contigo</p>
+      <form class="signup__form" id="contact-form">
+        <div class="signup__form-row">
+          <div class="signup__form-group">
+            <label for="name" class="signup__label">Nombre completo *</label>
+            <input type="text" id="name" name="name" required placeholder="Tu nombre" class="signup__input" />
+          </div>
+          <div class="signup__form-group">
+            <label for="phone" class="signup__label">Teléfono *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="+57 300 000 0000" class="signup__input" />
+          </div>
+        </div>
+        <div class="signup__form-row">
+          <div class="signup__form-group">
+            <label for="email" class="signup__label">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="tu@email.com" class="signup__input" />
+          </div>
+          <div class="signup__form-group">
+            <label for="plan" class="signup__label">Plan de interés</label>
+            <select id="plan" name="plan" class="signup__input signup__select">
+              <option value="">Selecciona un plan</option>
+              <option value="Mensual">Mensual — $69.900/mes</option>
+              <option value="Trimestral">Trimestral — $59.900/mes</option>
+              <option value="Anual">Anual — $51.666/mes</option>
+            </select>
+          </div>
+        </div>
+        <div class="signup__form-group">
+          <label for="message" class="signup__label">Mensaje</label>
+          <textarea id="message" name="message" rows="4" placeholder="Cuéntanos sobre tus objetivos de entrenamiento..." class="signup__input signup__textarea"></textarea>
+        </div>
+        <button type="submit" class="signup__submit">ENVIAR</button>
+        <p class="signup__disclaimer">Al enviar este formulario, aceptas nuestros <a href="/terminos">Términos y Condiciones</a> y <a href="/privacidad">Política de Privacidad</a>.</p>
+      </form>
+      <div class="signup__success" id="form-success" style="display:none;">
+        <h3>¡MENSAJE ENVIADO!</h3>
+        <p>Nos pondremos en contacto contigo pronto.</p>
+        <a href="https://wa.me/573154711900" class="signup__whatsapp" target="_blank" rel="noopener">O escríbenos directamente por WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HORARIOS -->
+  <section class="hours">
+    <div class="hours__inner">
+      <h2 class="section-title">HORARIOS</h2>
+      <div class="hours__grid">
+        <div class="hours__card">
+          <h3 class="hours__card-title">LUNES A VIERNES</h3>
+          <p class="hours__card-time">5:00 AM — 10:00 PM</p>
+        </div>
+        <div class="hours__card">
+          <h3 class="hours__card-title">SÁBADOS Y DOMINGOS</h3>
+          <p class="hours__card-time">9:00 AM — 2:00 PM</p>
+        </div>
+      </div>
+      <p class="hours__note">Ubicación: Parque de la Mujer, Avenida Santander, Manizales</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .planes-hero {
+    padding: 10rem 1.5rem 4rem;
+    background: var(--brand-black);
+    text-align: center;
+  }
+  .planes-hero__inner { max-width: 56rem; margin: 0 auto; }
+  .planes-hero__tagline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: 1.25rem;
+  }
+  .planes-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 0.95;
+    color: var(--brand-white);
+    margin-bottom: 1.25rem;
+  }
+  .planes-hero__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* PRICING */
+  .pricing {
+    padding: 5rem 1.5rem;
+    background: #050505;
+  }
+  .pricing__inner { max-width: 80rem; margin: 0 auto; }
+  .pricing__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    align-items: stretch;
+  }
+  .pricing__card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(232, 200, 50, 0.1);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pricing__card:hover {
+    border-color: rgba(232, 200, 50, 0.3);
+    transform: translateY(-4px);
+  }
+  .pricing__card--popular {
+    border-color: var(--brand-gold);
+    background: rgba(232, 200, 50, 0.03);
+  }
+  .pricing__card-badge {
+    position: absolute;
+    top: -1px;
+    right: 2rem;
+    background: var(--brand-gold);
+    color: var(--brand-black);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+  }
+  .pricing__card-header { margin-bottom: 2rem; }
+  .pricing__card-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .pricing__card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .pricing__card-currency {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: rgba(240, 237, 232, 0.6);
+  }
+  .pricing__card-amount {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--brand-white);
+    line-height: 1;
+  }
+  .pricing__card-period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(240, 237, 232, 0.4);
+  }
+  .pricing__card-billing {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.35);
+  }
+  .pricing__card-features {
+    list-style: none;
+    flex: 1;
+    margin-bottom: 2rem;
+  }
+  .pricing__card-features li {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: rgba(240, 237, 232, 0.65);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+  .pricing__card-cta {
+    display: block;
+    text-align: center;
+    background: transparent;
+    color: var(--brand-gold);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    padding: 0.85rem;
+    text-transform: uppercase;
+    border: 1px solid var(--brand-gold);
+    transition: all 0.3s;
+  }
+  .pricing__card-cta:hover {
+    background: var(--brand-gold);
+    color: var(--brand-black);
+  }
+  .pricing__card-cta--gold {
+    background: var(--brand-gold);
+    color: var(--brand-black);
+  }
+  .pricing__card-cta--gold:hover {
+    background: var(--brand-white);
+    border-color: var(--brand-white);
+  }
+
+  /* SIGNUP FORM */
+  .signup {
+    padding: 6rem 1.5rem;
+    background: var(--brand-black);
+  }
+  .signup__inner { max-width: 40rem; margin: 0 auto; text-align: center; }
+  .signup__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.5);
+    margin-top: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .signup__form { text-align: left; }
+  .signup__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .signup__form-group { margin-bottom: 1.25rem; }
+  .signup__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .signup__input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(232, 200, 50, 0.15);
+    color: var(--brand-white);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+  .signup__input::placeholder { color: rgba(240, 237, 232, 0.25); }
+  .signup__input:focus { border-color: var(--brand-gold); }
+  .signup__select { appearance: none; cursor: pointer; }
+  .signup__textarea { resize: vertical; min-height: 6rem; }
+  .signup__submit {
+    width: 100%;
+    background: var(--brand-gold);
+    color: var(--brand-black);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    padding: 1rem;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+  }
+  .signup__submit:hover { background: var(--brand-white); }
+  .signup__disclaimer {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(240, 237, 232, 0.3);
+    text-align: center;
+    margin-top: 1.25rem;
+  }
+  .signup__disclaimer a { color: var(--brand-gold); text-decoration: underline; }
+  .signup__success {
+    text-align: center;
+    padding: 3rem;
+  }
+  .signup__success h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--brand-gold);
+    margin-bottom: 1rem;
+  }
+  .signup__success p {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(240, 237, 232, 0.6);
+    margin-bottom: 1.5rem;
+  }
+  .signup__whatsapp {
+    display: inline-block;
+    background: #25D366;
+    color: white;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.75rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: opacity 0.3s;
+  }
+  .signup__whatsapp:hover { opacity: 0.85; }
+
+  /* HOURS */
+  .hours {
+    padding: 5rem 1.5rem;
+    background: #050505;
+    text-align: center;
+  }
+  .hours__inner { max-width: 48rem; margin: 0 auto; }
+  .hours__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  .hours__card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(232, 200, 50, 0.1);
+    padding: 2rem;
+  }
+  .hours__card-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .hours__card-time {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--brand-white);
+  }
+  .hours__note {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: rgba(240, 237, 232, 0.4);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .pricing__grid { grid-template-columns: 1fr; }
+    .signup__form-row { grid-template-columns: 1fr; }
+    .hours__grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const success = document.getElementById('form-success') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email'),
+      plan: formData.get('plan'),
+      message: formData.get('message'),
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        // Fallback: redirect to WhatsApp
+        const text = encodeURIComponent(`Hola PowerHouse! Soy ${data.name}. Teléfono: ${data.phone}. Plan: ${data.plan || 'No especificado'}. ${data.message || ''}`);
+        window.location.href = `https://wa.me/573154711900?text=${text}`;
+      }
+    } catch {
+      // Network error: redirect to WhatsApp
+      const text = encodeURIComponent(`Hola PowerHouse! Soy ${data.name}. Teléfono: ${data.phone}. ${data.message || ''}`);
+      window.location.href = `https://wa.me/573154711900?text=${text}`;
+    }
+  });
+</script>

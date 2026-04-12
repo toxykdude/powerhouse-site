@@ -1,0 +1,310 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  seoTitle="Contacto | PowerHouse Gym Manizales"
+  description="Contáctanos: Parque de la Mujer, Avenida Santander, Manizales. WhatsApp +57 315 471 1900. Horarios Lun-Vie 5am-10pm, Sáb-Dom 9am-2pm."
+>
+  <!-- HERO -->
+  <section class="contacto-hero">
+    <div class="contacto-hero__inner">
+      <p class="contacto-hero__tagline">CONTÁCTANOS</p>
+      <h1 class="contacto-hero__title">HABLEMOS</h1>
+      <p class="contacto-hero__subtitle">Estamos para ayudarte a alcanzar tus metas</p>
+    </div>
+  </section>
+
+  <!-- CONTACT GRID -->
+  <section class="contacto-grid">
+    <div class="contacto-grid__inner">
+      <!-- INFO -->
+      <div class="contacto-info">
+        <div class="contacto-info__card">
+          <h3 class="contacto-info__title">UBICACIÓN</h3>
+          <p class="contacto-info__text">Parque de la Mujer, Avenida Santander</p>
+          <p class="contacto-info__text">Manizales, Caldas, Colombia</p>
+          <a href="https://maps.google.com/?q=5.0649845,-75.4998569" class="contacto-info__link" target="_blank" rel="noopener">VER EN GOOGLE MAPS →</a>
+        </div>
+        <div class="contacto-info__card">
+          <h3 class="contacto-info__title">TELÉFONO / WHATSAPP</h3>
+          <a href="https://wa.me/573154711900" class="contacto-info__link" target="_blank" rel="noopener">+57 315 471 1900</a>
+          <p class="contacto-info__note">Respuesta rápida por WhatsApp</p>
+        </div>
+        <div class="contacto-info__card">
+          <h3 class="contacto-info__title">CORREO ELECTRÓNICO</h3>
+          <a href="mailto:gerencia@powerhousegym.co" class="contacto-info__link">gerencia@powerhousegym.co</a>
+        </div>
+        <div class="contacto-info__card">
+          <h3 class="contacto-info__title">HORARIOS</h3>
+          <p class="contacto-info__text">Lunes a Viernes: 5:00 AM — 10:00 PM</p>
+          <p class="contacto-info__text">Sábados y Domingos: 9:00 AM — 2:00 PM</p>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="contacto-form">
+        <h2 class="section-title">ENVÍANOS UN MENSAJE</h2>
+        <form id="contact-form" class="contacto-form__form">
+          <div class="contacto-form__group">
+            <label for="name" class="contacto-form__label">Nombre completo *</label>
+            <input type="text" id="name" name="name" required placeholder="Tu nombre" class="contacto-form__input" />
+          </div>
+          <div class="contacto-form__group">
+            <label for="phone" class="contacto-form__label">Teléfono *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="+57 300 000 0000" class="contacto-form__input" />
+          </div>
+          <div class="contacto-form__group">
+            <label for="email" class="contacto-form__label">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="tu@email.com" class="contacto-form__input" />
+          </div>
+          <div class="contacto-form__group">
+            <label for="plan" class="contacto-form__label">Plan de interés</label>
+            <select id="plan" name="plan" class="contacto-form__input contacto-form__select">
+              <option value="">Selecciona un plan</option>
+              <option value="Mensual">Mensual — $69.900/mes</option>
+              <option value="Trimestral">Trimestral — $59.900/mes</option>
+              <option value="Anual">Anual — $51.666/mes</option>
+            </select>
+          </div>
+          <div class="contacto-form__group">
+            <label for="message" class="contacto-form__label">Mensaje *</label>
+            <textarea id="message" name="message" rows="5" required placeholder="Cuéntanos en qué podemos ayudarte..." class="contacto-form__input contacto-form__textarea"></textarea>
+          </div>
+          <button type="submit" class="contacto-form__submit">ENVIAR MENSAJE</button>
+          <p class="contacto-form__note">O escríbenos directamente por <a href="https://wa.me/573154711900" target="_blank" rel="noopener">WhatsApp</a></p>
+        </form>
+        <div class="contacto-form__success" id="form-success" style="display:none;">
+          <h3>¡MENSAJE ENVIADO!</h3>
+          <p>Nos pondremos en contacto contigo pronto.</p>
+          <a href="https://wa.me/573154711900" class="contacto-form__whatsapp" target="_blank" rel="noopener">ESCRÍBENOS POR WHATSAPP</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP EMBED -->
+  <section class="contacto-map">
+    <div class="contacto-map__inner">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.7!2d-75.4998569!3d5.0649845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNMKwMDMnMjEuOSJOIDc1wrAyOSc5OS41Ilc!5e0!3m2!1ses!2sco!4v1"
+        width="100%"
+        height="400"
+        style="border:0; filter: grayscale(1) invert(1) contrast(0.85) brightness(0.7);"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación PowerHouse Gym Manizales"
+      ></iframe>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .contacto-hero {
+    padding: 10rem 1.5rem 4rem;
+    background: var(--brand-black);
+    text-align: center;
+  }
+  .contacto-hero__inner { max-width: 56rem; margin: 0 auto; }
+  .contacto-hero__tagline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: 1.25rem;
+  }
+  .contacto-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 0.95;
+    color: var(--brand-white);
+    margin-bottom: 1.25rem;
+  }
+  .contacto-hero__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(240, 237, 232, 0.5);
+  }
+
+  /* GRID */
+  .contacto-grid {
+    padding: 5rem 1.5rem;
+    background: #050505;
+  }
+  .contacto-grid__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  /* INFO */
+  .contacto-info { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contacto-info__card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(232, 200, 50, 0.1);
+    padding: 1.5rem;
+  }
+  .contacto-info__title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  .contacto-info__text {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.6);
+    line-height: 1.6;
+  }
+  .contacto-info__link {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--brand-gold);
+    transition: opacity 0.3s;
+  }
+  .contacto-info__link:hover { opacity: 0.7; }
+  .contacto-info__note {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.35);
+    margin-top: 0.5rem;
+  }
+
+  /* FORM */
+  .contacto-form { text-align: center; }
+  .contacto-form__form { text-align: left; margin-top: 2rem; }
+  .contacto-form__group { margin-bottom: 1.25rem; }
+  .contacto-form__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .contacto-form__input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(232, 200, 50, 0.15);
+    color: var(--brand-white);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+  .contacto-form__input::placeholder { color: rgba(240, 237, 232, 0.25); }
+  .contacto-form__input:focus { border-color: var(--brand-gold); }
+  .contacto-form__select { appearance: none; cursor: pointer; }
+  .contacto-form__textarea { resize: vertical; min-height: 6rem; }
+  .contacto-form__submit {
+    width: 100%;
+    background: var(--brand-gold);
+    color: var(--brand-black);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    padding: 1rem;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+  }
+  .contacto-form__submit:hover { background: var(--brand-white); }
+  .contacto-form__note {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(240, 237, 232, 0.35);
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .contacto-form__note a { color: var(--brand-gold); text-decoration: underline; }
+  .contacto-form__success {
+    text-align: center;
+    padding: 3rem;
+  }
+  .contacto-form__success h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--brand-gold);
+    margin-bottom: 1rem;
+  }
+  .contacto-form__success p {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(240, 237, 232, 0.6);
+    margin-bottom: 1.5rem;
+  }
+  .contacto-form__whatsapp {
+    display: inline-block;
+    background: #25D366;
+    color: white;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.75rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: opacity 0.3s;
+  }
+  .contacto-form__whatsapp:hover { opacity: 0.85; }
+
+  /* MAP */
+  .contacto-map {
+    background: #050505;
+    border-top: 1px solid rgba(232, 200, 50, 0.08);
+  }
+  .contacto-map__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .contacto-grid__inner { grid-template-columns: 1fr; gap: 2rem; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const success = document.getElementById('form-success') as HTMLDivElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email'),
+      plan: formData.get('plan'),
+      message: formData.get('message'),
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        const text = encodeURIComponent(`Hola PowerHouse! Soy ${data.name}. Teléfono: ${data.phone}. ${data.message || ''}`);
+        window.location.href = `https://wa.me/573154711900?text=${text}`;
+      }
+    } catch {
+      const text = encodeURIComponent(`Hola PowerHouse! Soy ${data.name}. Teléfono: ${data.phone}. ${data.message || ''}`);
+      window.location.href = `https://wa.me/573154711900?text=${text}`;
+    }
+  });
+</script>

@@ -1,0 +1,275 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  seoTitle="Quiénes Somos | PowerHouse Gym Manizales"
+  description="Conoce la historia de PowerHouse Gym Manizales. Un gimnasio con propósito, disciplina y comunidad en el Parque de la Mujer."
+>
+  <!-- HERO -->
+  <section class="nosotros-hero">
+    <div class="nosotros-hero__inner">
+      <p class="nosotros-hero__tagline">NUESTRA HISTORIA</p>
+      <h1 class="nosotros-hero__title">QUIÉNES SOMOS</h1>
+      <p class="nosotros-hero__subtitle">Más que un gimnasio — el lugar donde forjas tu versión más fuerte</p>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story">
+    <div class="story__inner">
+      <div class="story__content">
+        <h2 class="section-title">NUESTRA MISIÓN</h2>
+        <p class="story__text">
+          En PowerHouse Gym Manizales creemos que el verdadero cambio no empieza con una membresía — empieza con la decisión de ser mejor cada día. Nuestra misión es crear un espacio donde la disciplina, la comunidad y el entrenamiento inteligente se unan para transformar vidas.
+        </p>
+        <p class="story__text">
+          Ubicados en el corazón de Manizales, en el Parque de la Mujer sobre la Avenida Santander, ofrecemos un equipamiento de primer nivel, instructores certificados y un ambiente que te motiva a dar lo mejor de ti en cada sesión.
+        </p>
+        <p class="story__text">
+          No somos un gimnasio de contratos ataduras ni de promesas vacías. Creemos en la transparencia, en la flexibilidad y en los resultados reales que se construyen con consistencia y dedicación.
+        </p>
+      </div>
+      <div class="story__image">
+        <div class="story__image-placeholder">
+          <span>POWERHOUSE GYM<br />MANIZALES</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values">
+    <div class="values__inner">
+      <h2 class="section-title">NUESTROS VALORES</h2>
+      <div class="values__grid">
+        <div class="values__card">
+          <h3 class="values__card-title">DISCIPLINA</h3>
+          <p class="values__card-text">La motivación te empieza, la disciplina te mantiene. En PowerHouse cultivamos la consistencia como base de todo progreso real.</p>
+        </div>
+        <div class="values__card">
+          <h3 class="values__card-title">COMUNIDAD</h3>
+          <p class="values__card-text">No entrenas solo. Somos una comunidad que se apoya, se motiva y crece junta. Tu éxito es nuestro éxito.</p>
+        </div>
+        <div class="values__card">
+          <h3 class="values__card-title">TRANSPARENCIA</h3>
+          <p class="values__card-text">Sin contratos engañosos, sin costos ocultos, sin letras pequeñas. Lo que ves es lo que obtienes.</p>
+        </div>
+        <div class="values__card">
+          <h3 class="values__card-title">RESULTADOS</h3>
+          <p class="values__card-text">Entrenamiento basado en ciencia, no en modas. Progresión inteligente con seguimiento real de tus avances.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats__inner">
+      <div class="stats__grid">
+        <div class="stats__item">
+          <span class="stats__number">5AM</span>
+          <span class="stats__label">APERTURA DIARIA</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__number">7</span>
+          <span class="stats__label">DÍAS POR SEMANA</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__number">0</span>
+          <span class="stats__label">CONTRATOS</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__number">100%</span>
+          <span class="stats__label">COMPROMISO</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="nosotros-cta">
+    <div class="nosotros-cta__inner">
+      <h2 class="section-title">¿LISTO PARA EMPEZAR?</h2>
+      <p class="nosotros-cta__text">Conoce nuestros planes y encuentra el que mejor se adapte a tus objetivos.</p>
+      <a href="/planes" class="nosotros-cta__button">VER PLANES</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .nosotros-hero {
+    padding: 10rem 1.5rem 4rem;
+    background: var(--brand-black);
+    text-align: center;
+  }
+  .nosotros-hero__inner { max-width: 56rem; margin: 0 auto; }
+  .nosotros-hero__tagline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: 1.25rem;
+  }
+  .nosotros-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 0.95;
+    color: var(--brand-white);
+    margin-bottom: 1.25rem;
+  }
+  .nosotros-hero__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(240, 237, 232, 0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* STORY */
+  .story {
+    padding: 6rem 1.5rem;
+    background: #050505;
+  }
+  .story__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .story__text {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: rgba(240, 237, 232, 0.65);
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+  }
+  .story__image-placeholder {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
+    border: 1px solid rgba(232, 200, 50, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .story__image-placeholder span {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: rgba(232, 200, 50, 0.3);
+    letter-spacing: 0.2em;
+    line-height: 1.4;
+  }
+
+  /* VALUES */
+  .values {
+    padding: 6rem 1.5rem;
+    background: var(--brand-black);
+  }
+  .values__inner { max-width: 80rem; margin: 0 auto; text-align: center; }
+  .values__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .values__card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(232, 200, 50, 0.1);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .values__card:hover {
+    border-color: rgba(232, 200, 50, 0.3);
+    transform: translateY(-4px);
+  }
+  .values__card-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  .values__card-text {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(240, 237, 232, 0.55);
+    line-height: 1.7;
+  }
+
+  /* STATS */
+  .stats {
+    padding: 5rem 1.5rem;
+    background: #050505;
+  }
+  .stats__inner { max-width: 60rem; margin: 0 auto; }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    text-align: center;
+  }
+  .stats__item {
+    padding: 2rem;
+    border: 1px solid rgba(232, 200, 50, 0.1);
+  }
+  .stats__number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--brand-gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stats__label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(240, 237, 232, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  /* CTA */
+  .nosotros-cta {
+    padding: 6rem 1.5rem;
+    background: var(--brand-black);
+    text-align: center;
+  }
+  .nosotros-cta__inner { max-width: 40rem; margin: 0 auto; }
+  .nosotros-cta__text {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(240, 237, 232, 0.55);
+    margin-top: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .nosotros-cta__button {
+    display: inline-block;
+    background: var(--brand-gold);
+    color: var(--brand-black);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    padding: 1rem 3rem;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .nosotros-cta__button:hover {
+    background: var(--brand-white);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 1024px) {
+    .values__grid { grid-template-columns: repeat(2, 1fr); }
+    .stats__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .story__inner { grid-template-columns: 1fr; gap: 2rem; }
+    .values__grid { grid-template-columns: 1fr; }
+    .stats__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
