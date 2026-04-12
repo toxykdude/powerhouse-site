@@ -229,6 +229,9 @@ if (pathSegments.length > 0) {
 			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
 			rel="stylesheet"
 		/>
+
+		<!-- Slot for page-specific head content (scripts, meta, etc.) -->
+		<slot name="head" />
 	</head>
 	<body>
 		<div class="grain-overlay"></div>

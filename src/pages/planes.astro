@@ -4,49 +4,50 @@ import Base from "../layouts/Base.astro";
 const row1 = [
 	{
 		name: "Membresía Mensual",
+		planId: "mensual",
 		price: "69.900",
 		currency: "COP",
 		period: "/mes",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
-		cta_url: "https://checkout.wompi.co/l/qe2GMd",
 	},
 	{
 		name: "Power Pack",
+		planId: "power-pack",
 		price: "140.000",
 		currency: "COP",
 		period: "/mes",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual", "Asesoría en alimentación", "Servicio de proteína por entreno"],
 		is_featured: true,
 		cta_label: "PAGAR AHORA",
-		cta_url: "https://checkout.wompi.co/l/le4yA3",
 	},
 	{
 		name: "Plan Trimestral",
+		planId: "trimestral",
 		price: "186.000",
 		currency: "COP",
 		period: "/trimestre",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
-		cta_url: "https://checkout.wompi.co/l/r3twSU",
 	},
 ];
 
 const row2 = [
 	{
 		name: "Plan Semestral",
+		planId: "semestral",
 		price: "360.000",
 		currency: "COP",
 		period: "/semestre",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
-		cta_url: "https://checkout.wompi.co/l/fqIPpU",
 	},
 	{
 		name: "Plan Anual",
+		planId: "anual",
 		price: "620.000",
 		currency: "COP",
 		period: "/año",
@@ -54,7 +55,6 @@ const row2 = [
 		is_featured: true,
 		featured_variant: "annual",
 		cta_label: "PAGAR AHORA",
-		cta_url: "https://checkout.wompi.co/l/bMy0aE",
 	},
 ];
 
@@ -62,6 +62,10 @@ const plans = [...row1, ...row2];
 ---
 
 <Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $9.900 COP sin contrato ni permanencia. Mensual, quincenal y diario. Entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
+	<Fragment slot="head">
+		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
+	</Fragment>
+
 	<div class="planes-page">
 		<div class="planes-page__hero">
 			<span class="planes-page__tagline">Membresías</span>
@@ -92,14 +96,13 @@ const plans = [...row1, ...row2];
 								</li>
 							))}
 						</ul>
-						<a
-							href={plan.cta_url}
-							target="_blank"
-							rel="noopener noreferrer"
+						<button
+							data-plan-id={plan.planId}
+							type="button"
 							class={`plan-card__cta ${plan.is_featured ? "plan-card__cta--dark" : "plan-card__cta--gold"}`}
 						>
 							{plan.cta_label}
-						</a>
+						</button>
 					</div>
 				))}
 			</div>
@@ -126,14 +129,13 @@ const plans = [...row1, ...row2];
 								</li>
 							))}
 						</ul>
-						<a
-							href={plan.cta_url}
-							target="_blank"
-							rel="noopener noreferrer"
+						<button
+							data-plan-id={plan.planId}
+							type="button"
 							class={`plan-card__cta ${plan.featured_variant === "annual" ? "plan-card__cta--gold" : plan.is_featured ? "plan-card__cta--dark" : "plan-card__cta--gold"}`}
 						>
 							{plan.cta_label}
-						</a>
+						</button>
 					</div>
 				))}
 			</div>
@@ -547,6 +549,7 @@ const plans = [...row1, ...row2];
 </style>
 
 <script>
+	// WhatsApp signup form handler
 	document.getElementById('signupForm')?.addEventListener('submit', (e) => {
 		e.preventDefault();
 		const form = e.currentTarget as HTMLFormElement;
@@ -556,5 +559,84 @@ const plans = [...row1, ...row2];
 		const message = (form.querySelector('#signup-message') as HTMLTextAreaElement).value.trim();
 		const text = encodeURIComponent(`Hola PowerHouse! Me interesa el ${plan}. Mi nombre es ${name}.${message ? ' ' + message : ''}`);
 		window.open(`https://wa.me/573154711900?text=${text}`, '_blank');
+	});
+</script>
+
+<script>
+	// Wompi Widget payment handler
+	declare global {
+		interface Window {
+			WidgetCheckout: new (config: {
+				currency: string;
+				amountInCents: number;
+				reference: string;
+				publicKey: string;
+				signature: { integrity: string };
+				redirectUrl?: string;
+			}) => {
+				open: (callback: (result: { transaction: { id: string } }) => void) => void;
+			};
+		}
+	}
+
+	interface SignatureResponse {
+		reference: string;
+		signature: string;
+		amountInCents: number;
+		currency: string;
+		publicKey: string;
+		planName: string;
+	}
+
+	document.querySelectorAll<HTMLButtonElement>('[data-plan-id]').forEach((button) => {
+		button.addEventListener('click', async () => {
+			const planId = button.dataset.planId;
+			if (!planId) return;
+
+			const originalLabel = button.textContent || 'PAGAR AHORA';
+			button.disabled = true;
+			button.textContent = 'PROCESANDO...';
+
+			try {
+				const response = await fetch('/api/payment/signature', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ plan: planId }),
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.error || 'Error al procesar el pago');
+				}
+
+				const data: SignatureResponse = await response.json();
+
+				const WidgetCheckout = window.WidgetCheckout;
+				if (!WidgetCheckout) {
+					throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
+				}
+
+				const checkout = new WidgetCheckout({
+					currency: data.currency,
+					amountInCents: data.amountInCents,
+					reference: data.reference,
+					publicKey: data.publicKey,
+					signature: { integrity: data.signature },
+					redirectUrl: 'https://powerhousegym.co/pago/confirmacion',
+				});
+
+				checkout.open((result) => {
+					const tx = result.transaction;
+					if (tx?.id) {
+						window.location.href = '/pago/confirmacion?id=' + tx.id;
+					}
+				});
+			} catch (err) {
+				const message = err instanceof Error ? err.message : 'Error desconocido';
+				alert(message);
+				button.disabled = false;
+				button.textContent = originalLabel;
+			}
+		});
 	});
 </script>

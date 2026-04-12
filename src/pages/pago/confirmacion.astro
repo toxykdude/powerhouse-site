@@ -1,0 +1,418 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Confirmación de Pago" description="Verifica el estado de tu pago en PowerHouse Gym Manizales">
+	<div class="confirm-page">
+		<div class="confirm-card" id="confirmCard">
+			<!-- Loading state (default) -->
+			<div class="confirm-state" id="stateLoading">
+				<div class="confirm-spinner">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+					</svg>
+				</div>
+				<h2>VERIFICANDO TU PAGO</h2>
+				<p>Un momento, estamos consultando el estado de tu transacción...</p>
+			</div>
+
+			<!-- Success state -->
+			<div class="confirm-state confirm-state--hidden" id="stateApproved">
+				<div class="confirm-icon confirm-icon--success">
+					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="20 6 9 17 4 12"/>
+					</svg>
+				</div>
+				<h2>¡PAGO EXITOSO!</h2>
+				<p class="confirm-subtitle">Tu membresía está activa</p>
+				<div class="confirm-details" id="approvedDetails"></div>
+				<a href="/" class="confirm-btn confirm-btn--gold">VOLVER AL INICIO</a>
+			</div>
+
+			<!-- Pending state -->
+			<div class="confirm-state confirm-state--hidden" id="statePending">
+				<div class="confirm-icon confirm-icon--pending">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="10"/>
+						<polyline points="12 6 12 12 16 14"/>
+					</svg>
+				</div>
+				<h2>PAGO EN PROCESO</h2>
+				<p>Tu pago está siendo verificado. Esta página se actualizará automáticamente.</p>
+				<div class="confirm-details" id="pendingDetails"></div>
+				<button class="confirm-btn confirm-btn--outline" id="refreshBtn">VERIFICAR DE NUEVO</button>
+			</div>
+
+			<!-- Declined/Error state -->
+			<div class="confirm-state confirm-state--hidden" id="stateDeclined">
+				<div class="confirm-icon confirm-icon--error">
+					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="18" y1="6" x2="6" y2="18"/>
+						<line x1="6" y1="6" x2="18" y2="18"/>
+					</svg>
+				</div>
+				<h2>PAGO RECHAZADO</h2>
+				<p id="declinedMessage">No pudimos procesar tu pago. Intenta con otro método de pago o contáctanos para ayuda.</p>
+				<a href="/planes" class="confirm-btn confirm-btn--gold">VER PLANES</a>
+				<a href="https://wa.me/573154711900?text=Hola%20PowerHouse!%20Tuve%20un%20problema%20con%20mi%20pago%20en%20la%20web." target="_blank" rel="noopener noreferrer" class="confirm-btn confirm-btn--outline">
+					CONTACTAR POR WHATSAPP
+				</a>
+			</div>
+
+			<!-- Not found / error state -->
+			<div class="confirm-state confirm-state--hidden" id="stateError">
+				<div class="confirm-icon confirm-icon--error">
+					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="10"/>
+						<line x1="12" y1="8" x2="12" y2="12"/>
+						<line x1="12" y1="16" x2="12.01" y2="16"/>
+					</svg>
+				</div>
+				<h2 id="errorTitle">TRANSACCIÓN NO ENCONTRADA</h2>
+				<p id="errorMessage">No encontramos información sobre esta transacción. Verifica el enlace o contáctanos.</p>
+				<a href="/planes" class="confirm-btn confirm-btn--gold">VER PLANES</a>
+				<a href="https://wa.me/573154711900?text=Hola%20PowerHouse!%20Tengo%20una%20duda%20sobre%20mi%20pago." target="_blank" rel="noopener noreferrer" class="confirm-btn confirm-btn--outline">
+					CONTACTAR POR WHATSAPP
+				</a>
+			</div>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.confirm-page {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10rem 1.5rem 4rem;
+		background: var(--brand-black);
+	}
+
+	.confirm-card {
+		max-width: 32rem;
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 3rem;
+		text-align: center;
+	}
+
+	.confirm-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.confirm-state--hidden {
+		display: none !important;
+	}
+
+	.confirm-state h2 {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2.5rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+	}
+
+	.confirm-state p {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.6;
+		max-width: 24rem;
+	}
+
+	.confirm-subtitle {
+		color: var(--brand-gold) !important;
+		font-size: 1rem !important;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.confirm-spinner svg {
+		animation: spin 1s linear infinite;
+		color: var(--brand-gold);
+	}
+
+	.confirm-icon {
+		width: 6rem;
+		height: 6rem;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 0.5rem;
+	}
+
+	.confirm-icon--success {
+		background: rgba(46, 204, 113, 0.15);
+		border: 2px solid #2ecc71;
+		color: #2ecc71;
+	}
+
+	.confirm-icon--pending {
+		background: rgba(232, 200, 50, 0.15);
+		border: 2px solid var(--brand-gold);
+		color: var(--brand-gold);
+		animation: pulseSlow 2s ease-in-out infinite;
+	}
+
+	.confirm-icon--error {
+		background: rgba(192, 57, 43, 0.15);
+		border: 2px solid var(--brand-red);
+		color: var(--brand-red);
+	}
+
+	.confirm-details {
+		width: 100%;
+		background: var(--brand-black);
+		border: 1px solid rgba(232, 200, 50, 0.1);
+		padding: 1.5rem;
+		margin: 1rem 0;
+		text-align: left;
+	}
+
+	.confirm-details__row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.05);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+	}
+
+	.confirm-details__row:last-child {
+		border-bottom: none;
+	}
+
+	.confirm-details__label {
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.confirm-details__value {
+		color: var(--brand-gold);
+		font-weight: 700;
+	}
+
+	.confirm-details__amount {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+	}
+
+	.confirm-btn {
+		display: block;
+		width: 100%;
+		padding: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+		margin-top: 0.5rem;
+	}
+
+	.confirm-btn--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.confirm-btn--gold:hover {
+		background: var(--brand-white);
+	}
+
+	.confirm-btn--outline {
+		background: transparent;
+		color: var(--brand-gold);
+		border: 2px solid var(--brand-gold);
+	}
+
+	.confirm-btn--outline:hover {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	@media (max-width: 768px) {
+		.confirm-page {
+			padding: 8rem 1rem 3rem;
+		}
+
+		.confirm-card {
+			padding: 2rem;
+		}
+	}
+</style>
+
+<script>
+interface TransactionStatus {
+	id: string;
+	status: string;
+	amount_in_cents: number;
+	currency: string;
+	reference: string;
+	customer_email: string | null;
+	customer_name: string | null;
+	payment_method_type: string | null;
+	payment_method_detail: string | null;
+	created_at: string;
+}
+
+function formatCOP(amountInCents: number): string {
+	const pesos = amountInCents / 100;
+	return new Intl.NumberFormat('es-CO', {
+		style: 'currency',
+		currency: 'COP',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(pesos);
+}
+
+function formatDate(isoString: string): string {
+	return new Date(isoString).toLocaleString('es-CO', {
+		dateStyle: 'long',
+		timeStyle: 'short',
+	});
+}
+
+function showState(stateId: string): void {
+	const states = ['stateLoading', 'stateApproved', 'statePending', 'stateDeclined', 'stateError'];
+	states.forEach((id) => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.classList.toggle('confirm-state--hidden', id !== stateId);
+		}
+	});
+}
+
+function renderDetails(containerId: string, tx: TransactionStatus): void {
+	const container = document.getElementById(containerId);
+	if (!container) return;
+
+	const methodLabel = tx.payment_method_type
+		? tx.payment_method_type.charAt(0).toUpperCase() + tx.payment_method_type.slice(1)
+		: 'No especificado';
+
+	container.innerHTML = `
+		<div class="confirm-details__row">
+			<span class="confirm-details__label">Referencia</span>
+			<span class="confirm-details__value">${tx.reference}</span>
+		</div>
+		<div class="confirm-details__row">
+			<span class="confirm-details__label">Monto</span>
+			<span class="confirm-details__value confirm-details__amount">${formatCOP(tx.amount_in_cents)}</span>
+		</div>
+		<div class="confirm-details__row">
+			<span class="confirm-details__label">Método de pago</span>
+			<span class="confirm-details__value">${methodLabel}</span>
+		</div>
+		<div class="confirm-details__row">
+			<span class="confirm-details__label">Fecha</span>
+			<span class="confirm-details__value">${formatDate(tx.created_at)}</span>
+		</div>
+		${tx.customer_email ? `
+		<div class="confirm-details__row">
+			<span class="confirm-details__label">Email</span>
+			<span class="confirm-details__value">${tx.customer_email}</span>
+		</div>` : ''}
+	`;
+}
+
+async function checkTransaction(transactionId: string): Promise<void> {
+	try {
+		const response = await fetch(`/api/payment/status?id=${encodeURIComponent(transactionId)}`);
+
+		if (!response.ok) {
+			const error = await response.json();
+			if (response.status === 404) {
+				showState('stateError');
+				const msgEl = document.getElementById('errorMessage');
+				if (msgEl) msgEl.textContent = error.error || 'Transacción no encontrada en Wompi.';
+			} else {
+				showState('stateError');
+				const titleEl = document.getElementById('errorTitle');
+				const msgEl = document.getElementById('errorMessage');
+				if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
+				if (msgEl) msgEl.textContent = error.error || 'No pudimos conectar con el proveedor de pagos. Intenta de nuevo.';
+			}
+			return;
+		}
+
+		const tx = (await response.json()) as TransactionStatus;
+
+		switch (tx.status) {
+			case 'APPROVED':
+				showState('stateApproved');
+				renderDetails('approvedDetails', tx);
+				break;
+			case 'PENDING':
+				showState('statePending');
+				renderDetails('pendingDetails', tx);
+				// Auto-refresh every 5 seconds for pending transactions
+				setTimeout(() => checkTransaction(transactionId), 5000);
+				break;
+			case 'DECLINED':
+				showState('stateDeclined');
+				break;
+			case 'VOIDED':
+				showState('stateDeclined');
+				const declinedMsg = document.getElementById('declinedMessage');
+				if (declinedMsg) declinedMsg.textContent = 'Esta transacción fue anulada. Si crees que es un error, contáctanos por WhatsApp.';
+				break;
+			case 'ERROR':
+				showState('stateDeclined');
+				const errorMsg = document.getElementById('declinedMessage');
+				if (errorMsg) errorMsg.textContent = 'Ocurrió un error procesando tu pago. Intenta nuevamente o usa otro método de pago.';
+				break;
+			default:
+				showState('stateError');
+				const defaultTitle = document.getElementById('errorTitle');
+				const defaultMsg = document.getElementById('errorMessage');
+				if (defaultTitle) defaultTitle.textContent = 'ESTADO DESCONOCIDO';
+				if (defaultMsg) defaultMsg.textContent = `Estado de la transacción: ${tx.status}. Contáctanos para más información.`;
+		}
+	} catch {
+		showState('stateError');
+		const titleEl = document.getElementById('errorTitle');
+		const msgEl = document.getElementById('errorMessage');
+		if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
+		if (msgEl) msgEl.textContent = 'No pudimos verificar tu pago. Revisa tu conexión a internet e intenta de nuevo.';
+	}
+}
+
+// Main execution
+const urlParams = new URLSearchParams(window.location.search);
+const transactionId = urlParams.get('id');
+
+if (!transactionId) {
+	showState('stateError');
+	const titleEl = document.getElementById('errorTitle');
+	const msgEl = document.getElementById('errorMessage');
+	if (titleEl) titleEl.textContent = 'SIN TRANSACCIÓN';
+	if (msgEl) msgEl.textContent = 'No se encontró un ID de transacción. Vuelve a intentarlo desde la página de planes.';
+} else {
+	checkTransaction(transactionId);
+}
+
+// Manual refresh button
+const refreshBtn = document.getElementById('refreshBtn');
+if (refreshBtn && transactionId) {
+	refreshBtn.addEventListener('click', () => {
+		showState('stateLoading');
+		checkTransaction(transactionId);
+	});
+}
+</script>
