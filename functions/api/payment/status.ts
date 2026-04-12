@@ -4,9 +4,8 @@
 
 interface Env {
 	WOMPI_PRIVATE_KEY: string;
+	WOMPI_API_URL: string;
 }
-
-const WOMPI_API_URL = 'https://production.wompi.co/v1/transactions';
 
 export async function onRequestGet({ request, env }: { request: Request; env: Env }) {
 	try {
@@ -28,7 +27,9 @@ export async function onRequestGet({ request, env }: { request: Request; env: En
 			);
 		}
 
-		const response = await fetch(`${WOMPI_API_URL}/${transactionId}`, {
+		const wompiApiUrl = (env.WOMPI_API_URL || 'https://production.wompi.co/v1').replace(/\/$/, '');
+
+		const response = await fetch(`${wompiApiUrl}/transactions/${transactionId}`, {
 			headers: {
 				Authorization: `Bearer ${env.WOMPI_PRIVATE_KEY}`,
 				'Content-Type': 'application/json',
