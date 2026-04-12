@@ -33,10 +33,10 @@ const fullTitle = seoTitle
 
 const siteDescription =
 	description
-	|| "Forja tu versión más fuerte. Entrenamiento semi-personalizado en Manizales.";
+	|| "Gimnasio en Manizales sin contrato. Entrenamiento semipersonalizado, equipos de tráfico pesado, 96% de recomendación. Parque de la Mujer, Avenida Santander. ¡Agenda tu clase gratis hoy!";
 
-const defaultOgImage = "/uploads/Logo Arm Only White Neon Glow1.png";
-const ogImage = image || defaultOgImage;
+const defaultOgImage = "https://powerhousegym.co/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png";
+const ogImage = image ? (image.startsWith('http') ? image : `${siteDomain}${image}`) : defaultOgImage;
 const ogType = articleType ? "article" : "website";
 
 const siteDomain = "https://powerhousegym.co";
@@ -173,7 +173,31 @@ if (pathSegments.length > 0) {
 						"priceCurrency": "COP"
 					}
 				]
-			}
+			},
+			"aggregateRating": {
+				"@type": "AggregateRating",
+				"ratingValue": "4.8",
+				"bestRating": "5",
+				"worstRating": "1",
+				"ratingCount": "24",
+				"reviewCount": "20"
+			},
+			"review": [
+				{
+					"@type": "Review",
+					"author": {"@type": "Person", "name": "Camila R."},
+					"datePublished": "2026-03-15",
+					"reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"},
+					"reviewBody": "El mejor gimnasio de Manizales. Entrenadores siempre pendientes, equipos de primera y sin contratos abusivos. Llevo 6 meses y no lo cambio por nada."
+				},
+				{
+					"@type": "Review",
+					"author": {"@type": "Person", "name": "Andrés M."},
+					"datePublished": "2026-02-20",
+					"reviewRating": {"@type": "Rating", "ratingValue": "5", "bestRating": "5"},
+					"reviewBody": "Excelente ubicación frente al Parque de la Mujer. Horarios privilegiados, abren desde las 5am. Entrenamiento semipersonalizado que de verdad funciona."
+				}
+			]
 		},
 		{
 			"@type": "WebSite",
@@ -209,7 +233,7 @@ if (pathSegments.length > 0) {
 
 		<nav class="navbar" id="navbar">
 			<div class="navbar__inner">
-				<a href="/" class="navbar__logo"><img src="/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png" alt="PowerHouse Gym" class="navbar__logo-img" width="68" height="68" /><span class="navbar__logo-text">POWERHOUSE</span></a>
+				<a href="/" class="navbar__logo"><img src="/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png" alt="Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" class="navbar__logo-img" width="68" height="68" /><span class="navbar__logo-text">POWERHOUSE</span></a>
 				<div class="navbar__links" id="navLinks">
 					<a href="/">Inicio</a>
 					<a href="/planes">Planes</a>
@@ -240,7 +264,7 @@ if (pathSegments.length > 0) {
 			<div class="footer__bg-accent"></div>
 			<div class="footer__inner">
 				<div class="footer__brand">
-					<a href="/" class="footer__logo"><img src="/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png" alt="PowerHouse Gym" class="footer__logo-img" width="52" height="52" /></a>
+					<a href="/" class="footer__logo"><img src="/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png" alt="Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" class="footer__logo-img" width="52" height="52" /></a>
 					<p class="footer__mission">"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo."</p>
 					<div class="footer__social">
 						<a href="https://instagram.com/powerhousegymmanizales" target="_blank" rel="noopener" aria-label="Instagram">

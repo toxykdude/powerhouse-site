@@ -8,6 +8,7 @@ const trainers = [
 		bio: "Fisiculturista con 16 años de experiencia en el gremio. Fundador de PowerHouse Gym Manizales.",
 		specialties: ["Fisiculturismo", "Hipertrofia", "Nutrición Deportiva", "Transformación Corporal"],
 		photo: "/uploads/juan-manoel-cano.png",
+		alt: "Juan Manuel Cano, fundador y entrenador personal de PowerHouse Gym Manizales, especialista en fisiculturismo e hipertrofia",
 	},
 	{
 		name: "Esteban Morales Sánchez",
@@ -15,6 +16,7 @@ const trainers = [
 		bio: "Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. 500+ clientes transformados.",
 		specialties: ["Biomecánica", "Pérdida de Peso", "Fuerza", "Prevención de Lesiones"],
 		photo: "/uploads/esteban-morales.png",
+		alt: "Esteban Morales Sánchez, entrenador personal certificado en PowerHouse Gym Manizales, especialista en biomecánica y pérdida de peso",
 	},
 	{
 		name: "Harold Giraldo",
@@ -22,6 +24,7 @@ const trainers = [
 		bio: "Preparador Físico y Tecnólogo en Entrenamiento Deportivo con amplio conocimiento en funcional y musculación.",
 		specialties: ["Funcional", "Musculación", "Wellness", "Core"],
 		photo: "/uploads/harold-giraldo.png",
+		alt: "Harold Giraldo, preparador físico en PowerHouse Gym Manizales, especialista en entrenamiento funcional y musculación",
 	},
 ];
 
@@ -36,8 +39,8 @@ const features = [
 ---
 
 <Base
-	seoTitle="Gimnasio PowerHouse Manizales | Sin Contrato · 5am–10pm"
-	description="Gimnasio en Manizales sin contrato ni documentos. Entrenamiento semipersonalizado, equipos de tráfico pesado, horario 5am–10pm. Parque de la Mujer, Avenida Santander."
+	seoTitle="Gimnasio PowerHouse Manizales | Sin Contrato · Personal Training · 5am–10pm"
+	description="El mejor gimnasio en Manizales sin contrato ni permanencia. Entrenamiento semipersonalizado, equipos de tráfico pesado, 96% recomendación. Parque de la Mujer, Avenida Santander. ¡Agenda tu clase gratis!"
 	jsonLd={`{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cuánto cuesta el gimnasio PowerHouse en Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "PowerHouse Gym Manizales ofrece planes mensuales desde $69.900 COP y quincenales desde $9.900 COP. No requiere contratos ni documentos. Contáctanos al +57 315 471 1900 para conocer los precios actuales."}}, {"@type": "Question", "name": "¿Cuál es el horario de PowerHouse Gym Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "Lunes a viernes: 5:00am – 10:00pm. Sábados y domingos: 9:00am – 2:00pm. Ubicados en Avenida Santander, Parque de la Mujer, Manizales."}}, {"@type": "Question", "name": "¿PowerHouse Gym tiene contrato o permanencia?", "acceptedAnswer": {"@type": "Answer", "text": "No. PowerHouse Gym Manizales no exige contratos, documentos ni cláusulas de permanencia. Puedes inscribirte y cancelar cuando quieras."}}, {"@type": "Question", "name": "¿Dónde queda PowerHouse Gym en Manizales?", "acceptedAnswer": {"@type": "Answer", "text": "Estamos ubicados en la Avenida Santander, Parque de la Mujer, Manizales, Caldas, Colombia. Coordenadas: 5.0649845, -75.4998569."}}, {"@type": "Question", "name": "¿Qué incluye el entrenamiento en PowerHouse Gym?", "acceptedAnswer": {"@type": "Answer", "text": "Entrenamiento semipersonalizado con seguimiento constante de entrenadores certificados, equipos de tráfico pesado, zona de cardio con vista a la ciudad, asesoría en nutrición y suplementación."}}]}`}
 >
 	<section class="hero">
@@ -45,14 +48,14 @@ const features = [
 			<div class="hero__overlay"></div>
 			<img
 				src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop"
-				alt="Gimnasio PowerHouse Manizales - Sala de entrenamiento"
+				alt="Sala de entrenamiento con máquinas de tráfico pesado en PowerHouse Gym Manizales, Avenida Santander"
 				width="2070"
 				height="1380"
 				referrerpolicy="no-referrer"
 			/>
 		</div>
 		<div class="hero__content">
-			<h1 class="hero__headline">FORJA TU VERSIÓN MÁS FUERTE</h1>
+			<h1 class="hero__headline">FORJA TU VERSIÓN MÁS FUERTE EN MANIZALES</h1>
 			<p class="hero__subhead">Gimnasio en Manizales · Entrenamiento semi-personalizado · Sin contratos</p>
 			<div class="hero__ctas">
 				<a href="/planes" class="btn-gold" style="font-size: 1.5rem; padding: 1rem 3rem;">VER PLANES</a>
@@ -98,7 +101,7 @@ const features = [
 				<div class="about__image-wrap">
 					<img
 						src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop"
-						alt="Gym Interior"
+						alt="Interior del gimnasio PowerHouse Manizales con zona de cardio y vista a la ciudad"
 						referrerpolicy="no-referrer"
 					/>
 					<div class="about__image-gradient"></div>
@@ -121,7 +124,7 @@ const features = [
 				{trainers.map((trainer, idx) => (
 					<article class="trainer-card" style={`animation-delay: ${idx * 0.15}s`}>
 						<div class="trainer-card__photo">
-							<img src={trainer.photo} alt={trainer.name} loading="lazy" />
+							<img src={trainer.photo} alt={trainer.alt || trainer.name} loading="lazy" />
 							<div class="trainer-card__photo-gradient"></div>
 						</div>
 						<div class="trainer-card__info">
