@@ -1,0 +1,9 @@
+name = "powerhouse-media-proxy"
+main = "workers/media-proxy.js"
+compatibility_date = "2026-04-01"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "powerhouse-media"
+
+# Route: media.powerhousegym.co/*
