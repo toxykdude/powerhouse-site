@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /_emdash/
 
 User-agent: GPTBot
 Allow: /
