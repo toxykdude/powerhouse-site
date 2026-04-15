@@ -319,13 +319,13 @@ import Base from '../../layouts/Base.astro';
 
 <script>
 interface Plan {
-	id: string;
+	wompiId: string;
+	facegymId: string;
 	name: string;
 	amountInCents: number;
 	currency: string;
 	period: string;
 	features: string[];
-	is_featured?: boolean;
 	badge?: string;
 }
 
@@ -353,6 +353,47 @@ declare global {
 	}
 }
 
+const PLANS: Plan[] = [
+	{
+		wompiId: 'mensual',
+		facegymId: '45d96de3-a086-427a-9a8a-44351abb6423',
+		name: 'Membresía Mensual',
+		amountInCents: 6990000,
+		currency: 'COP',
+		period: '/mes',
+		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+	},
+	{
+		wompiId: 'power-pack',
+		facegymId: '45d96de3-a086-427a-9a8a-44351abb6423',
+		name: 'Power Pack',
+		amountInCents: 14000000,
+		currency: 'COP',
+		period: '/mes',
+		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual', 'Asesoría en alimentación', 'Servicio de proteína por entreno'],
+		badge: 'RECOMENDADO',
+	},
+	{
+		wompiId: 'trimestral',
+		facegymId: 'dab31efd-aff9-4554-99d5-40f255af7734',
+		name: 'Plan Trimestral',
+		amountInCents: 18600000,
+		currency: 'COP',
+		period: '/trimestre',
+		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+	},
+	{
+		wompiId: 'anual',
+		facegymId: 'dbf0f5a4-cabb-4c73-991e-3e8b694282bf',
+		name: 'Plan Anual',
+		amountInCents: 62000000,
+		currency: 'COP',
+		period: '/año',
+		features: ['Mejor precio beneficio, mes a $51mil!', 'Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		badge: 'MEJOR VALOR',
+	},
+];
+
 function formatPrice(cents: number): string {
 	return new Intl.NumberFormat('es-CO', {
 		style: 'currency',
@@ -377,118 +418,31 @@ function getAuthHeaders(): Record<string, string> {
 	return { Authorization: `Bearer ${token}` };
 }
 
-// Check auth
 const token = sessionStorage.getItem('portal_token');
 if (!token) {
 	window.location.href = '/portal/';
 }
 
-// Fetch plans from FaceGYM API
-async function loadPlans(): Promise<void> {
-	try {
-		const response = await fetch('/api/portal/plans', {
-			headers: { ...getAuthHeaders() },
-		});
-
-		if (response.status === 401 || response.status === 403) {
-			sessionStorage.removeItem('portal_token');
-			window.location.href = '/portal/';
-			return;
-		}
-
-		if (!response.ok) {
-			throw new Error('Error al cargar planes');
-		}
-
-		const plans = (await response.json()) as Plan[];
-
-		if (!plans || plans.length === 0) {
-			// Fallback: use hardcoded plans from signature.ts
-			renderPlans(getFallbackPlans());
-		} else {
-			renderPlans(plans);
-		}
-
-		showState('statePlans');
-	} catch {
-		// If API fails, show fallback plans
-		renderPlans(getFallbackPlans());
-		showState('statePlans');
-	}
-}
-
-function getFallbackPlans(): Plan[] {
-	return [
-		{
-			id: 'mensual',
-			name: 'Membresía Mensual',
-			amountInCents: 6990000,
-			currency: 'COP',
-			period: '/mes',
-			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
-		},
-		{
-			id: 'power-pack',
-			name: 'Power Pack',
-			amountInCents: 14000000,
-			currency: 'COP',
-			period: '/mes',
-			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual', 'Asesoría en alimentación', 'Proteína por entreno'],
-			is_featured: true,
-			badge: 'RECOMENDADO',
-		},
-		{
-			id: 'trimestral',
-			name: 'Plan Trimestral',
-			amountInCents: 18600000,
-			currency: 'COP',
-			period: '/trimestre',
-			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
-		},
-		{
-			id: 'semestral',
-			name: 'Plan Semestral',
-			amountInCents: 36000000,
-			currency: 'COP',
-			period: '/semestre',
-			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
-		},
-		{
-			id: 'anual',
-			name: 'Plan Anual',
-			amountInCents: 62000000,
-			currency: 'COP',
-			period: '/año',
-			features: ['Mejor precio beneficio', 'Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
-			badge: 'MEJOR VALOR',
-			is_featured: true,
-		},
-	];
-}
-
-function renderPlans(plans: Plan[]): void {
+function renderPlans(): void {
 	const grid = document.getElementById('plansGrid');
 	if (!grid) return;
 
-	grid.innerHTML = plans
+	grid.innerHTML = PLANS
 		.map((plan) => {
 			const badgeHtml = plan.badge
 				? `<div class="renovar-card__badge ${plan.badge === 'MEJOR VALOR' ? 'renovar-card__badge--gold' : ''}">${plan.badge}</div>`
 				: '';
 
-			const featuresHtml = (plan.features || [])
-				.map(
-					(f) => `
+			const featuresHtml = plan.features
+				.map((f) => `
 				<li>
 					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
 					${f}
-				</li>
-			`
-				)
+				</li>`)
 				.join('');
 
 			return `
-			<div class="renovar-card" data-plan-id="${plan.id}">
+			<div class="renovar-card" data-plan-id="${plan.wompiId}">
 				${badgeHtml}
 				<div class="renovar-card__header">
 					<h3>${plan.name}</h3>
@@ -501,21 +455,21 @@ function renderPlans(plans: Plan[]): void {
 				<ul class="renovar-card__features">
 					${featuresHtml}
 				</ul>
-				<button type="button" class="renovar-card__cta" data-plan-pay="${plan.id}">
+				<button type="button" class="renovar-card__cta" data-plan-pay="${plan.wompiId}">
 					SELECCIONAR
 				</button>
-			</div>
-		`;
+			</div>`;
 		})
 		.join('');
 
-	// Wire up pay buttons
 	grid.querySelectorAll<HTMLButtonElement>('[data-plan-pay]').forEach((button) => {
 		button.addEventListener('click', async () => {
-			const planId = button.dataset.planPay;
-			if (!planId) return;
+			const wompiId = button.dataset.planPay;
+			if (!wompiId) return;
 
-			// Highlight selected card
+			const plan = PLANS.find((p) => p.wompiId === wompiId);
+			if (!plan) return;
+
 			grid.querySelectorAll('.renovar-card').forEach((card) => card.classList.remove('renovar-card--selected'));
 			button.closest('.renovar-card')?.classList.add('renovar-card--selected');
 
@@ -524,23 +478,22 @@ function renderPlans(plans: Plan[]): void {
 			button.textContent = 'PROCESANDO...';
 
 			try {
-				// Get Wompi signature from our local API
 				const sigResponse = await fetch('/api/payment/signature', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ plan: planId }),
+					body: JSON.stringify({ plan: plan.wompiId }),
 				});
 
 				if (!sigResponse.ok) {
 					const errData = await sigResponse.json().catch(() => ({}));
-					throw new Error(errData.error || 'Error al procesar el pago');
+					throw new Error(errData.detail || errData.error || 'Error al procesar el pago');
 				}
 
 				const sigData: SignatureResponse = await sigResponse.json();
 
 				const WidgetCheckout = window.WidgetCheckout;
 				if (!WidgetCheckout) {
-					throw new Error('El sistema de pagos no está disponible. Recarga la página e intentá de nuevo.');
+					throw new Error('El sistema de pagos no está disponible. Recargá la página.');
 				}
 
 				const checkout = new WidgetCheckout({
@@ -555,7 +508,6 @@ function renderPlans(plans: Plan[]): void {
 				checkout.open(async (result) => {
 					const tx = result.transaction;
 					if (tx?.id) {
-						// Payment completed — try to renew via FaceGYM
 						try {
 							await fetch('/api/portal/renew', {
 								method: 'POST',
@@ -564,14 +516,12 @@ function renderPlans(plans: Plan[]): void {
 									...getAuthHeaders(),
 								},
 								body: JSON.stringify({
-									transactionId: tx.id,
-									planId: planId,
-									reference: sigData.reference,
-									amount: sigData.amountInCents,
+									plan_id: plan.facegymId,
+									wompi_reference: sigData.reference,
+									amount: plan.amountInCents / 100,
 								}),
 							});
 						} catch {
-							// Renewal call may fail but payment was made — log and continue
 							console.error('FaceGYM renewal call failed after payment');
 						}
 
@@ -591,8 +541,8 @@ function renderPlans(plans: Plan[]): void {
 	});
 }
 
-// Main execution
 if (token) {
-	loadPlans();
+	renderPlans();
+	showState('statePlans');
 }
 </script>
