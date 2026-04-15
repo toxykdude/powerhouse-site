@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Portal de Miembros" description="Accedé a tu cuenta de PowerHouse Gym Manizales para ver tu membresía, pagos y renovar tu plan.">
+<Base title="Portal de Miembros" description="Accede a tu cuenta de PowerHouse Gym Manizales para ver tu membresía, pagos y renovar tu plan.">
 	<div class="portal-login">
 		<div class="portal-login__card">
 			<div class="portal-login__logo">
@@ -10,7 +10,7 @@ import Base from '../../layouts/Base.astro';
 			</div>
 
 			<h1 class="portal-login__title">ACCEDÉ A TU CUENTA</h1>
-			<p class="portal-login__subtitle">Ingresá tu número de celular para recibir un código de verificación por WhatsApp</p>
+			<p class="portal-login__subtitle">Ingresa tu número de celular para recibir un código de verificación por WhatsApp</p>
 
 			<!-- Phone Step -->
 			<div class="portal-login__step" id="stepPhone">
@@ -38,7 +38,7 @@ import Base from '../../layouts/Base.astro';
 
 			<!-- PIN Step -->
 			<div class="portal-login__step portal-login__step--hidden" id="stepPin">
-				<p class="portal-login__pin-info">Ingresá el código de 6 dígitos que te enviamos por WhatsApp</p>
+				<p class="portal-login__pin-info">Ingresa el código de 6 dígitos que enviamos a tu WhatsApp</p>
 				<p class="portal-login__phone-display" id="phoneDisplay"></p>
 				<div class="portal-login__pin-group">
 					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="0" />
@@ -354,7 +354,7 @@ btnSendCode?.addEventListener('click', async () => {
 	phoneError.textContent = '';
 
 	if (phone.length !== 10) {
-		phoneError.textContent = 'Ingresá un número de 10 dígitos';
+		phoneError.textContent = 'Ingresa un número de 10 dígitos';
 		return;
 	}
 
@@ -431,7 +431,7 @@ btnVerify?.addEventListener('click', async () => {
 	pinError.textContent = '';
 
 	if (pin.length !== 6) {
-		pinError.textContent = 'Ingresá los 6 dígitos del código';
+		pinError.textContent = 'Ingresa los 6 dígitos del código';
 		return;
 	}
 
@@ -448,7 +448,7 @@ btnVerify?.addEventListener('click', async () => {
 
 		if (!response.ok) {
 			const data = await response.json().catch(() => ({}));
-			throw new Error(data.detail || data.error || data.message || 'Código inválido');
+			throw new Error(data.detail || data.error || data.message || 'El código no es válido');
 		}
 
 		const data = await response.json();

@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Mi Cuenta — Portal de Miembros" description="Gestioná tu membresía de PowerHouse Gym Manizales. Mirá tu estado, historial de pagos y renová tu plan.">
+<Base title="Mi Cuenta — Portal de Miembros" description="Consulta tu membresía de PowerHouse Gym Manizales. Revisa tu estado, historial de pagos y renueva tu plan.">
 	<div class="portal-dashboard">
 		<!-- Loading state -->
 		<div class="dashboard-state" id="stateLoading">
@@ -59,7 +59,7 @@ import Base from '../../layouts/Base.astro';
 				</svg>
 			</div>
 			<h2 id="errorTitle">ERROR DE CONEXIÓN</h2>
-			<p id="errorMessage">No pudimos cargar tu información. Intentá de nuevo.</p>
+			<p id="errorMessage">No pudimos cargar tu información. Intenta de nuevo.</p>
 			<a href="/portal/" class="btn-gold dashboard-btn">VOLVER AL PORTAL</a>
 		</div>
 	</div>
@@ -482,7 +482,7 @@ async function loadDashboard(): Promise<void> {
 		const titleEl = document.getElementById('errorTitle');
 		const msgEl = document.getElementById('errorMessage');
 		if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
-		if (msgEl) msgEl.textContent = 'No pudimos cargar tu información. Verificá tu conexión e intentá de nuevo.';
+		if (msgEl) msgEl.textContent = 'No pudimos cargar tu información. Verifica tu conexión e intenta de nuevo.';
 	}
 }
 
@@ -502,7 +502,7 @@ function renderDashboard(data: PortalMeResponse): void {
 		statusDetails.innerHTML = `
 			<div class="status-row">
 				<span class="status-row__label">Estado</span>
-				<span class="status-row__value">No tenés membresía activa</span>
+				<span class="status-row__value">No tienes membresía activa</span>
 			</div>
 		`;
 	} else if (data.active_membership.status === 'active') {
@@ -560,7 +560,7 @@ function renderDashboard(data: PortalMeResponse): void {
 		`;
 	} else {
 		membershipInfo.innerHTML = `
-			<div class="payments-empty">No tenés membresía activa. ¡Elegí un plan y empezá a entrenar!</div>
+			<div class="payments-empty">No tienes membresía activa. ¡Elige un plan y empieza a entrenar!</div>
 		`;
 	}
 

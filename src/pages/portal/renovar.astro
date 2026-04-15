@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Renovar Plan — Portal de Miembros" description="Renová tu membresía de PowerHouse Gym Manizales. Elegí tu plan y pagá de forma segura con Wompi.">
+<Base title="Renovar Membresía — Portal de Miembros" description="Renueva tu membresía de PowerHouse Gym Manizales. Elige tu plan y paga de forma segura con Wompi.">
 	<Fragment slot="head">
 		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
 	</Fragment>
@@ -11,16 +11,40 @@ import Base from '../../layouts/Base.astro';
 		<div class="renovar-page__hero">
 			<a href="/portal/dashboard" class="renovar-page__back">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-				VOLVER AL DASHBOARD
+				MI CUENTA
 			</a>
 			<span class="renovar-page__tagline">Portal de Miembros</span>
-			<h1>RENOVÁ TU PLAN</h1>
-			<p>Elegí el plan que mejor se adapte a tus objetivos. Pagá seguro con Wompi.</p>
+			<h1>RENOVAR<br/>TU PLAN</h1>
+			<p>Tu entrenamiento no se detiene. Elige tu plan y sigue forjando tu mejor versión.</p>
 		</div>
 
 		<div class="renovar-page__plans" id="statePlans">
 			<div class="renovar-grid renovar-grid--top" id="plansGridTop"></div>
 			<div class="renovar-grid renovar-grid--bottom" id="plansGridBottom"></div>
+		</div>
+
+		<div class="renovar-page__trust">
+			<div class="trust-item">
+				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+				<div>
+					<span class="trust-item__title">PAGO SEGURO</span>
+					<span class="trust-item__desc">Tus datos están protegidos con Wompi</span>
+				</div>
+			</div>
+			<div class="trust-item">
+				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+				<div>
+					<span class="trust-item__title">SIN PERMANENCIA</span>
+					<span class="trust-item__desc">Cancela cuando quieras, sin multas</span>
+				</div>
+			</div>
+			<div class="trust-item">
+				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+				<div>
+					<span class="trust-item__title">ACTIVACIÓN INMEDIATA</span>
+					<span class="trust-item__desc">Tu plan se activa al instante después del pago</span>
+				</div>
+			</div>
 		</div>
 
 		<div class="renovar-state renovar-state--hidden" id="stateSuccess">
@@ -37,7 +61,7 @@ import Base from '../../layouts/Base.astro';
 		<div class="renovar-state renovar-state--hidden" id="stateError">
 			<div class="renovar-error">
 				<h2 id="errorTitle">ERROR</h2>
-				<p id="errorMessage">No pudimos procesar tu pago.</p>
+				<p id="errorMessage">No pudimos procesar tu pago. Intenta de nuevo.</p>
 				<a href="/portal/dashboard" class="renovar-error__btn">VOLVER</a>
 			</div>
 		</div>
@@ -112,6 +136,7 @@ import Base from '../../layouts/Base.astro';
 		display: flex;
 		flex-direction: column;
 		gap: 2.5rem;
+		margin-bottom: 4rem;
 	}
 
 	.renovar-grid {
@@ -133,12 +158,14 @@ import Base from '../../layouts/Base.astro';
 		width: 100%;
 	}
 
+	/* ---- CARDS ---- */
+
 	.renovar-card {
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		padding: 2rem 1.5rem;
-		border: 1px solid rgba(232, 200, 50, 0.15);
+		border: 1px solid rgba(232, 200, 50, 0.2);
 		background: #0a0a0a;
 		color: var(--brand-white);
 		transition: all 0.5s ease;
@@ -146,7 +173,7 @@ import Base from '../../layouts/Base.astro';
 	}
 
 	.renovar-card:hover {
-		border-color: rgba(232, 200, 50, 0.4);
+		border-color: rgba(232, 200, 50, 0.5);
 	}
 
 	.renovar-card--featured {
@@ -313,6 +340,53 @@ import Base from '../../layouts/Base.astro';
 		cursor: not-allowed;
 	}
 
+	/* ---- TRUST BAR ---- */
+
+	.renovar-page__trust {
+		max-width: 60rem;
+		margin: 0 auto 4rem;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+		border-top: 1px solid rgba(232, 200, 50, 0.15);
+		padding-top: 2.5rem;
+	}
+
+	.trust-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		padding: 0 0.5rem;
+	}
+
+	.trust-item svg {
+		color: var(--brand-gold);
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+
+	.trust-item__title {
+		display: block;
+		font-family: var(--font-display);
+		font-size: 0.85rem;
+		color: var(--brand-white);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 0.2rem;
+	}
+
+	.trust-item__desc {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		line-height: 1.4;
+	}
+
+	/* ---- STATES ---- */
+
 	.renovar-state {
 		max-width: 56rem;
 		margin: 0 auto;
@@ -374,6 +448,8 @@ import Base from '../../layouts/Base.astro';
 		background: white;
 	}
 
+	/* ---- RESPONSIVE ---- */
+
 	@media (max-width: 768px) {
 		.renovar-page {
 			padding: 7rem 1rem 4rem;
@@ -398,6 +474,11 @@ import Base from '../../layouts/Base.astro';
 		.renovar-card--featured,
 		.renovar-card--annual {
 			transform: none;
+		}
+
+		.renovar-page__trust {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
 		}
 	}
 </style>
@@ -532,8 +613,6 @@ function renderCard(plan: Plan): string {
 			</li>`)
 		.join('');
 
-	const ctaClass = plan.variant === 'featured' ? '' : '';
-
 	return `
 	<div class="renovar-card${variantClass}" data-plan-id="${plan.wompiId}">
 		${badgeHtml}
@@ -548,7 +627,7 @@ function renderCard(plan: Plan): string {
 		<ul class="renovar-card__features">
 			${featuresHtml}
 		</ul>
-		<button type="button" class="renovar-card__cta${ctaClass}" data-plan-pay="${plan.wompiId}">
+		<button type="button" class="renovar-card__cta" data-plan-pay="${plan.wompiId}">
 			PAGAR AHORA
 		</button>
 	</div>`;
@@ -585,7 +664,7 @@ function wireButtons(): void {
 
 				const WidgetCheckout = window.WidgetCheckout;
 				if (!WidgetCheckout) {
-					throw new Error('El sistema de pagos no está disponible. Recargá la página.');
+					throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
 				}
 
 				const checkout = new WidgetCheckout({
