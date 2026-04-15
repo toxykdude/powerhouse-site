@@ -8,21 +8,42 @@ import Base from '../../layouts/Base.astro';
 	</Fragment>
 
 	<div class="renovar-page">
+		<!-- HERO — matches planes.astro scale -->
 		<div class="renovar-page__hero">
 			<a href="/portal/dashboard" class="renovar-page__back">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
 				MI CUENTA
 			</a>
-			<span class="renovar-page__tagline">Portal de Miembros</span>
-			<h1>RENOVAR<br/>TU PLAN</h1>
-			<p>Tu entrenamiento no se detiene. Elige tu plan y sigue forjando tu mejor versión.</p>
+			<span class="renovar-page__tagline">Renovar Membresía</span>
+			<h1>NO PARES<br/>AHORA</h1>
+			<p>Tu transformación sigue. Cada día de entrenamiento cuenta. Renueva y continúa forjando tu mejor versión.</p>
 		</div>
 
+		<!-- SOCIAL PROOF BAND — urgency hook -->
+		<div class="renovar-page__proof">
+			<div class="proof-item">
+				<span class="proof-item__value">96%</span>
+				<span class="proof-item__label">de miembros renuevan</span>
+			</div>
+			<div class="proof-item__sep"></div>
+			<div class="proof-item">
+				<span class="proof-item__value">500+</span>
+				<span class="proof-item__label">vidas transformadas</span>
+			</div>
+			<div class="proof-item__sep"></div>
+			<div class="proof-item">
+				<span class="proof-item__value">7</span>
+				<span class="proof-item__label">años forjando campeones</span>
+			</div>
+		</div>
+
+		<!-- PLAN CARDS — same structure as planes.astro -->
 		<div class="renovar-page__plans" id="statePlans">
 			<div class="renovar-grid renovar-grid--top" id="plansGridTop"></div>
 			<div class="renovar-grid renovar-grid--bottom" id="plansGridBottom"></div>
 		</div>
 
+		<!-- TRUST BAR -->
 		<div class="renovar-page__trust">
 			<div class="trust-item">
 				<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -47,6 +68,20 @@ import Base from '../../layouts/Base.astro';
 			</div>
 		</div>
 
+		<!-- CTA BAND — matches main site style -->
+		<div class="renovar-page__cta-band">
+			<div class="cta-band__bg-text">KEEP THE POWER</div>
+			<div class="cta-band__content">
+				<h2>¿DUDAS?</h2>
+				<p>Escríbenos por WhatsApp y te ayudamos a elegir el plan ideal para ti.</p>
+				<a href="https://wa.me/573154711900?text=Hola%20PowerHouse!%20Quiero%20renovar%20mi%20membresía" target="_blank" rel="noopener noreferrer" class="cta-band__btn">
+					ESCRIBIR POR WHATSAPP
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+				</a>
+			</div>
+		</div>
+
+		<!-- SUCCESS STATE -->
 		<div class="renovar-state renovar-state--hidden" id="stateSuccess">
 			<div class="renovar-success">
 				<div class="renovar-success__icon">
@@ -58,6 +93,7 @@ import Base from '../../layouts/Base.astro';
 			</div>
 		</div>
 
+		<!-- ERROR STATE -->
 		<div class="renovar-state renovar-state--hidden" id="stateError">
 			<div class="renovar-error">
 				<h2 id="errorTitle">ERROR</h2>
@@ -69,14 +105,16 @@ import Base from '../../layouts/Base.astro';
 </Base>
 
 <style>
+	/* ========== PAGE ========== */
 	.renovar-page {
-		padding: 8rem 1.5rem 6rem;
+		padding: 8rem 1.5rem 0;
 		background: var(--brand-black);
 	}
 
+	/* ========== HERO — matches planes.astro ========== */
 	.renovar-page__hero {
 		text-align: center;
-		margin-bottom: 5rem;
+		margin-bottom: 3rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -114,7 +152,7 @@ import Base from '../../layouts/Base.astro';
 
 	.renovar-page__hero h1 {
 		font-family: var(--font-display);
-		font-size: clamp(3.5rem, 8vw, 7rem);
+		font-size: clamp(4.5rem, 10vw, 9rem);
 		color: var(--brand-gold);
 		text-transform: uppercase;
 		letter-spacing: -0.02em;
@@ -123,13 +161,56 @@ import Base from '../../layouts/Base.astro';
 
 	.renovar-page__hero p {
 		font-family: var(--font-mono);
-		font-size: 1rem;
-		color: rgba(240, 237, 232, 0.5);
+		font-size: 1.125rem;
+		color: rgba(240, 237, 232, 0.6);
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
 		max-width: 40rem;
 	}
 
+	/* ========== SOCIAL PROOF BAND ========== */
+	.renovar-page__proof {
+		max-width: 60rem;
+		margin: 0 auto 4rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 2rem;
+		padding: 2rem 1.5rem;
+		border-top: 1px solid rgba(232, 200, 50, 0.15);
+		border-bottom: 1px solid rgba(232, 200, 50, 0.15);
+	}
+
+	.proof-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25rem;
+		text-align: center;
+	}
+
+	.proof-item__value {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 5vw, 3.5rem);
+		color: var(--brand-gold);
+		line-height: 1;
+	}
+
+	.proof-item__label {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.proof-item__sep {
+		width: 1px;
+		height: 3rem;
+		background: rgba(232, 200, 50, 0.2);
+	}
+
+	/* ========== PLANS GRID — matches planes.astro ========== */
 	.renovar-page__plans {
 		max-width: 80rem;
 		margin: 0 auto;
@@ -158,18 +239,16 @@ import Base from '../../layouts/Base.astro';
 		width: 100%;
 	}
 
-	/* ---- CARDS ---- */
-
+	/* ========== CARDS — matches planes.astro plan-card ========== */
 	.renovar-card {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		padding: 2rem 1.5rem;
+		padding: 1.5rem;
 		border: 1px solid rgba(232, 200, 50, 0.2);
 		background: #0a0a0a;
 		color: var(--brand-white);
 		transition: all 0.5s ease;
-		cursor: pointer;
 	}
 
 	.renovar-card:hover {
@@ -211,7 +290,7 @@ import Base from '../../layouts/Base.astro';
 		background: var(--brand-red);
 		color: white;
 		font-family: var(--font-display);
-		font-size: 0.7rem;
+		font-size: 0.75rem;
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
 		padding: 0.25rem 1rem;
@@ -261,11 +340,6 @@ import Base from '../../layouts/Base.astro';
 		opacity: 0.6;
 	}
 
-	.renovar-card--featured .renovar-card__currency,
-	.renovar-card--featured .renovar-card__period {
-		opacity: 0.7;
-	}
-
 	.renovar-card__features {
 		list-style: none;
 		flex: 1;
@@ -288,6 +362,9 @@ import Base from '../../layouts/Base.astro';
 	.renovar-card__features svg {
 		flex-shrink: 0;
 		margin-top: 2px;
+	}
+
+	.renovar-card:not(.renovar-card--featured) .renovar-card__features svg {
 		color: var(--brand-gold);
 	}
 
@@ -295,6 +372,7 @@ import Base from '../../layouts/Base.astro';
 		color: var(--brand-black);
 	}
 
+	/* CTA BUTTONS — matches planes.astro exactly */
 	.renovar-card__cta {
 		display: block;
 		width: 100%;
@@ -308,31 +386,25 @@ import Base from '../../layouts/Base.astro';
 		transition: all 0.3s ease;
 		text-decoration: none;
 		text-align: center;
+	}
+
+	.renovar-card__cta--gold {
 		background: var(--brand-gold);
 		color: var(--brand-black);
 	}
 
-	.renovar-card__cta:hover {
+	.renovar-card__cta--gold:hover {
 		background: white;
 	}
 
-	.renovar-card--featured .renovar-card__cta {
+	.renovar-card__cta--dark {
 		background: var(--brand-black);
 		color: var(--brand-gold);
 	}
 
-	.renovar-card--featured .renovar-card__cta:hover {
+	.renovar-card__cta--dark:hover {
 		background: var(--brand-red);
 		color: white;
-	}
-
-	.renovar-card--annual .renovar-card__cta {
-		background: var(--brand-gold);
-		color: var(--brand-black);
-	}
-
-	.renovar-card--annual .renovar-card__cta:hover {
-		background: white;
 	}
 
 	.renovar-card__cta:disabled {
@@ -340,11 +412,10 @@ import Base from '../../layouts/Base.astro';
 		cursor: not-allowed;
 	}
 
-	/* ---- TRUST BAR ---- */
-
+	/* ========== TRUST BAR ========== */
 	.renovar-page__trust {
 		max-width: 60rem;
-		margin: 0 auto 4rem;
+		margin: 0 auto 5rem;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 1.5rem;
@@ -385,8 +456,76 @@ import Base from '../../layouts/Base.astro';
 		line-height: 1.4;
 	}
 
-	/* ---- STATES ---- */
+	/* ========== CTA BAND — matches main site style ========== */
+	.renovar-page__cta-band {
+		position: relative;
+		text-align: center;
+		padding: 5rem 1.5rem;
+		overflow: hidden;
+		border-top: 1px solid rgba(232, 200, 50, 0.3);
+	}
 
+	.cta-band__bg-text {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-family: var(--font-display);
+		font-size: clamp(4rem, 12vw, 10rem);
+		color: rgba(232, 200, 50, 0.04);
+		text-transform: uppercase;
+		white-space: nowrap;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.cta-band__content {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.cta-band__content h2 {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+	}
+
+	.cta-band__content p {
+		font-family: var(--font-mono);
+		font-size: 0.95rem;
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		max-width: 30rem;
+	}
+
+	.cta-band__btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1rem;
+		padding: 1rem 2.5rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		text-decoration: none;
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		border: none;
+		cursor: pointer;
+		transition: background 0.3s ease;
+	}
+
+	.cta-band__btn:hover {
+		background: white;
+	}
+
+	/* ========== STATES ========== */
 	.renovar-state {
 		max-width: 56rem;
 		margin: 0 auto;
@@ -448,11 +587,10 @@ import Base from '../../layouts/Base.astro';
 		background: white;
 	}
 
-	/* ---- RESPONSIVE ---- */
-
+	/* ========== RESPONSIVE ========== */
 	@media (max-width: 768px) {
 		.renovar-page {
-			padding: 7rem 1rem 4rem;
+			padding: 7rem 1rem 0;
 		}
 
 		.renovar-page__back {
@@ -462,23 +600,39 @@ import Base from '../../layouts/Base.astro';
 		}
 
 		.renovar-page__hero {
-			margin-bottom: 3rem;
+			margin-bottom: 2rem;
+		}
+
+		.renovar-page__proof {
+			flex-direction: column;
+			gap: 1.5rem;
+			padding: 1.5rem;
+		}
+
+		.proof-item__sep {
+			width: 3rem;
+			height: 1px;
 		}
 
 		.renovar-grid--top,
 		.renovar-grid--bottom {
 			grid-template-columns: 1fr;
-			max-width: 22rem;
+			max-width: 28rem;
 		}
 
 		.renovar-card--featured,
 		.renovar-card--annual {
 			transform: none;
+			order: -1;
 		}
 
 		.renovar-page__trust {
 			grid-template-columns: 1fr;
 			gap: 1.5rem;
+		}
+
+		.cta-band__bg-text {
+			font-size: clamp(3rem, 15vw, 6rem);
 		}
 	}
 </style>
@@ -495,6 +649,7 @@ interface Plan {
 	features: string[];
 	badge?: string;
 	variant?: 'featured' | 'annual';
+	ctaVariant: 'gold' | 'dark';
 }
 
 interface SignatureResponse {
@@ -531,6 +686,7 @@ const ROW1: Plan[] = [
 		period: '/mes',
 		price: '$69.900',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		ctaVariant: 'gold',
 	},
 	{
 		wompiId: 'power-pack',
@@ -543,6 +699,7 @@ const ROW1: Plan[] = [
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual', 'Asesoría en alimentación', 'Servicio de proteína por entreno'],
 		badge: 'RECOMENDADO',
 		variant: 'featured',
+		ctaVariant: 'dark',
 	},
 	{
 		wompiId: 'trimestral',
@@ -553,6 +710,7 @@ const ROW1: Plan[] = [
 		period: '/trimestre',
 		price: '$186.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		ctaVariant: 'gold',
 	},
 ];
 
@@ -566,6 +724,7 @@ const ROW2: Plan[] = [
 		period: '/semestre',
 		price: '$360.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		ctaVariant: 'gold',
 	},
 	{
 		wompiId: 'anual',
@@ -578,6 +737,7 @@ const ROW2: Plan[] = [
 		features: ['Mejor precio beneficio, mes a $51mil!', 'Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 		badge: 'MEJOR VALOR',
 		variant: 'annual',
+		ctaVariant: 'gold',
 	},
 ];
 
@@ -627,7 +787,7 @@ function renderCard(plan: Plan): string {
 		<ul class="renovar-card__features">
 			${featuresHtml}
 		</ul>
-		<button type="button" class="renovar-card__cta" data-plan-pay="${plan.wompiId}">
+		<button type="button" class="renovar-card__cta renovar-card__cta--${plan.ctaVariant}" data-plan-pay="${plan.wompiId}">
 			PAGAR AHORA
 		</button>
 	</div>`;
