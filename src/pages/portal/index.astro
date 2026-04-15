@@ -372,7 +372,7 @@ btnSendCode?.addEventListener('click', async () => {
 
 		if (!response.ok) {
 			const data = await response.json().catch(() => ({}));
-			throw new Error(data.error || data.message || 'Error al enviar el código');
+			throw new Error(data.detail || data.error || data.message || 'Error al enviar el código');
 		}
 
 		// Switch to PIN step
@@ -448,14 +448,14 @@ btnVerify?.addEventListener('click', async () => {
 
 		if (!response.ok) {
 			const data = await response.json().catch(() => ({}));
-			throw new Error(data.error || data.message || 'Código inválido');
+			throw new Error(data.detail || data.error || data.message || 'Código inválido');
 		}
 
 		const data = await response.json();
 
 		// Store JWT in sessionStorage
-		if (data.token) {
-			sessionStorage.setItem('portal_token', data.token);
+		if (data.access_token) {
+			sessionStorage.setItem('portal_token', data.access_token);
 		}
 
 		// Redirect to dashboard
@@ -507,7 +507,7 @@ btnResend?.addEventListener('click', async () => {
 
 		if (!response.ok) {
 			const data = await response.json().catch(() => ({}));
-			throw new Error(data.error || data.message || 'Error al reenviar');
+			throw new Error(data.detail || data.error || data.message || 'Error al reenviar');
 		}
 
 		startResendCooldown();
