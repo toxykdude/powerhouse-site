@@ -1,0 +1,618 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Mi Cuenta — Portal de Miembros" description="Gestioná tu membresía de PowerHouse Gym Manizales. Mirá tu estado, historial de pagos y renová tu plan.">
+	<div class="portal-dashboard">
+		<!-- Loading state -->
+		<div class="dashboard-state" id="stateLoading">
+			<div class="dashboard-spinner">
+				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+				</svg>
+			</div>
+			<h2>CARGANDO TU INFORMACIÓN</h2>
+			<p>Un momento por favor...</p>
+		</div>
+
+		<!-- Dashboard content (hidden by default) -->
+		<div class="dashboard-state dashboard-state--hidden" id="stateDashboard">
+			<div class="dashboard-header">
+				<div>
+					<span class="dashboard-header__label">Portal de Miembros</span>
+					<h1 class="dashboard-header__name" id="memberName">MI CUENTA</h1>
+				</div>
+				<a href="/portal/salir" class="dashboard-logout">CERRAR SESIÓN</a>
+			</div>
+
+			<!-- Status Card -->
+			<div class="dashboard-card" id="statusCard">
+				<div class="status-badge" id="statusBadge">
+					<span id="statusText">CARGANDO</span>
+				</div>
+				<div class="status-details" id="statusDetails"></div>
+			</div>
+
+			<!-- Membership Details -->
+			<div class="dashboard-card" id="membershipCard">
+				<h3 class="dashboard-card__title">DETALLES DE MEMBRESÍA</h3>
+				<div class="membership-info" id="membershipInfo"></div>
+			</div>
+
+			<!-- Payment History -->
+			<div class="dashboard-card" id="paymentsCard">
+				<h3 class="dashboard-card__title">HISTORIAL DE PAGOS</h3>
+				<div class="payments-table-wrap" id="paymentsTable"></div>
+			</div>
+
+			<!-- Actions -->
+			<div class="dashboard-actions" id="dashboardActions"></div>
+		</div>
+
+		<!-- Error state -->
+		<div class="dashboard-state dashboard-state--hidden" id="stateError">
+			<div class="dashboard-error-icon">
+				<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="12" y1="8" x2="12" y2="12"/>
+					<line x1="12" y1="16" x2="12.01" y2="16"/>
+				</svg>
+			</div>
+			<h2 id="errorTitle">ERROR DE CONEXIÓN</h2>
+			<p id="errorMessage">No pudimos cargar tu información. Intentá de nuevo.</p>
+			<a href="/portal/" class="btn-gold dashboard-btn">VOLVER AL PORTAL</a>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.portal-dashboard {
+		min-height: 100vh;
+		padding: 10rem 1.5rem 4rem;
+		background: var(--brand-black);
+		max-width: 48rem;
+		margin: 0 auto;
+	}
+
+	.dashboard-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		text-align: center;
+	}
+
+	.dashboard-state--hidden {
+		display: none !important;
+	}
+
+	.dashboard-state h2 {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+	}
+
+	.dashboard-state p {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+	}
+
+	.dashboard-spinner svg {
+		animation: spin 1s linear infinite;
+		color: var(--brand-gold);
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	.dashboard-error-icon {
+		color: var(--brand-red);
+	}
+
+	.dashboard-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin-bottom: 2rem;
+		width: 100%;
+		text-align: left;
+	}
+
+	.dashboard-header__label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+		display: block;
+		margin-bottom: 0.5rem;
+	}
+
+	.dashboard-header__name {
+		font-family: var(--font-display);
+		font-size: clamp(2rem, 5vw, 3rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+	}
+
+	.dashboard-logout {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		transition: color 0.3s ease;
+		white-space: nowrap;
+		padding-top: 0.5rem;
+	}
+
+	.dashboard-logout:hover {
+		color: var(--brand-red);
+	}
+
+	.dashboard-card {
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 2rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.dashboard-card__title {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-bottom: 1.5rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	/* Status Badge */
+	.status-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		padding: 0.5rem 1.25rem;
+		border-radius: 2px;
+		margin-bottom: 1.5rem;
+	}
+
+	.status-badge--active {
+		background: rgba(46, 204, 113, 0.15);
+		border: 1px solid #2ecc71;
+		color: #2ecc71;
+	}
+
+	.status-badge--expired {
+		background: rgba(192, 57, 43, 0.15);
+		border: 1px solid var(--brand-red);
+		color: var(--brand-red);
+	}
+
+	.status-badge--none {
+		background: rgba(240, 237, 232, 0.05);
+		border: 1px solid rgba(240, 237, 232, 0.2);
+		color: rgba(240, 237, 232, 0.5);
+	}
+
+	.status-details {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.status-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.05);
+	}
+
+	.status-row:last-child {
+		border-bottom: none;
+	}
+
+	.status-row__label {
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.status-row__value {
+		color: var(--brand-gold);
+		font-weight: 700;
+	}
+
+	.status-row__value--countdown {
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+	}
+
+	/* Membership Info */
+	.membership-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.membership-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		padding: 0.75rem 0;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.05);
+	}
+
+	.membership-row:last-child {
+		border-bottom: none;
+	}
+
+	.membership-row__label {
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.membership-row__value {
+		color: var(--brand-white);
+	}
+
+	.membership-row__value--price {
+		color: var(--brand-gold);
+		font-family: var(--font-display);
+		font-size: 1rem;
+	}
+
+	/* Payments Table */
+	.payments-empty {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-align: center;
+		padding: 2rem 0;
+	}
+
+	.payments-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.payments-table th {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		text-align: left;
+		padding: 0.75rem 0.5rem;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	.payments-table td {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--brand-white);
+		padding: 0.75rem 0.5rem;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.03);
+	}
+
+	.payments-table td:last-child {
+		text-align: right;
+		color: var(--brand-gold);
+		font-weight: 700;
+	}
+
+	/* Actions */
+	.dashboard-actions {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		width: 100%;
+		margin-top: 0.5rem;
+	}
+
+	.dashboard-btn {
+		display: block;
+		width: 100%;
+		padding: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+	}
+
+	.dashboard-btn--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.dashboard-btn--gold:hover {
+		background: var(--brand-white);
+	}
+
+	.dashboard-btn--outline {
+		background: transparent;
+		color: var(--brand-gold);
+		border: 2px solid var(--brand-gold);
+	}
+
+	.dashboard-btn--outline:hover {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	@media (max-width: 768px) {
+		.portal-dashboard {
+			padding: 8rem 1rem 3rem;
+		}
+
+		.dashboard-card {
+			padding: 1.5rem;
+		}
+
+		.dashboard-header {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.payments-table th,
+		.payments-table td {
+			padding: 0.5rem 0.25rem;
+			font-size: 0.7rem;
+		}
+	}
+</style>
+
+<script>
+interface MemberData {
+	id: string;
+	name: string;
+	phone: string;
+	email?: string;
+	membership?: {
+		id: string;
+		plan_name: string;
+		start_date: string;
+		end_date: string;
+		status: string;
+		price_paid: number;
+	};
+	payments?: Array<{
+		id: string;
+		date: string;
+		invoice_number?: string;
+		amount: number;
+		method?: string;
+		status: string;
+	}>;
+}
+
+function formatCOP(amount: number): string {
+	return new Intl.NumberFormat('es-CO', {
+		style: 'currency',
+		currency: 'COP',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(amount);
+}
+
+function formatDate(isoString: string): string {
+	if (!isoString) return '—';
+	return new Date(isoString).toLocaleDateString('es-CO', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
+}
+
+function daysUntil(dateString: string): number {
+	const target = new Date(dateString);
+	const now = new Date();
+	const diff = target.getTime() - now.getTime();
+	return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+function showState(stateId: string): void {
+	['stateLoading', 'stateDashboard', 'stateError'].forEach((id) => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.classList.toggle('dashboard-state--hidden', id !== stateId);
+		}
+	});
+}
+
+function getAuthHeaders(): Record<string, string> {
+	const token = sessionStorage.getItem('portal_token');
+	if (!token) return {};
+	return { Authorization: `Bearer ${token}` };
+}
+
+async function loadDashboard(): Promise<void> {
+	const token = sessionStorage.getItem('portal_token');
+	if (!token) {
+		window.location.href = '/portal/';
+		return;
+	}
+
+	try {
+		const response = await fetch('/api/portal/me', {
+			headers: { ...getAuthHeaders() },
+		});
+
+		if (response.status === 401 || response.status === 403) {
+			sessionStorage.removeItem('portal_token');
+			window.location.href = '/portal/';
+			return;
+		}
+
+		if (!response.ok) {
+			throw new Error('Error al cargar los datos');
+		}
+
+		const data = (await response.json()) as MemberData;
+		renderDashboard(data);
+		showState('stateDashboard');
+	} catch {
+		showState('stateError');
+		const titleEl = document.getElementById('errorTitle');
+		const msgEl = document.getElementById('errorMessage');
+		if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
+		if (msgEl) msgEl.textContent = 'No pudimos cargar tu información. Verificá tu conexión e intentá de nuevo.';
+	}
+}
+
+function renderDashboard(data: MemberData): void {
+	// Header
+	const nameEl = document.getElementById('memberName');
+	if (nameEl && data.name) {
+		nameEl.textContent = data.name.toUpperCase();
+	}
+
+	// Status card
+	const statusBadge = document.getElementById('statusBadge') as HTMLDivElement;
+	const statusText = document.getElementById('statusText') as HTMLSpanElement;
+	const statusDetails = document.getElementById('statusDetails') as HTMLDivElement;
+
+	if (!data.membership || data.membership.status === 'none') {
+		statusBadge.className = 'status-badge status-badge--none';
+		statusText.textContent = 'SIN MEMBRESÍA';
+		statusDetails.innerHTML = `
+			<div class="status-row">
+				<span class="status-row__label">Estado</span>
+				<span class="status-row__value">No tenés membresía activa</span>
+			</div>
+		`;
+	} else if (data.membership.status === 'active') {
+		const remaining = daysUntil(data.membership.end_date);
+		statusBadge.className = 'status-badge status-badge--active';
+		statusText.textContent = 'ACTIVO';
+		statusDetails.innerHTML = `
+			<div class="status-row">
+				<span class="status-row__label">Plan</span>
+				<span class="status-row__value">${data.membership.plan_name}</span>
+			</div>
+			<div class="status-row">
+				<span class="status-row__label">Vencimiento</span>
+				<span class="status-row__value">${formatDate(data.membership.end_date)}</span>
+			</div>
+			<div class="status-row">
+				<span class="status-row__label">Días restantes</span>
+				<span class="status-row__value status-row__value--countdown">${remaining} días</span>
+			</div>
+		`;
+	} else {
+		statusBadge.className = 'status-badge status-badge--expired';
+		statusText.textContent = 'VENCIDA';
+		statusDetails.innerHTML = `
+			<div class="status-row">
+				<span class="status-row__label">Plan anterior</span>
+				<span class="status-row__value">${data.membership.plan_name}</span>
+			</div>
+			<div class="status-row">
+				<span class="status-row__label">Venció el</span>
+				<span class="status-row__value">${formatDate(data.membership.end_date)}</span>
+			</div>
+		`;
+	}
+
+	// Membership details
+	const membershipInfo = document.getElementById('membershipInfo') as HTMLDivElement;
+	if (data.membership && data.membership.status !== 'none') {
+		membershipInfo.innerHTML = `
+			<div class="membership-row">
+				<span class="membership-row__label">Plan</span>
+				<span class="membership-row__value">${data.membership.plan_name}</span>
+			</div>
+			<div class="membership-row">
+				<span class="membership-row__label">Inicio</span>
+				<span class="membership-row__value">${formatDate(data.membership.start_date)}</span>
+			</div>
+			<div class="membership-row">
+				<span class="membership-row__label">Fin</span>
+				<span class="membership-row__value">${formatDate(data.membership.end_date)}</span>
+			</div>
+			<div class="membership-row">
+				<span class="membership-row__label">Precio pagado</span>
+				<span class="membership-row__value membership-row__value--price">${formatCOP(data.membership.price_paid)}</span>
+			</div>
+		`;
+	} else {
+		membershipInfo.innerHTML = `
+			<div class="payments-empty">No tenés membresía activa. ¡Elegí un plan y empezá a entrenar!</div>
+		`;
+	}
+
+	// Payment history
+	const paymentsTable = document.getElementById('paymentsTable') as HTMLDivElement;
+	if (data.payments && data.payments.length > 0) {
+		const rows = data.payments
+			.map((p) => `
+				<tr>
+					<td>${formatDate(p.date)}</td>
+					<td>${p.invoice_number || '—'}</td>
+					<td>${p.method || '—'}</td>
+					<td>${formatCOP(p.amount)}</td>
+				</tr>
+			`)
+			.join('');
+
+		paymentsTable.innerHTML = `
+			<table class="payments-table">
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Factura</th>
+						<th>Método</th>
+						<th>Monto</th>
+					</tr>
+				</thead>
+				<tbody>${rows}</tbody>
+			</table>
+		`;
+	} else {
+		paymentsTable.innerHTML = `
+			<div class="payments-empty">No hay pagos registrados</div>
+		`;
+	}
+
+	// Actions
+	const actions = document.getElementById('dashboardActions') as HTMLDivElement;
+	const needsRenewal =
+		!data.membership ||
+		data.membership.status === 'none' ||
+		data.membership.status === 'expired' ||
+		(data.membership.status === 'active' && daysUntil(data.membership.end_date) < 30);
+
+	if (needsRenewal) {
+		actions.innerHTML = `
+			<a href="/portal/renovar" class="dashboard-btn dashboard-btn--gold">RENOVAR PLAN</a>
+		`;
+	} else {
+		actions.innerHTML = '';
+	}
+}
+
+// Main execution
+loadDashboard();
+</script>

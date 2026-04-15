@@ -65,9 +65,34 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
 				timestamp: event.timestamp,
 			});
 
+			// TODO: Server-side FaceGYM membership renewal via webhook
+			// Currently, renewal is triggered from the frontend (portal/renovar.astro)
+			// after Wompi payment confirmation. For server-side integration:
+			// 1. Parse the reference format PH-{unix}-{hex} to extract plan info
+			// 2. Match amount_in_cents to a plan (see PLANS in signature.ts)
+			// 3. POST to FaceGYM /api/portal/renew with transaction details
+			// Example:
+			// try {
+			//   const facegymUrl = (env.FACEGYM_API_URL || 'https://facegym.powerhousegym.co').replace(/\/$/, '');
+			//   const planId = matchPlanByAmount(tx.amount_in_cents);
+			//   if (planId) {
+			//     await fetch(`${facegymUrl}/api/portal/renew`, {
+			//       method: 'POST',
+			//       headers: { 'Content-Type': 'application/json' },
+			//       body: JSON.stringify({
+			//         transactionId: tx.id,
+			//         amount: tx.amount_in_cents,
+			//         reference: tx.reference,
+			//         planId,
+			//       }),
+			//     });
+			//   }
+			// } catch (e) {
+			//   console.error('FaceGYM renewal error:', e);
+			// }
+
 			// Future enhancements:
 			// - Send WhatsApp confirmation notification
-			// - Update membership database
 			// - Send email receipt
 			// - Trigger CRM workflow
 		}

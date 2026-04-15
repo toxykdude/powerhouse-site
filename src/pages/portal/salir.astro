@@ -1,0 +1,116 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Cerrando Sesión" description="Cerrando sesión del portal de miembros de PowerHouse Gym Manizales.">
+	<div class="portal-logout">
+		<div class="portal-logout__card">
+			<div class="portal-logout__spinner" id="logoutSpinner">
+				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+				</svg>
+			</div>
+			<h2 class="portal-logout__title" id="logoutTitle">CERRANDO SESIÓN</h2>
+			<p class="portal-logout__msg" id="logoutMsg">Un momento...</p>
+			<a href="/" class="btn-gold portal-logout__btn portal-logout__btn--hidden" id="logoutBtn">
+				VOLVER AL INICIO
+			</a>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.portal-logout {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10rem 1.5rem 4rem;
+		background: var(--brand-black);
+	}
+
+	.portal-logout__card {
+		max-width: 24rem;
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 3rem 2.5rem;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.portal-logout__spinner svg {
+		animation: spin 1s linear infinite;
+		color: var(--brand-gold);
+	}
+
+	.portal-logout__spinner--hidden {
+		display: none !important;
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	.portal-logout__title {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+	}
+
+	.portal-logout__msg {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+	}
+
+	.portal-logout__btn {
+		display: block;
+		width: 100%;
+		padding: 0.85rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		text-align: center;
+		text-decoration: none;
+		margin-top: 0.5rem;
+	}
+
+	.portal-logout__btn--hidden {
+		display: none !important;
+	}
+
+	@media (max-width: 768px) {
+		.portal-logout {
+			padding: 8rem 1rem 3rem;
+		}
+
+		.portal-logout__card {
+			padding: 2rem 1.5rem;
+		}
+	}
+</style>
+
+<script>
+const spinner = document.getElementById('logoutSpinner');
+const title = document.getElementById('logoutTitle');
+const msg = document.getElementById('logoutMsg');
+const btn = document.getElementById('logoutBtn');
+
+// Clear session
+sessionStorage.removeItem('portal_token');
+
+// Show confirmation after brief delay
+setTimeout(() => {
+	if (spinner) spinner.classList.add('portal-logout__spinner--hidden');
+	if (title) title.textContent = 'SESIÓN CERRADA';
+	if (msg) msg.textContent = 'Tu sesión se cerró correctamente. ¡Nos vemos en el gym!';
+	if (btn) btn.classList.remove('portal-logout__btn--hidden');
+}, 800);
+</script>

@@ -1,0 +1,598 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Renovar Plan — Portal de Miembros" description="Renová tu membresía de PowerHouse Gym Manizales. Elegí tu plan y pagá de forma segura con Wompi.">
+	<Fragment slot="head">
+		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
+	</Fragment>
+
+	<div class="portal-renovar">
+		<!-- Loading state -->
+		<div class="renovar-state" id="stateLoading">
+			<div class="renovar-spinner">
+				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+				</svg>
+			</div>
+			<h2>CARGANDO PLANES</h2>
+			<p>Un momento por favor...</p>
+		</div>
+
+		<!-- Plans content (hidden by default) -->
+		<div class="renovar-state renovar-state--hidden" id="statePlans">
+			<div class="renovar-header">
+				<a href="/portal/dashboard" class="renovar-back">← VOLVER</a>
+				<h1 class="renovar-title">RENOVAR TU PLAN</h1>
+				<p class="renovar-subtitle">Elegí el plan que mejor se adapte a tus objetivos</p>
+			</div>
+
+			<div class="renovar-grid" id="plansGrid">
+				<!-- Plans rendered by JS -->
+			</div>
+		</div>
+
+		<!-- Success state -->
+		<div class="renovar-state renovar-state--hidden" id="stateSuccess">
+			<div class="renovar-success-icon">
+				<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+					<polyline points="20 6 9 17 4 12"/>
+				</svg>
+			</div>
+			<h2>¡MEMBRESÍA RENOVADA!</h2>
+			<p>Tu plan está activo. ¡A entrenar!</p>
+			<a href="/portal/dashboard" class="btn-gold renovar-btn">VER MI CUENTA</a>
+		</div>
+
+		<!-- Error state -->
+		<div class="renovar-state renovar-state--hidden" id="stateError">
+			<div class="renovar-error-icon">
+				<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="12" y1="8" x2="12" y2="12"/>
+					<line x1="12" y1="16" x2="12.01" y2="16"/>
+				</svg>
+			</div>
+			<h2 id="errorTitle">ERROR</h2>
+			<p id="errorMessage">No pudimos cargar los planes disponibles.</p>
+			<a href="/portal/dashboard" class="btn-gold renovar-btn">VOLVER AL DASHBOARD</a>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.portal-renovar {
+		min-height: 100vh;
+		padding: 10rem 1.5rem 4rem;
+		background: var(--brand-black);
+	}
+
+	.renovar-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		text-align: center;
+		max-width: 56rem;
+		margin: 0 auto;
+	}
+
+	.renovar-state--hidden {
+		display: none !important;
+	}
+
+	.renovar-state h2 {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2.5rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+	}
+
+	.renovar-state p {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+	}
+
+	.renovar-spinner svg {
+		animation: spin 1s linear infinite;
+		color: var(--brand-gold);
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	.renovar-success-icon {
+		color: #2ecc71;
+		margin-bottom: 0.5rem;
+	}
+
+	.renovar-error-icon {
+		color: var(--brand-red);
+	}
+
+	.renovar-header {
+		text-align: center;
+		margin-bottom: 3rem;
+		width: 100%;
+	}
+
+	.renovar-back {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.4);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		transition: color 0.3s ease;
+		display: inline-block;
+		margin-bottom: 1.5rem;
+	}
+
+	.renovar-back:hover {
+		color: var(--brand-gold);
+	}
+
+	.renovar-title {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		margin-bottom: 0.75rem;
+	}
+
+	.renovar-subtitle {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.renovar-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: 1.5rem;
+		width: 100%;
+	}
+
+	.renovar-card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 1.5rem;
+		border: 2px solid rgba(232, 200, 50, 0.2);
+		background: #0a0a0a;
+		color: var(--brand-white);
+		transition: all 0.5s ease;
+		cursor: pointer;
+	}
+
+	.renovar-card:hover {
+		border-color: rgba(232, 200, 50, 0.5);
+	}
+
+	.renovar-card--selected {
+		border-color: var(--brand-gold);
+		box-shadow: 0 0 40px rgba(232, 200, 50, 0.15);
+	}
+
+	.renovar-card__badge {
+		position: absolute;
+		top: -1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--brand-red);
+		color: white;
+		font-family: var(--font-display);
+		font-size: 0.65rem;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.75rem;
+	}
+
+	.renovar-card__badge--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.renovar-card__header {
+		margin-bottom: 1rem;
+	}
+
+	.renovar-card__header h3 {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		margin-bottom: 0.5rem;
+	}
+
+	.renovar-card__price {
+		display: flex;
+		align-items: baseline;
+		gap: 0.25rem;
+	}
+
+	.renovar-card__currency {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		opacity: 0.6;
+	}
+
+	.renovar-card__amount {
+		font-family: var(--font-display);
+		font-size: 2.5rem;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+
+	.renovar-card__period {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		opacity: 0.6;
+	}
+
+	.renovar-card__features {
+		list-style: none;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.renovar-card__features li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: rgba(240, 237, 232, 0.7);
+	}
+
+	.renovar-card__features svg {
+		flex-shrink: 0;
+		margin-top: 1px;
+		color: var(--brand-gold);
+	}
+
+	.renovar-card__cta {
+		display: block;
+		width: 100%;
+		padding: 0.75rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.renovar-card__cta:hover {
+		background: var(--brand-white);
+	}
+
+	.renovar-card__cta:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		transform: none !important;
+	}
+
+	.renovar-btn {
+		display: block;
+		width: 100%;
+		max-width: 24rem;
+		padding: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+		margin-top: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		.portal-renovar {
+			padding: 8rem 1rem 3rem;
+		}
+
+		.renovar-grid {
+			grid-template-columns: 1fr;
+			max-width: 22rem;
+		}
+	}
+</style>
+
+<script>
+interface Plan {
+	id: string;
+	name: string;
+	amountInCents: number;
+	currency: string;
+	period: string;
+	features: string[];
+	is_featured?: boolean;
+	badge?: string;
+}
+
+interface SignatureResponse {
+	reference: string;
+	signature: string;
+	amountInCents: number;
+	currency: string;
+	publicKey: string;
+	planName: string;
+}
+
+declare global {
+	interface Window {
+		WidgetCheckout: new (config: {
+			currency: string;
+			amountInCents: number;
+			reference: string;
+			publicKey: string;
+			signature: { integrity: string };
+			redirectUrl?: string;
+		}) => {
+			open: (callback: (result: { transaction: { id: string } }) => void) => void;
+		};
+	}
+}
+
+function formatPrice(cents: number): string {
+	return new Intl.NumberFormat('es-CO', {
+		style: 'currency',
+		currency: 'COP',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(cents / 100);
+}
+
+function showState(stateId: string): void {
+	['stateLoading', 'statePlans', 'stateSuccess', 'stateError'].forEach((id) => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.classList.toggle('renovar-state--hidden', id !== stateId);
+		}
+	});
+}
+
+function getAuthHeaders(): Record<string, string> {
+	const token = sessionStorage.getItem('portal_token');
+	if (!token) return {};
+	return { Authorization: `Bearer ${token}` };
+}
+
+// Check auth
+const token = sessionStorage.getItem('portal_token');
+if (!token) {
+	window.location.href = '/portal/';
+}
+
+// Fetch plans from FaceGYM API
+async function loadPlans(): Promise<void> {
+	try {
+		const response = await fetch('/api/portal/plans', {
+			headers: { ...getAuthHeaders() },
+		});
+
+		if (response.status === 401 || response.status === 403) {
+			sessionStorage.removeItem('portal_token');
+			window.location.href = '/portal/';
+			return;
+		}
+
+		if (!response.ok) {
+			throw new Error('Error al cargar planes');
+		}
+
+		const plans = (await response.json()) as Plan[];
+
+		if (!plans || plans.length === 0) {
+			// Fallback: use hardcoded plans from signature.ts
+			renderPlans(getFallbackPlans());
+		} else {
+			renderPlans(plans);
+		}
+
+		showState('statePlans');
+	} catch {
+		// If API fails, show fallback plans
+		renderPlans(getFallbackPlans());
+		showState('statePlans');
+	}
+}
+
+function getFallbackPlans(): Plan[] {
+	return [
+		{
+			id: 'mensual',
+			name: 'Membresía Mensual',
+			amountInCents: 6990000,
+			currency: 'COP',
+			period: '/mes',
+			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		},
+		{
+			id: 'power-pack',
+			name: 'Power Pack',
+			amountInCents: 14000000,
+			currency: 'COP',
+			period: '/mes',
+			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual', 'Asesoría en alimentación', 'Proteína por entreno'],
+			is_featured: true,
+			badge: 'RECOMENDADO',
+		},
+		{
+			id: 'trimestral',
+			name: 'Plan Trimestral',
+			amountInCents: 18600000,
+			currency: 'COP',
+			period: '/trimestre',
+			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		},
+		{
+			id: 'semestral',
+			name: 'Plan Semestral',
+			amountInCents: 36000000,
+			currency: 'COP',
+			period: '/semestre',
+			features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+		},
+		{
+			id: 'anual',
+			name: 'Plan Anual',
+			amountInCents: 62000000,
+			currency: 'COP',
+			period: '/año',
+			features: ['Mejor precio beneficio', 'Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+			badge: 'MEJOR VALOR',
+			is_featured: true,
+		},
+	];
+}
+
+function renderPlans(plans: Plan[]): void {
+	const grid = document.getElementById('plansGrid');
+	if (!grid) return;
+
+	grid.innerHTML = plans
+		.map((plan) => {
+			const badgeHtml = plan.badge
+				? `<div class="renovar-card__badge ${plan.badge === 'MEJOR VALOR' ? 'renovar-card__badge--gold' : ''}">${plan.badge}</div>`
+				: '';
+
+			const featuresHtml = (plan.features || [])
+				.map(
+					(f) => `
+				<li>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+					${f}
+				</li>
+			`
+				)
+				.join('');
+
+			return `
+			<div class="renovar-card" data-plan-id="${plan.id}">
+				${badgeHtml}
+				<div class="renovar-card__header">
+					<h3>${plan.name}</h3>
+					<div class="renovar-card__price">
+						<span class="renovar-card__currency">${plan.currency}</span>
+						<span class="renovar-card__amount">${formatPrice(plan.amountInCents).replace('COP', '').trim()}</span>
+						<span class="renovar-card__period">${plan.period}</span>
+					</div>
+				</div>
+				<ul class="renovar-card__features">
+					${featuresHtml}
+				</ul>
+				<button type="button" class="renovar-card__cta" data-plan-pay="${plan.id}">
+					SELECCIONAR
+				</button>
+			</div>
+		`;
+		})
+		.join('');
+
+	// Wire up pay buttons
+	grid.querySelectorAll<HTMLButtonElement>('[data-plan-pay]').forEach((button) => {
+		button.addEventListener('click', async () => {
+			const planId = button.dataset.planPay;
+			if (!planId) return;
+
+			// Highlight selected card
+			grid.querySelectorAll('.renovar-card').forEach((card) => card.classList.remove('renovar-card--selected'));
+			button.closest('.renovar-card')?.classList.add('renovar-card--selected');
+
+			const originalLabel = button.textContent || 'SELECCIONAR';
+			button.disabled = true;
+			button.textContent = 'PROCESANDO...';
+
+			try {
+				// Get Wompi signature from our local API
+				const sigResponse = await fetch('/api/payment/signature', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ plan: planId }),
+				});
+
+				if (!sigResponse.ok) {
+					const errData = await sigResponse.json().catch(() => ({}));
+					throw new Error(errData.error || 'Error al procesar el pago');
+				}
+
+				const sigData: SignatureResponse = await sigResponse.json();
+
+				const WidgetCheckout = window.WidgetCheckout;
+				if (!WidgetCheckout) {
+					throw new Error('El sistema de pagos no está disponible. Recarga la página e intentá de nuevo.');
+				}
+
+				const checkout = new WidgetCheckout({
+					currency: sigData.currency,
+					amountInCents: sigData.amountInCents,
+					reference: sigData.reference,
+					publicKey: sigData.publicKey,
+					signature: { integrity: sigData.signature },
+					redirectUrl: 'https://powerhousegym.co/portal/renovar',
+				});
+
+				checkout.open(async (result) => {
+					const tx = result.transaction;
+					if (tx?.id) {
+						// Payment completed — try to renew via FaceGYM
+						try {
+							await fetch('/api/portal/renew', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									...getAuthHeaders(),
+								},
+								body: JSON.stringify({
+									transactionId: tx.id,
+									planId: planId,
+									reference: sigData.reference,
+									amount: sigData.amountInCents,
+								}),
+							});
+						} catch {
+							// Renewal call may fail but payment was made — log and continue
+							console.error('FaceGYM renewal call failed after payment');
+						}
+
+						showState('stateSuccess');
+					} else {
+						button.disabled = false;
+						button.textContent = originalLabel;
+					}
+				});
+			} catch (err) {
+				const message = err instanceof Error ? err.message : 'Error desconocido';
+				alert(message);
+				button.disabled = false;
+				button.textContent = originalLabel;
+			}
+		});
+	});
+}
+
+// Main execution
+if (token) {
+	loadPlans();
+}
+</script>

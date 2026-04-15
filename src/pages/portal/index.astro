@@ -1,0 +1,535 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Portal de Miembros" description="Accedé a tu cuenta de PowerHouse Gym Manizales para ver tu membresía, pagos y renovar tu plan.">
+	<div class="portal-login">
+		<div class="portal-login__card">
+			<div class="portal-login__logo">
+				<img src="/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png" alt="PowerHouse Gym" width="80" height="80" />
+			</div>
+
+			<h1 class="portal-login__title">ACCEDÉ A TU CUENTA</h1>
+			<p class="portal-login__subtitle">Ingresá tu número de celular para recibir un código de verificación por WhatsApp</p>
+
+			<!-- Phone Step -->
+			<div class="portal-login__step" id="stepPhone">
+				<div class="portal-login__input-group">
+					<div class="portal-login__phone-prefix">
+						<span>🇨🇴</span>
+						<span>+57</span>
+					</div>
+					<input
+						type="tel"
+						id="phoneInput"
+						class="portal-login__input"
+						placeholder="300 000 0000"
+						maxlength="12"
+						autocomplete="tel"
+						inputmode="numeric"
+					/>
+				</div>
+				<p class="portal-login__hint">Solo los 10 dígitos de tu celular</p>
+				<button type="button" class="btn-gold portal-login__btn" id="btnSendCode">
+					ENVIAR CÓDIGO
+				</button>
+				<p class="portal-login__error" id="phoneError"></p>
+			</div>
+
+			<!-- PIN Step -->
+			<div class="portal-login__step portal-login__step--hidden" id="stepPin">
+				<p class="portal-login__pin-info">Ingresá el código de 6 dígitos que te enviamos por WhatsApp</p>
+				<p class="portal-login__phone-display" id="phoneDisplay"></p>
+				<div class="portal-login__pin-group">
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="0" />
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="1" />
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="2" />
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="3" />
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="4" />
+					<input type="text" class="portal-login__pin-input" maxlength="1" inputmode="numeric" data-index="5" />
+				</div>
+				<button type="button" class="btn-gold portal-login__btn" id="btnVerify">
+					VERIFICAR
+				</button>
+				<button type="button" class="portal-login__link-btn" id="btnResend">
+					Reenviar código
+				</button>
+				<p class="portal-login__resend-timer" id="resendTimer"></p>
+				<p class="portal-login__error" id="pinError"></p>
+				<button type="button" class="portal-login__back-btn" id="btnBack">
+					← Cambiar número
+				</button>
+			</div>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.portal-login {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10rem 1.5rem 4rem;
+		background: var(--brand-black);
+	}
+
+	.portal-login__card {
+		max-width: 28rem;
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 3rem 2.5rem;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.portal-login__logo {
+		margin-bottom: 0.5rem;
+	}
+
+	.portal-login__logo img {
+		height: 5rem;
+		width: auto;
+		margin: 0 auto;
+	}
+
+	.portal-login__title {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2.25rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+	}
+
+	.portal-login__subtitle {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.5);
+		line-height: 1.6;
+		max-width: 22rem;
+	}
+
+	.portal-login__step {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.portal-login__step--hidden {
+		display: none !important;
+	}
+
+	.portal-login__input-group {
+		display: flex;
+		align-items: center;
+		gap: 0;
+		width: 100%;
+		background: var(--brand-black);
+		border: 1px solid rgba(240, 237, 232, 0.1);
+		transition: border-color 0.3s ease;
+		overflow: hidden;
+	}
+
+	.portal-login__input-group:focus-within {
+		border-color: var(--brand-gold);
+	}
+
+	.portal-login__phone-prefix {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.75rem 0.75rem 0.75rem 1rem;
+		background: rgba(232, 200, 50, 0.05);
+		border-right: 1px solid rgba(240, 237, 232, 0.1);
+		color: var(--brand-white);
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
+		white-space: nowrap;
+	}
+
+	.portal-login__input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		padding: 0.75rem 1rem;
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: var(--brand-white);
+		outline: none;
+		width: 100%;
+		letter-spacing: 0.05em;
+	}
+
+	.portal-login__input::placeholder {
+		color: rgba(240, 237, 232, 0.25);
+	}
+
+	.portal-login__hint {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.35);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.portal-login__btn {
+		width: 100%;
+		font-size: 1.25rem;
+		padding: 0.85rem 2rem;
+		margin-top: 0.5rem;
+	}
+
+	.portal-login__btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		transform: none !important;
+	}
+
+	.portal-login__error {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--brand-red);
+		min-height: 1.25rem;
+		text-align: center;
+	}
+
+	.portal-login__pin-info {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.5;
+	}
+
+	.portal-login__phone-display {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--brand-gold);
+		letter-spacing: 0.05em;
+	}
+
+	.portal-login__pin-group {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+	}
+
+	.portal-login__pin-input {
+		width: 3rem;
+		height: 3.5rem;
+		background: var(--brand-black);
+		border: 1px solid rgba(240, 237, 232, 0.1);
+		text-align: center;
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-gold);
+		outline: none;
+		transition: border-color 0.3s ease;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.portal-login__pin-input:focus {
+		border-color: var(--brand-gold);
+	}
+
+	.portal-login__pin-input::placeholder {
+		color: rgba(240, 237, 232, 0.15);
+	}
+
+	.portal-login__link-btn {
+		background: none;
+		border: none;
+		color: rgba(240, 237, 232, 0.4);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		cursor: pointer;
+		transition: color 0.3s ease;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		padding: 0.5rem;
+	}
+
+	.portal-login__link-btn:hover:not(:disabled) {
+		color: var(--brand-gold);
+	}
+
+	.portal-login__link-btn:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.portal-login__resend-timer {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.3);
+		min-height: 1rem;
+	}
+
+	.portal-login__back-btn {
+		background: none;
+		border: none;
+		color: rgba(240, 237, 232, 0.4);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		cursor: pointer;
+		transition: color 0.3s ease;
+		padding: 0.5rem;
+		margin-top: 0.5rem;
+	}
+
+	.portal-login__back-btn:hover {
+		color: var(--brand-gold);
+	}
+
+	@media (max-width: 768px) {
+		.portal-login {
+			padding: 8rem 1rem 3rem;
+		}
+
+		.portal-login__card {
+			padding: 2rem 1.5rem;
+		}
+
+		.portal-login__pin-input {
+			width: 2.5rem;
+			height: 3rem;
+			font-size: 1.25rem;
+		}
+	}
+</style>
+
+<script>
+function normalizePhone(phone: string): string {
+	const digits = phone.replace(/\D/g, '');
+	return digits.slice(-10);
+}
+
+function formatPhoneDisplay(phone: string): string {
+	const clean = normalizePhone(phone);
+	if (clean.length !== 10) return phone;
+	return `+57 ${clean.slice(0, 3)} ${clean.slice(3, 6)} ${clean.slice(6)}`;
+}
+
+const phoneInput = document.getElementById('phoneInput') as HTMLInputElement;
+const btnSendCode = document.getElementById('btnSendCode') as HTMLButtonElement;
+const phoneError = document.getElementById('phoneError') as HTMLParagraphElement;
+const stepPhone = document.getElementById('stepPhone') as HTMLDivElement;
+const stepPin = document.getElementById('stepPin') as HTMLDivElement;
+const phoneDisplay = document.getElementById('phoneDisplay') as HTMLParagraphElement;
+const btnVerify = document.getElementById('btnVerify') as HTMLButtonElement;
+const btnResend = document.getElementById('btnResend') as HTMLButtonElement;
+const resendTimer = document.getElementById('resendTimer') as HTMLParagraphElement;
+const pinError = document.getElementById('pinError') as HTMLParagraphElement;
+const btnBack = document.getElementById('btnBack') as HTMLButtonElement;
+const pinInputs = document.querySelectorAll<HTMLInputElement>('.portal-login__pin-input');
+
+let currentPhone = '';
+let resendCooldown = 0;
+let resendInterval: ReturnType<typeof setInterval> | null = null;
+
+// Phone input: only allow digits and formatting
+phoneInput?.addEventListener('input', () => {
+	const raw = phoneInput.value.replace(/\D/g, '');
+	// Auto-format: XXX XXX XXXX
+	if (raw.length <= 3) {
+		phoneInput.value = raw;
+	} else if (raw.length <= 6) {
+		phoneInput.value = `${raw.slice(0, 3)} ${raw.slice(3)}`;
+	} else {
+		phoneInput.value = `${raw.slice(0, 3)} ${raw.slice(3, 6)} ${raw.slice(6, 10)}`;
+	}
+	phoneError.textContent = '';
+});
+
+// Send code
+btnSendCode?.addEventListener('click', async () => {
+	const phone = normalizePhone(phoneInput.value);
+	phoneError.textContent = '';
+
+	if (phone.length !== 10) {
+		phoneError.textContent = 'Ingresá un número de 10 dígitos';
+		return;
+	}
+
+	currentPhone = phone;
+	const originalLabel = btnSendCode.textContent || 'ENVIAR CÓDIGO';
+	btnSendCode.disabled = true;
+	btnSendCode.textContent = 'ENVIANDO...';
+
+	try {
+		const response = await fetch('/api/auth/member-login', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ phone }),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => ({}));
+			throw new Error(data.error || data.message || 'Error al enviar el código');
+		}
+
+		// Switch to PIN step
+		phoneDisplay.textContent = formatPhoneDisplay(phone);
+		stepPhone.classList.add('portal-login__step--hidden');
+		stepPin.classList.remove('portal-login__step--hidden');
+		pinInputs[0]?.focus();
+		startResendCooldown();
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Error desconocido';
+		phoneError.textContent = message;
+	} finally {
+		btnSendCode.disabled = false;
+		btnSendCode.textContent = originalLabel;
+	}
+});
+
+// PIN input behavior
+pinInputs.forEach((input, idx) => {
+	input.addEventListener('input', (e) => {
+		const value = (e.target as HTMLInputElement).value.replace(/\D/g, '');
+		(e.target as HTMLInputElement).value = value.slice(-1);
+		pinError.textContent = '';
+
+		if (value && idx < pinInputs.length - 1) {
+			pinInputs[idx + 1]?.focus();
+		}
+	});
+
+	input.addEventListener('keydown', (e) => {
+		if ((e as KeyboardEvent).key === 'Backspace' && !input.value && idx > 0) {
+			pinInputs[idx - 1]?.focus();
+		}
+	});
+
+	// Handle paste
+	input.addEventListener('paste', (e) => {
+		e.preventDefault();
+		const pasted = (e.clipboardData || (window as any).clipboardData).getData('text').replace(/\D/g, '');
+		for (let i = 0; i < Math.min(pasted.length, pinInputs.length - idx); i++) {
+			pinInputs[idx + i]!.value = pasted[i];
+		}
+		const focusIdx = Math.min(idx + pasted.length, pinInputs.length - 1);
+		pinInputs[focusIdx]?.focus();
+	});
+});
+
+// Get full PIN value
+function getPin(): string {
+	return Array.from(pinInputs).map((input) => input.value).join('');
+}
+
+// Verify PIN
+btnVerify?.addEventListener('click', async () => {
+	const pin = getPin();
+	pinError.textContent = '';
+
+	if (pin.length !== 6) {
+		pinError.textContent = 'Ingresá los 6 dígitos del código';
+		return;
+	}
+
+	const originalLabel = btnVerify.textContent || 'VERIFICAR';
+	btnVerify.disabled = true;
+	btnVerify.textContent = 'VERIFICANDO...';
+
+	try {
+		const response = await fetch('/api/auth/member-verify', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ phone: currentPhone, pin }),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => ({}));
+			throw new Error(data.error || data.message || 'Código inválido');
+		}
+
+		const data = await response.json();
+
+		// Store JWT in sessionStorage
+		if (data.token) {
+			sessionStorage.setItem('portal_token', data.token);
+		}
+
+		// Redirect to dashboard
+		window.location.href = '/portal/dashboard';
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Error desconocido';
+		pinError.textContent = message;
+		// Clear PIN inputs
+		pinInputs.forEach((input) => (input.value = ''));
+		pinInputs[0]?.focus();
+	} finally {
+		btnVerify.disabled = false;
+		btnVerify.textContent = originalLabel;
+	}
+});
+
+// Resend code
+function startResendCooldown(): void {
+	resendCooldown = 60;
+	btnResend!.disabled = true;
+	resendTimer!.textContent = `Reenviar en ${resendCooldown}s`;
+
+	if (resendInterval) clearInterval(resendInterval);
+	resendInterval = setInterval(() => {
+		resendCooldown--;
+		if (resendCooldown <= 0) {
+			clearInterval(resendInterval!);
+			resendInterval = null;
+			btnResend!.disabled = false;
+			resendTimer!.textContent = '';
+		} else {
+			resendTimer!.textContent = `Reenviar en ${resendCooldown}s`;
+		}
+	}, 1000);
+}
+
+btnResend?.addEventListener('click', async () => {
+	if (!currentPhone || btnResend.disabled) return;
+
+	btnResend.disabled = true;
+	btnResend.textContent = 'ENVIANDO...';
+
+	try {
+		const response = await fetch('/api/auth/member-resend', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ phone: currentPhone }),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => ({}));
+			throw new Error(data.error || data.message || 'Error al reenviar');
+		}
+
+		startResendCooldown();
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Error desconocido';
+		pinError.textContent = message;
+		btnResend.disabled = false;
+	} finally {
+		btnResend.textContent = 'Reenviar código';
+	}
+});
+
+// Back to phone step
+btnBack?.addEventListener('click', () => {
+	stepPin.classList.add('portal-login__step--hidden');
+	stepPhone.classList.remove('portal-login__step--hidden');
+	phoneInput.focus();
+	// Clear PIN inputs
+	pinInputs.forEach((input) => (input.value = ''));
+	if (resendInterval) {
+		clearInterval(resendInterval);
+		resendInterval = null;
+	}
+});
+</script>
