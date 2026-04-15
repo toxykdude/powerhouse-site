@@ -239,72 +239,126 @@ import Base from '../../layouts/Base.astro';
 		width: 100%;
 	}
 
-	/* ========== CARDS — matches planes.astro plan-card ========== */
+	/* ========== CARDS — premium redesign ========== */
 	.renovar-card {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		padding: 1.5rem;
-		border: 1px solid rgba(232, 200, 50, 0.2);
-		background: #0a0a0a;
+		padding: 2rem 1.75rem;
+		border: 1px solid rgba(232, 200, 50, 0.15);
+		background: linear-gradient(165deg, #111111 0%, #0a0a0a 100%);
 		color: var(--brand-white);
-		transition: all 0.5s ease;
+		transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+		overflow: visible;
+	}
+
+	.renovar-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, rgba(232, 200, 50, 0.3), transparent);
+		opacity: 0;
+		transition: opacity 0.4s ease;
 	}
 
 	.renovar-card:hover {
-		border-color: rgba(232, 200, 50, 0.5);
+		transform: translateY(-6px);
+		border-color: rgba(232, 200, 50, 0.4);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(232, 200, 50, 0.08);
 	}
 
+	.renovar-card:hover::before {
+		opacity: 1;
+	}
+
+	/* --- FEATURED CARD (Power Pack) --- */
 	.renovar-card--featured {
-		background: var(--brand-gold);
+		background: linear-gradient(165deg, #f0d840 0%, #E8C832 40%, #c8a820 100%);
 		color: var(--brand-black);
 		border-color: var(--brand-gold);
 		transform: scale(1.05);
 		z-index: 1;
 		box-shadow: 0 0 50px rgba(232, 200, 50, 0.2);
+		animation: featuredPulse 3s ease-in-out infinite;
 	}
 
 	.renovar-card--featured:hover {
+		transform: scale(1.05) translateY(-6px);
 		border-color: var(--brand-gold);
+		box-shadow: 0 20px 60px rgba(232, 200, 50, 0.35), 0 0 80px rgba(232, 200, 50, 0.15);
 	}
 
+	.renovar-card--featured::before {
+		opacity: 0;
+	}
+
+	@keyframes featuredPulse {
+		0%, 100% { box-shadow: 0 0 50px rgba(232, 200, 50, 0.2); }
+		50% { box-shadow: 0 0 70px rgba(232, 200, 50, 0.35); }
+	}
+
+	/* --- ANNUAL CARD --- */
 	.renovar-card--annual {
-		background: transparent;
+		background: linear-gradient(165deg, #0f0f0f 0%, #080808 100%);
 		color: var(--brand-white);
 		border: 2px solid var(--brand-gold);
 		transform: scale(1.05);
 		z-index: 1;
 		box-shadow: 0 0 60px rgba(232, 200, 50, 0.15), inset 0 0 30px rgba(232, 200, 50, 0.05);
+		animation: annualShimmer 4s ease-in-out infinite;
 	}
 
 	.renovar-card--annual:hover {
+		transform: scale(1.05) translateY(-6px);
 		border-color: white;
-		box-shadow: 0 0 80px rgba(232, 200, 50, 0.25), inset 0 0 30px rgba(232, 200, 50, 0.1);
+		box-shadow: 0 20px 60px rgba(232, 200, 50, 0.25), inset 0 0 40px rgba(232, 200, 50, 0.08);
 	}
 
+	@keyframes annualShimmer {
+		0%, 100% { border-color: var(--brand-gold); }
+		50% { border-color: rgba(255, 255, 255, 0.6); }
+	}
+
+	/* --- BADGE --- */
 	.renovar-card__badge {
 		position: absolute;
-		top: -1rem;
+		top: -0.9rem;
 		left: 50%;
 		transform: translateX(-50%);
 		background: var(--brand-red);
 		color: white;
 		font-family: var(--font-display);
-		font-size: 0.75rem;
-		letter-spacing: 0.15em;
+		font-size: 0.8rem;
+		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		padding: 0.25rem 1rem;
+		padding: 0.3rem 1.25rem;
 		white-space: nowrap;
+		box-shadow: 0 4px 15px rgba(192, 57, 43, 0.4);
 	}
 
 	.renovar-card__badge--gold {
-		background: var(--brand-gold);
+		background: linear-gradient(135deg, #f0d840, #E8C832);
 		color: var(--brand-black);
 		font-weight: bold;
+		box-shadow: 0 4px 15px rgba(232, 200, 50, 0.4);
 	}
 
+	/* --- HEADER --- */
 	.renovar-card__header {
-		margin-bottom: 1.5rem;
+		margin-bottom: 0;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	.renovar-card--featured .renovar-card__header {
+		border-bottom-color: rgba(0, 0, 0, 0.15);
+	}
+
+	.renovar-card--annual .renovar-card__header {
+		border-bottom-color: rgba(232, 200, 50, 0.2);
 	}
 
 	.renovar-card__header h3 {
@@ -312,59 +366,97 @@ import Base from '../../layouts/Base.astro';
 		font-size: 1.75rem;
 		text-transform: uppercase;
 		letter-spacing: -0.01em;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.75rem;
 	}
 
 	.renovar-card__price {
 		display: flex;
 		align-items: baseline;
-		gap: 0.25rem;
+		gap: 0.3rem;
 	}
 
 	.renovar-card__currency {
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
-		opacity: 0.6;
+		font-size: 0.85rem;
+		opacity: 0.5;
 	}
 
 	.renovar-card__amount {
 		font-family: var(--font-display);
-		font-size: 3rem;
+		font-size: 3.25rem;
 		letter-spacing: -0.02em;
 		line-height: 1;
 	}
 
 	.renovar-card__period {
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
+		font-size: 0.85rem;
+		opacity: 0.5;
+	}
+
+	/* --- EQUIVALENT PRICE --- */
+	.renovar-card__equivalent {
+		display: block;
+		margin-top: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		opacity: 0.45;
+		letter-spacing: 0.05em;
+	}
+
+	.renovar-card--featured .renovar-card__equivalent {
 		opacity: 0.6;
 	}
 
+	/* --- SAVINGS TAG --- */
+	.renovar-card__savings {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-top: 0.75rem;
+		padding: 0.3rem 0.75rem;
+		font-family: var(--font-display);
+		font-size: 0.85rem;
+		letter-spacing: 0.05em;
+		background: rgba(46, 204, 113, 0.15);
+		border: 1px solid rgba(46, 204, 113, 0.3);
+		color: #2ecc71;
+	}
+
+	.renovar-card--featured .renovar-card__savings {
+		background: rgba(0, 0, 0, 0.15);
+		border-color: rgba(0, 0, 0, 0.25);
+		color: var(--brand-black);
+	}
+
+	.renovar-card__savings svg {
+		flex-shrink: 0;
+	}
+
+	/* --- FEATURES --- */
 	.renovar-card__features {
 		list-style: none;
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
-		margin-bottom: 2rem;
+		padding: 1.25rem 0;
 	}
 
 	.renovar-card__features li {
 		display: flex;
 		align-items: flex-start;
-		gap: 0.5rem;
+		gap: 0.6rem;
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.08em;
+		line-height: 1.4;
 	}
 
 	.renovar-card__features svg {
 		flex-shrink: 0;
-		margin-top: 2px;
-	}
-
-	.renovar-card:not(.renovar-card--featured) .renovar-card__features svg {
+		margin-top: 3px;
 		color: var(--brand-gold);
 	}
 
@@ -372,20 +464,34 @@ import Base from '../../layouts/Base.astro';
 		color: var(--brand-black);
 	}
 
-	/* CTA BUTTONS — matches planes.astro exactly */
+	/* --- CTA BUTTONS — premium with arrow --- */
 	.renovar-card__cta {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
 		width: 100%;
-		padding: 1rem;
+		padding: 1.1rem 1.5rem;
 		font-family: var(--font-display);
-		font-size: 1.25rem;
+		font-size: 1.35rem;
 		text-transform: uppercase;
-		letter-spacing: -0.01em;
+		letter-spacing: 0.02em;
 		border: none;
 		cursor: pointer;
-		transition: all 0.3s ease;
+		transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 		text-decoration: none;
 		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.renovar-card__cta-arrow {
+		display: inline-block;
+		transition: transform 0.3s ease;
+	}
+
+	.renovar-card__cta:hover .renovar-card__cta-arrow {
+		transform: translateX(4px);
 	}
 
 	.renovar-card__cta--gold {
@@ -395,21 +501,48 @@ import Base from '../../layouts/Base.astro';
 
 	.renovar-card__cta--gold:hover {
 		background: white;
+		transform: scale(1.02);
+		box-shadow: 0 8px 30px rgba(232, 200, 50, 0.3);
+	}
+
+	.renovar-card__cta--gold:active {
+		transform: scale(0.98);
 	}
 
 	.renovar-card__cta--dark {
 		background: var(--brand-black);
 		color: var(--brand-gold);
+		border: 1px solid rgba(232, 200, 50, 0.3);
 	}
 
 	.renovar-card__cta--dark:hover {
 		background: var(--brand-red);
 		color: white;
+		border-color: var(--brand-red);
+		transform: scale(1.02);
+		box-shadow: 0 8px 30px rgba(192, 57, 43, 0.3);
+	}
+
+	.renovar-card__cta--dark:active {
+		transform: scale(0.98);
+	}
+
+	/* Annual card CTA special */
+	.renovar-card--annual .renovar-card__cta--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.renovar-card--annual .renovar-card__cta--gold:hover {
+		background: white;
+		box-shadow: 0 8px 30px rgba(232, 200, 50, 0.4);
 	}
 
 	.renovar-card__cta:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+		transform: none !important;
+		box-shadow: none !important;
 	}
 
 	/* ========== TRUST BAR ========== */
@@ -650,6 +783,8 @@ interface Plan {
 	badge?: string;
 	variant?: 'featured' | 'annual';
 	ctaVariant: 'gold' | 'dark';
+	equivalent?: string;
+	savings?: string;
 }
 
 interface SignatureResponse {
@@ -711,6 +846,8 @@ const ROW1: Plan[] = [
 		price: '$186.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 		ctaVariant: 'gold',
+		equivalent: '$62.000/mes',
+		savings: 'Ahorras $23.700',
 	},
 ];
 
@@ -725,6 +862,8 @@ const ROW2: Plan[] = [
 		price: '$360.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 		ctaVariant: 'gold',
+		equivalent: '$60.000/mes',
+		savings: 'Ahorras $59.400',
 	},
 	{
 		wompiId: 'anual',
@@ -738,6 +877,8 @@ const ROW2: Plan[] = [
 		badge: 'MEJOR VALOR',
 		variant: 'annual',
 		ctaVariant: 'gold',
+		equivalent: '$51.667/mes',
+		savings: 'Ahorras $218.800',
 	},
 ];
 
@@ -765,6 +906,17 @@ function renderCard(plan: Plan): string {
 		? `<div class="renovar-card__badge${plan.variant === 'annual' ? ' renovar-card__badge--gold' : ''}">${plan.badge}</div>`
 		: '';
 
+	const equivalentHtml = plan.equivalent
+		? `<span class="renovar-card__equivalent">Equivale a ${plan.equivalent}</span>`
+		: '';
+
+	const savingsHtml = plan.savings
+		? `<div class="renovar-card__savings">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				${plan.savings}
+			</div>`
+		: '';
+
 	const featuresHtml = plan.features
 		.map((f) => `
 			<li>
@@ -783,12 +935,17 @@ function renderCard(plan: Plan): string {
 				<span class="renovar-card__amount">${plan.price}</span>
 				<span class="renovar-card__period">${plan.period}</span>
 			</div>
+			${equivalentHtml}
+			${savingsHtml}
 		</div>
 		<ul class="renovar-card__features">
 			${featuresHtml}
 		</ul>
 		<button type="button" class="renovar-card__cta renovar-card__cta--${plan.ctaVariant}" data-plan-pay="${plan.wompiId}">
 			PAGAR AHORA
+			<span class="renovar-card__cta-arrow">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+			</span>
 		</button>
 	</div>`;
 }
@@ -804,9 +961,9 @@ function wireButtons(): void {
 			const plan = allPlans.find((p) => p.wompiId === wompiId);
 			if (!plan) return;
 
-			const originalLabel = button.textContent || 'PAGAR AHORA';
+			const originalHtml = button.innerHTML || 'PAGAR AHORA';
 			button.disabled = true;
-			button.textContent = 'PROCESANDO...';
+			button.innerHTML = 'PROCESANDO...';
 
 			try {
 				const sigResponse = await fetch('/api/payment/signature', {
@@ -859,14 +1016,14 @@ function wireButtons(): void {
 						showState('stateSuccess');
 					} else {
 						button.disabled = false;
-						button.textContent = originalLabel;
+						button.innerHTML = originalHtml;
 					}
 				});
 			} catch (err) {
 				const message = err instanceof Error ? err.message : 'Error desconocido';
 				alert(message);
 				button.disabled = false;
-				button.textContent = originalLabel;
+				button.innerHTML = originalHtml;
 			}
 		});
 	});
