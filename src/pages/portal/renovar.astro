@@ -7,154 +7,129 @@ import Base from '../../layouts/Base.astro';
 		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
 	</Fragment>
 
-	<div class="portal-renovar">
-		<!-- Loading state -->
-		<div class="renovar-state" id="stateLoading">
-			<div class="renovar-spinner">
-				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-				</svg>
-			</div>
-			<h2>CARGANDO PLANES</h2>
-			<p>Un momento por favor...</p>
+	<div class="renovar-page">
+		<div class="renovar-page__hero">
+			<a href="/portal/dashboard" class="renovar-page__back">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+				VOLVER AL DASHBOARD
+			</a>
+			<span class="renovar-page__tagline">Portal de Miembros</span>
+			<h1>RENOVÁ TU PLAN</h1>
+			<p>Elegí el plan que mejor se adapte a tus objetivos. Pagá seguro con Wompi.</p>
 		</div>
 
-		<!-- Plans content (hidden by default) -->
-		<div class="renovar-state renovar-state--hidden" id="statePlans">
-			<div class="renovar-header">
-				<a href="/portal/dashboard" class="renovar-back">← VOLVER</a>
-				<h1 class="renovar-title">RENOVAR TU PLAN</h1>
-				<p class="renovar-subtitle">Elegí el plan que mejor se adapte a tus objetivos</p>
-			</div>
-
-			<div class="renovar-grid" id="plansGrid">
-				<!-- Plans rendered by JS -->
-			</div>
+		<div class="renovar-page__plans" id="statePlans">
+			<div class="renovar-grid renovar-grid--top" id="plansGridTop"></div>
+			<div class="renovar-grid renovar-grid--bottom" id="plansGridBottom"></div>
 		</div>
 
-		<!-- Success state -->
 		<div class="renovar-state renovar-state--hidden" id="stateSuccess">
-			<div class="renovar-success-icon">
-				<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-					<polyline points="20 6 9 17 4 12"/>
-				</svg>
+			<div class="renovar-success">
+				<div class="renovar-success__icon">
+					<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				</div>
+				<h2>¡MEMBRESÍA RENOVADA!</h2>
+				<p>Tu plan está activo. ¡A entrenar!</p>
+				<a href="/portal/dashboard" class="renovar-success__btn">VER MI CUENTA</a>
 			</div>
-			<h2>¡MEMBRESÍA RENOVADA!</h2>
-			<p>Tu plan está activo. ¡A entrenar!</p>
-			<a href="/portal/dashboard" class="btn-gold renovar-btn">VER MI CUENTA</a>
 		</div>
 
-		<!-- Error state -->
 		<div class="renovar-state renovar-state--hidden" id="stateError">
-			<div class="renovar-error-icon">
-				<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="12" r="10"/>
-					<line x1="12" y1="8" x2="12" y2="12"/>
-					<line x1="12" y1="16" x2="12.01" y2="16"/>
-				</svg>
+			<div class="renovar-error">
+				<h2 id="errorTitle">ERROR</h2>
+				<p id="errorMessage">No pudimos procesar tu pago.</p>
+				<a href="/portal/dashboard" class="renovar-error__btn">VOLVER</a>
 			</div>
-			<h2 id="errorTitle">ERROR</h2>
-			<p id="errorMessage">No pudimos cargar los planes disponibles.</p>
-			<a href="/portal/dashboard" class="btn-gold renovar-btn">VOLVER AL DASHBOARD</a>
 		</div>
 	</div>
 </Base>
 
 <style>
-	.portal-renovar {
-		min-height: 100vh;
-		padding: 10rem 1.5rem 4rem;
+	.renovar-page {
+		padding: 8rem 1.5rem 6rem;
 		background: var(--brand-black);
 	}
 
-	.renovar-state {
+	.renovar-page__hero {
+		text-align: center;
+		margin-bottom: 5rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 1rem;
-		text-align: center;
-		max-width: 56rem;
-		margin: 0 auto;
+		position: relative;
 	}
 
-	.renovar-state--hidden {
-		display: none !important;
-	}
-
-	.renovar-state h2 {
-		font-family: var(--font-display);
-		font-size: clamp(1.5rem, 4vw, 2.5rem);
-		color: var(--brand-gold);
-		text-transform: uppercase;
-	}
-
-	.renovar-state p {
-		font-family: var(--font-mono);
-		font-size: 0.875rem;
-		color: rgba(240, 237, 232, 0.5);
-	}
-
-	.renovar-spinner svg {
-		animation: spin 1s linear infinite;
-		color: var(--brand-gold);
-	}
-
-	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
-
-	.renovar-success-icon {
-		color: #2ecc71;
-		margin-bottom: 0.5rem;
-	}
-
-	.renovar-error-icon {
-		color: var(--brand-red);
-	}
-
-	.renovar-header {
-		text-align: center;
-		margin-bottom: 3rem;
-		width: 100%;
-	}
-
-	.renovar-back {
+	.renovar-page__back {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
 		font-family: var(--font-mono);
 		font-size: 0.7rem;
 		color: rgba(240, 237, 232, 0.4);
 		text-transform: uppercase;
 		letter-spacing: 0.15em;
+		text-decoration: none;
 		transition: color 0.3s ease;
-		display: inline-block;
-		margin-bottom: 1.5rem;
 	}
 
-	.renovar-back:hover {
+	.renovar-page__back:hover {
 		color: var(--brand-gold);
 	}
 
-	.renovar-title {
-		font-family: var(--font-display);
-		font-size: clamp(2.5rem, 6vw, 4rem);
-		color: var(--brand-gold);
-		text-transform: uppercase;
-		letter-spacing: -0.01em;
-		margin-bottom: 0.75rem;
-	}
-
-	.renovar-subtitle {
+	.renovar-page__tagline {
 		font-family: var(--font-mono);
 		font-size: 0.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+	}
+
+	.renovar-page__hero h1 {
+		font-family: var(--font-display);
+		font-size: clamp(3.5rem, 8vw, 7rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+
+	.renovar-page__hero p {
+		font-family: var(--font-mono);
+		font-size: 1rem;
 		color: rgba(240, 237, 232, 0.5);
 		text-transform: uppercase;
-		letter-spacing: 0.15em;
+		letter-spacing: 0.12em;
+		max-width: 40rem;
+	}
+
+	.renovar-page__plans {
+		max-width: 80rem;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
 	}
 
 	.renovar-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 		gap: 1.5rem;
+	}
+
+	.renovar-grid--top {
+		grid-template-columns: repeat(3, 1fr);
+		max-width: 80rem;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.renovar-grid--bottom {
+		grid-template-columns: repeat(2, 1fr);
+		max-width: 52rem;
+		margin: 0 auto;
 		width: 100%;
 	}
 
@@ -162,8 +137,8 @@ import Base from '../../layouts/Base.astro';
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		padding: 1.5rem;
-		border: 2px solid rgba(232, 200, 50, 0.2);
+		padding: 2rem 1.5rem;
+		border: 1px solid rgba(232, 200, 50, 0.15);
 		background: #0a0a0a;
 		color: var(--brand-white);
 		transition: all 0.5s ease;
@@ -171,12 +146,34 @@ import Base from '../../layouts/Base.astro';
 	}
 
 	.renovar-card:hover {
-		border-color: rgba(232, 200, 50, 0.5);
+		border-color: rgba(232, 200, 50, 0.4);
 	}
 
-	.renovar-card--selected {
+	.renovar-card--featured {
+		background: var(--brand-gold);
+		color: var(--brand-black);
 		border-color: var(--brand-gold);
-		box-shadow: 0 0 40px rgba(232, 200, 50, 0.15);
+		transform: scale(1.05);
+		z-index: 1;
+		box-shadow: 0 0 50px rgba(232, 200, 50, 0.2);
+	}
+
+	.renovar-card--featured:hover {
+		border-color: var(--brand-gold);
+	}
+
+	.renovar-card--annual {
+		background: transparent;
+		color: var(--brand-white);
+		border: 2px solid var(--brand-gold);
+		transform: scale(1.05);
+		z-index: 1;
+		box-shadow: 0 0 60px rgba(232, 200, 50, 0.15), inset 0 0 30px rgba(232, 200, 50, 0.05);
+	}
+
+	.renovar-card--annual:hover {
+		border-color: white;
+		box-shadow: 0 0 80px rgba(232, 200, 50, 0.25), inset 0 0 30px rgba(232, 200, 50, 0.1);
 	}
 
 	.renovar-card__badge {
@@ -187,24 +184,26 @@ import Base from '../../layouts/Base.astro';
 		background: var(--brand-red);
 		color: white;
 		font-family: var(--font-display);
-		font-size: 0.65rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
-		padding: 0.2rem 0.75rem;
+		padding: 0.25rem 1rem;
+		white-space: nowrap;
 	}
 
 	.renovar-card__badge--gold {
 		background: var(--brand-gold);
 		color: var(--brand-black);
+		font-weight: bold;
 	}
 
 	.renovar-card__header {
-		margin-bottom: 1rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.renovar-card__header h3 {
 		font-family: var(--font-display);
-		font-size: 1.5rem;
+		font-size: 1.75rem;
 		text-transform: uppercase;
 		letter-spacing: -0.01em;
 		margin-bottom: 0.5rem;
@@ -218,21 +217,26 @@ import Base from '../../layouts/Base.astro';
 
 	.renovar-card__currency {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: 0.8rem;
 		opacity: 0.6;
 	}
 
 	.renovar-card__amount {
 		font-family: var(--font-display);
-		font-size: 2.5rem;
+		font-size: 3rem;
 		letter-spacing: -0.02em;
 		line-height: 1;
 	}
 
 	.renovar-card__period {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: 0.8rem;
 		opacity: 0.6;
+	}
+
+	.renovar-card--featured .renovar-card__currency,
+	.renovar-card--featured .renovar-card__period {
+		opacity: 0.7;
 	}
 
 	.renovar-card__features {
@@ -240,33 +244,36 @@ import Base from '../../layouts/Base.astro';
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
-		margin-bottom: 1.5rem;
+		gap: 0.75rem;
+		margin-bottom: 2rem;
 	}
 
 	.renovar-card__features li {
 		display: flex;
 		align-items: flex-start;
-		gap: 0.4rem;
+		gap: 0.5rem;
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: 0.8rem;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: rgba(240, 237, 232, 0.7);
+		letter-spacing: 0.1em;
 	}
 
 	.renovar-card__features svg {
 		flex-shrink: 0;
-		margin-top: 1px;
+		margin-top: 2px;
 		color: var(--brand-gold);
+	}
+
+	.renovar-card--featured .renovar-card__features svg {
+		color: var(--brand-black);
 	}
 
 	.renovar-card__cta {
 		display: block;
 		width: 100%;
-		padding: 0.75rem;
+		padding: 1rem;
 		font-family: var(--font-display);
-		font-size: 1.125rem;
+		font-size: 1.25rem;
 		text-transform: uppercase;
 		letter-spacing: -0.01em;
 		border: none;
@@ -279,40 +286,118 @@ import Base from '../../layouts/Base.astro';
 	}
 
 	.renovar-card__cta:hover {
-		background: var(--brand-white);
+		background: white;
+	}
+
+	.renovar-card--featured .renovar-card__cta {
+		background: var(--brand-black);
+		color: var(--brand-gold);
+	}
+
+	.renovar-card--featured .renovar-card__cta:hover {
+		background: var(--brand-red);
+		color: white;
+	}
+
+	.renovar-card--annual .renovar-card__cta {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.renovar-card--annual .renovar-card__cta:hover {
+		background: white;
 	}
 
 	.renovar-card__cta:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
-		transform: none !important;
 	}
 
-	.renovar-btn {
-		display: block;
-		width: 100%;
-		max-width: 24rem;
-		padding: 1rem;
+	.renovar-state {
+		max-width: 56rem;
+		margin: 0 auto;
+	}
+
+	.renovar-state--hidden {
+		display: none !important;
+	}
+
+	.renovar-success,
+	.renovar-error {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		text-align: center;
+		padding: 4rem 2rem;
+	}
+
+	.renovar-success__icon {
+		color: #2ecc71;
+	}
+
+	.renovar-success h2,
+	.renovar-error h2 {
+		font-family: var(--font-display);
+		font-size: clamp(2rem, 5vw, 3.5rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+	}
+
+	.renovar-success p,
+	.renovar-error p {
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.renovar-success__btn,
+	.renovar-error__btn {
+		display: inline-block;
+		padding: 1rem 2.5rem;
 		font-family: var(--font-display);
 		font-size: 1.125rem;
 		text-transform: uppercase;
-		letter-spacing: -0.01em;
+		text-decoration: none;
+		background: var(--brand-gold);
+		color: var(--brand-black);
 		border: none;
 		cursor: pointer;
-		transition: all 0.3s ease;
-		text-decoration: none;
-		text-align: center;
+		transition: background 0.3s ease;
 		margin-top: 1rem;
 	}
 
+	.renovar-success__btn:hover,
+	.renovar-error__btn:hover {
+		background: white;
+	}
+
 	@media (max-width: 768px) {
-		.portal-renovar {
-			padding: 8rem 1rem 3rem;
+		.renovar-page {
+			padding: 7rem 1rem 4rem;
 		}
 
-		.renovar-grid {
+		.renovar-page__back {
+			position: static;
+			align-self: flex-start;
+			margin-bottom: 1rem;
+		}
+
+		.renovar-page__hero {
+			margin-bottom: 3rem;
+		}
+
+		.renovar-grid--top,
+		.renovar-grid--bottom {
 			grid-template-columns: 1fr;
 			max-width: 22rem;
+		}
+
+		.renovar-card--featured,
+		.renovar-card--annual {
+			transform: none;
 		}
 	}
 </style>
@@ -325,8 +410,10 @@ interface Plan {
 	amountInCents: number;
 	currency: string;
 	period: string;
+	price: string;
 	features: string[];
 	badge?: string;
+	variant?: 'featured' | 'annual';
 }
 
 interface SignatureResponse {
@@ -353,7 +440,7 @@ declare global {
 	}
 }
 
-const PLANS: Plan[] = [
+const ROW1: Plan[] = [
 	{
 		wompiId: 'mensual',
 		facegymId: '45d96de3-a086-427a-9a8a-44351abb6423',
@@ -361,6 +448,7 @@ const PLANS: Plan[] = [
 		amountInCents: 6990000,
 		currency: 'COP',
 		period: '/mes',
+		price: '$69.900',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 	},
 	{
@@ -370,8 +458,10 @@ const PLANS: Plan[] = [
 		amountInCents: 14000000,
 		currency: 'COP',
 		period: '/mes',
+		price: '$140.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual', 'Asesoría en alimentación', 'Servicio de proteína por entreno'],
 		badge: 'RECOMENDADO',
+		variant: 'featured',
 	},
 	{
 		wompiId: 'trimestral',
@@ -380,6 +470,20 @@ const PLANS: Plan[] = [
 		amountInCents: 18600000,
 		currency: 'COP',
 		period: '/trimestre',
+		price: '$186.000',
+		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
+	},
+];
+
+const ROW2: Plan[] = [
+	{
+		wompiId: 'semestral',
+		facegymId: '6ec2b4c7-1d89-4625-9402-d78cc22ff4b5',
+		name: 'Plan Semestral',
+		amountInCents: 36000000,
+		currency: 'COP',
+		period: '/semestre',
+		price: '$360.000',
 		features: ['Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 	},
 	{
@@ -389,33 +493,24 @@ const PLANS: Plan[] = [
 		amountInCents: 62000000,
 		currency: 'COP',
 		period: '/año',
+		price: '$620.000',
 		features: ['Mejor precio beneficio, mes a $51mil!', 'Asiste todos los días', 'Entrenamiento semipersonalizado', 'Valoración mensual'],
 		badge: 'MEJOR VALOR',
+		variant: 'annual',
 	},
 ];
 
-function formatPrice(cents: number): string {
-	return new Intl.NumberFormat('es-CO', {
-		style: 'currency',
-		currency: 'COP',
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
-	}).format(cents / 100);
-}
-
 function showState(stateId: string): void {
-	['stateLoading', 'statePlans', 'stateSuccess', 'stateError'].forEach((id) => {
+	['statePlans', 'stateSuccess', 'stateError'].forEach((id) => {
 		const el = document.getElementById(id);
-		if (el) {
-			el.classList.toggle('renovar-state--hidden', id !== stateId);
-		}
+		if (el) el.classList.toggle('renovar-state--hidden', id !== stateId);
 	});
 }
 
 function getAuthHeaders(): Record<string, string> {
-	const token = sessionStorage.getItem('portal_token');
-	if (!token) return {};
-	return { Authorization: `Bearer ${token}` };
+	const t = sessionStorage.getItem('portal_token');
+	if (!t) return {};
+	return { Authorization: `Bearer ${t}` };
 }
 
 const token = sessionStorage.getItem('portal_token');
@@ -423,57 +518,54 @@ if (!token) {
 	window.location.href = '/portal/';
 }
 
-function renderPlans(): void {
-	const grid = document.getElementById('plansGrid');
-	if (!grid) return;
+function renderCard(plan: Plan): string {
+	const variantClass = plan.variant === 'featured' ? ' renovar-card--featured' : plan.variant === 'annual' ? ' renovar-card--annual' : '';
+	const badgeHtml = plan.badge
+		? `<div class="renovar-card__badge${plan.variant === 'annual' ? ' renovar-card__badge--gold' : ''}">${plan.badge}</div>`
+		: '';
 
-	grid.innerHTML = PLANS
-		.map((plan) => {
-			const badgeHtml = plan.badge
-				? `<div class="renovar-card__badge ${plan.badge === 'MEJOR VALOR' ? 'renovar-card__badge--gold' : ''}">${plan.badge}</div>`
-				: '';
-
-			const featuresHtml = plan.features
-				.map((f) => `
-				<li>
-					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-					${f}
-				</li>`)
-				.join('');
-
-			return `
-			<div class="renovar-card" data-plan-id="${plan.wompiId}">
-				${badgeHtml}
-				<div class="renovar-card__header">
-					<h3>${plan.name}</h3>
-					<div class="renovar-card__price">
-						<span class="renovar-card__currency">${plan.currency}</span>
-						<span class="renovar-card__amount">${formatPrice(plan.amountInCents).replace('COP', '').trim()}</span>
-						<span class="renovar-card__period">${plan.period}</span>
-					</div>
-				</div>
-				<ul class="renovar-card__features">
-					${featuresHtml}
-				</ul>
-				<button type="button" class="renovar-card__cta" data-plan-pay="${plan.wompiId}">
-					SELECCIONAR
-				</button>
-			</div>`;
-		})
+	const featuresHtml = plan.features
+		.map((f) => `
+			<li>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				${f}
+			</li>`)
 		.join('');
 
-	grid.querySelectorAll<HTMLButtonElement>('[data-plan-pay]').forEach((button) => {
+	const ctaClass = plan.variant === 'featured' ? '' : '';
+
+	return `
+	<div class="renovar-card${variantClass}" data-plan-id="${plan.wompiId}">
+		${badgeHtml}
+		<div class="renovar-card__header">
+			<h3>${plan.name}</h3>
+			<div class="renovar-card__price">
+				<span class="renovar-card__currency">${plan.currency}</span>
+				<span class="renovar-card__amount">${plan.price}</span>
+				<span class="renovar-card__period">${plan.period}</span>
+			</div>
+		</div>
+		<ul class="renovar-card__features">
+			${featuresHtml}
+		</ul>
+		<button type="button" class="renovar-card__cta${ctaClass}" data-plan-pay="${plan.wompiId}">
+			PAGAR AHORA
+		</button>
+	</div>`;
+}
+
+function wireButtons(): void {
+	const allPlans = [...ROW1, ...ROW2];
+
+	document.querySelectorAll<HTMLButtonElement>('[data-plan-pay]').forEach((button) => {
 		button.addEventListener('click', async () => {
 			const wompiId = button.dataset.planPay;
 			if (!wompiId) return;
 
-			const plan = PLANS.find((p) => p.wompiId === wompiId);
+			const plan = allPlans.find((p) => p.wompiId === wompiId);
 			if (!plan) return;
 
-			grid.querySelectorAll('.renovar-card').forEach((card) => card.classList.remove('renovar-card--selected'));
-			button.closest('.renovar-card')?.classList.add('renovar-card--selected');
-
-			const originalLabel = button.textContent || 'SELECCIONAR';
+			const originalLabel = button.textContent || 'PAGAR AHORA';
 			button.disabled = true;
 			button.textContent = 'PROCESANDO...';
 
@@ -541,8 +633,17 @@ function renderPlans(): void {
 	});
 }
 
+function renderPlans(): void {
+	const topGrid = document.getElementById('plansGridTop');
+	const bottomGrid = document.getElementById('plansGridBottom');
+	if (!topGrid || !bottomGrid) return;
+
+	topGrid.innerHTML = ROW1.map(renderCard).join('');
+	bottomGrid.innerHTML = ROW2.map(renderCard).join('');
+	wireButtons();
+}
+
 if (token) {
 	renderPlans();
-	showState('statePlans');
 }
 </script>
