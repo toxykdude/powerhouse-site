@@ -385,26 +385,30 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <script>
-interface MemberData {
-	id: string;
-	name: string;
-	phone: string;
-	email?: string;
-	membership?: {
+interface PortalMeResponse {
+	member: {
+		id: string;
+		first_name: string;
+		last_name: string;
+		phone: string;
+		email?: string;
+		status: string;
+	};
+	active_membership?: {
 		id: string;
 		plan_name: string;
 		start_date: string;
 		end_date: string;
 		status: string;
-		price_paid: number;
+		price: number;
+		days_remaining: number;
 	};
-	payments?: Array<{
+	recent_payments?: Array<{
 		id: string;
-		date: string;
+		transaction_date: string;
 		invoice_number?: string;
 		amount: number;
-		method?: string;
-		status: string;
+		payment_method?: string;
 	}>;
 }
 
@@ -470,7 +474,7 @@ async function loadDashboard(): Promise<void> {
 			throw new Error('Error al cargar los datos');
 		}
 
-		const data = (await response.json()) as MemberData;
+		const data = (await response.json()) as PortalMeResponse;
 		renderDashboard(data);
 		showState('stateDashboard');
 	} catch {
@@ -482,19 +486,17 @@ async function loadDashboard(): Promise<void> {
 	}
 }
 
-function renderDashboard(data: MemberData): void {
-	// Header
+function renderDashboard(data: PortalMeResponse): void {
 	const nameEl = document.getElementById('memberName');
-	if (nameEl && data.name) {
-		nameEl.textContent = data.name.toUpperCase();
+	if (nameEl && data.member) {
+		nameEl.textContent = `${data.member.first_name} ${data.member.last_name}`.toUpperCase();
 	}
 
-	// Status card
 	const statusBadge = document.getElementById('statusBadge') as HTMLDivElement;
 	const statusText = document.getElementById('statusText') as HTMLSpanElement;
 	const statusDetails = document.getElementById('statusDetails') as HTMLDivElement;
 
-	if (!data.membership || data.membership.status === 'none') {
+	if (!data.active_membership) {
 		statusBadge.className = 'status-badge status-badge--none';
 		statusText.textContent = 'SIN MEMBRESÍA';
 		statusDetails.innerHTML = `
@@ -503,18 +505,18 @@ function renderDashboard(data: MemberData): void {
 				<span class="status-row__value">No tenés membresía activa</span>
 			</div>
 		`;
-	} else if (data.membership.status === 'active') {
-		const remaining = daysUntil(data.membership.end_date);
+	} else if (data.active_membership.status === 'active') {
+		const remaining = data.active_membership.days_remaining;
 		statusBadge.className = 'status-badge status-badge--active';
 		statusText.textContent = 'ACTIVO';
 		statusDetails.innerHTML = `
 			<div class="status-row">
 				<span class="status-row__label">Plan</span>
-				<span class="status-row__value">${data.membership.plan_name}</span>
+				<span class="status-row__value">${data.active_membership.plan_name || '—'}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Vencimiento</span>
-				<span class="status-row__value">${formatDate(data.membership.end_date)}</span>
+				<span class="status-row__value">${formatDate(data.active_membership.end_date)}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Días restantes</span>
@@ -527,34 +529,33 @@ function renderDashboard(data: MemberData): void {
 		statusDetails.innerHTML = `
 			<div class="status-row">
 				<span class="status-row__label">Plan anterior</span>
-				<span class="status-row__value">${data.membership.plan_name}</span>
+				<span class="status-row__value">${data.active_membership.plan_name || '—'}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Venció el</span>
-				<span class="status-row__value">${formatDate(data.membership.end_date)}</span>
+				<span class="status-row__value">${formatDate(data.active_membership.end_date)}</span>
 			</div>
 		`;
 	}
 
-	// Membership details
 	const membershipInfo = document.getElementById('membershipInfo') as HTMLDivElement;
-	if (data.membership && data.membership.status !== 'none') {
+	if (data.active_membership) {
 		membershipInfo.innerHTML = `
 			<div class="membership-row">
 				<span class="membership-row__label">Plan</span>
-				<span class="membership-row__value">${data.membership.plan_name}</span>
+				<span class="membership-row__value">${data.active_membership.plan_name || '—'}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Inicio</span>
-				<span class="membership-row__value">${formatDate(data.membership.start_date)}</span>
+				<span class="membership-row__value">${formatDate(data.active_membership.start_date)}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Fin</span>
-				<span class="membership-row__value">${formatDate(data.membership.end_date)}</span>
+				<span class="membership-row__value">${formatDate(data.active_membership.end_date)}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Precio pagado</span>
-				<span class="membership-row__value membership-row__value--price">${formatCOP(data.membership.price_paid)}</span>
+				<span class="membership-row__value membership-row__value--price">${formatCOP(data.active_membership.price)}</span>
 			</div>
 		`;
 	} else {
@@ -563,15 +564,14 @@ function renderDashboard(data: MemberData): void {
 		`;
 	}
 
-	// Payment history
 	const paymentsTable = document.getElementById('paymentsTable') as HTMLDivElement;
-	if (data.payments && data.payments.length > 0) {
-		const rows = data.payments
+	if (data.recent_payments && data.recent_payments.length > 0) {
+		const rows = data.recent_payments
 			.map((p) => `
 				<tr>
-					<td>${formatDate(p.date)}</td>
+					<td>${formatDate(p.transaction_date)}</td>
 					<td>${p.invoice_number || '—'}</td>
-					<td>${p.method || '—'}</td>
+					<td>${p.payment_method || '—'}</td>
 					<td>${formatCOP(p.amount)}</td>
 				</tr>
 			`)
@@ -596,13 +596,11 @@ function renderDashboard(data: MemberData): void {
 		`;
 	}
 
-	// Actions
 	const actions = document.getElementById('dashboardActions') as HTMLDivElement;
 	const needsRenewal =
-		!data.membership ||
-		data.membership.status === 'none' ||
-		data.membership.status === 'expired' ||
-		(data.membership.status === 'active' && daysUntil(data.membership.end_date) < 30);
+		!data.active_membership ||
+		data.active_membership.status === 'expired' ||
+		(data.active_membership.status === 'active' && data.active_membership.days_remaining < 30);
 
 	if (needsRenewal) {
 		actions.innerHTML = `
