@@ -1,15 +1,16 @@
 // Cloudflare Pages Function — Wompi webhook receiver
-// Environment variables: WOMPI_EVENTS_SECRET (set in Cloudflare dashboard)
-// Wompi sends transaction events here when payment status changes
+// When Wompi confirms a payment, this activates the membership in FaceGYM.
 
 interface Env {
 	WOMPI_EVENTS_SECRET: string;
+	FACEGYM_API_URL?: string;
 }
 
 interface WompiTransaction {
 	id: string;
 	status: string;
 	amount_in_cents: number;
+	reference: string;
 }
 
 interface WompiEvent {
@@ -38,7 +39,6 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
 
 		const tx = event.data?.transaction;
 		if (!tx) {
-			// Return 200 to prevent Wompi retries for malformed events
 			return new Response('Missing transaction data', { status: 200 });
 		}
 
@@ -50,8 +50,6 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
 			console.error('Webhook signature verification failed', {
 				eventId: event.id,
 				transactionId: tx.id,
-				computed: computedSignature,
-				received: event.signature?.checksum,
 			});
 			return new Response('Invalid signature', { status: 401 });
 		}
@@ -61,47 +59,77 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
 			console.log('Payment approved', {
 				eventId: event.id,
 				transactionId: tx.id,
+				reference: tx.reference,
 				amount: tx.amount_in_cents,
-				timestamp: event.timestamp,
 			});
 
-			// TODO: Server-side FaceGYM membership renewal via webhook
-			// Currently, renewal is triggered from the frontend (portal/renovar.astro)
-			// after Wompi payment confirmation. For server-side integration:
-			// 1. Parse the reference format PH-{unix}-{hex} to extract plan info
-			// 2. Match amount_in_cents to a plan (see PLANS in signature.ts)
-			// 3. POST to FaceGYM /api/portal/renew with transaction details
-			// Example:
-			// try {
-			//   const facegymUrl = (env.FACEGYM_API_URL || 'https://facegym.powerhousegym.co').replace(/\/$/, '');
-			//   const planId = matchPlanByAmount(tx.amount_in_cents);
-			//   if (planId) {
-			//     await fetch(`${facegymUrl}/api/portal/renew`, {
-			//       method: 'POST',
-			//       headers: { 'Content-Type': 'application/json' },
-			//       body: JSON.stringify({
-			//         transactionId: tx.id,
-			//         amount: tx.amount_in_cents,
-			//         reference: tx.reference,
-			//         planId,
-			//       }),
-			//     });
-			//   }
-			// } catch (e) {
-			//   console.error('FaceGYM renewal error:', e);
-			// }
+			const facegymBase = (env.FACEGYM_API_URL || 'https://facegym.powerhousegym.co').replace(/\/$/, '');
 
-			// Future enhancements:
-			// - Send WhatsApp confirmation notification
-			// - Send email receipt
-			// - Trigger CRM workflow
+			// Look up the pending payment by reference
+			try {
+				const lookupResponse = await fetch(`${facegymBase}/api/portal/pending-payment/${tx.reference}`);
+
+				if (!lookupResponse.ok) {
+					console.error('Failed to lookup pending payment', {
+						reference: tx.reference,
+						status: lookupResponse.status,
+					});
+					return new Response('OK', { status: 200 });
+				}
+
+				const pendingData = await lookupResponse.json() as {
+					status: string;
+					plan_id?: string;
+					member_id?: string;
+					amount?: string;
+					wompi_reference?: string;
+				};
+
+				if (pendingData.status !== 'found' || !pendingData.plan_id || !pendingData.member_id) {
+					console.error('Pending payment not found or incomplete', {
+						reference: tx.reference,
+						data: pendingData,
+					});
+					// This might be a non-portal payment (e.g., from planes.astro for new members)
+					return new Response('OK', { status: 200 });
+				}
+
+				// Activate membership in FaceGYM
+				const renewResponse = await fetch(`${facegymBase}/api/portal/webhook-renew`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						plan_id: pendingData.plan_id,
+						member_id: pendingData.member_id,
+						wompi_reference: tx.reference,
+						wompi_transaction_id: tx.id,
+						amount: pendingData.amount,
+					}),
+				});
+
+				const renewResult = await renewResponse.json();
+
+				if (renewResponse.ok) {
+					console.log('Membership activated via webhook', {
+						reference: tx.reference,
+						memberId: pendingData.member_id,
+						result: renewResult,
+					});
+				} else {
+					console.error('FaceGYM webhook-renew failed', {
+						status: renewResponse.status,
+						result: renewResult,
+					});
+				}
+			} catch (err) {
+				console.error('Error processing webhook renewal:', err);
+			}
 		}
 
 		// Always return 200 OK to prevent Wompi retries
 		return new Response('OK', { status: 200 });
 	} catch (error) {
 		console.error('Webhook processing error', error);
-		// Return 200 to prevent Wompi retries for unexpected errors
 		return new Response('OK', { status: 200 });
 	}
 }

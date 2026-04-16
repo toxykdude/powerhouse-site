@@ -994,6 +994,28 @@ function wireButtons(): void {
 
 				const sigData: SignatureResponse = await sigResponse.json();
 
+				// Store pending payment in FaceGYM Redis BEFORE opening Wompi
+				// This ensures the webhook can activate membership even if the
+				// frontend callback never fires (e.g., redirect, tab close)
+				try {
+					await fetch('/api/portal/pending-payment', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							...getAuthHeaders(),
+						},
+						body: JSON.stringify({
+							plan_id: plan.facegymId,
+							member_id: '', // Server fills this from JWT
+							wompi_reference: sigData.reference,
+							wompi_transaction_id: '',
+							amount: plan.amountInCents / 100,
+						}),
+					});
+				} catch (e) {
+					console.warn('Could not store pending payment:', e);
+				}
+
 				const WidgetCheckout = window.WidgetCheckout;
 				if (!WidgetCheckout) {
 					throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
@@ -1011,6 +1033,7 @@ function wireButtons(): void {
 				checkout.open(async (result) => {
 					const tx = result.transaction;
 					if (tx?.id) {
+						// Try client-side renewal as backup (webhook should handle it)
 						try {
 							await fetch('/api/portal/renew', {
 								method: 'POST',
@@ -1025,7 +1048,7 @@ function wireButtons(): void {
 								}),
 							});
 						} catch {
-							console.error('FaceGYM renewal call failed after payment');
+							console.warn('Client-side renewal failed (webhook should handle it)');
 						}
 
 						showState('stateSuccess');
