@@ -11,7 +11,7 @@ import Base from '../../layouts/Base.astro';
 		<!-- HERO — matches planes.astro scale -->
 		<div class="renovar-page__hero">
 			<a href="/portal/dashboard" class="renovar-page__back">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
 				MI CUENTA
 			</a>
 			<span class="renovar-page__tagline">Renovar Membresía</span>
@@ -32,7 +32,7 @@ import Base from '../../layouts/Base.astro';
 			</div>
 			<div class="proof-item__sep"></div>
 			<div class="proof-item">
-				<span class="proof-item__value">7</span>
+				<span class="proof-item__value">10</span>
 				<span class="proof-item__label">años forjando campeones</span>
 			</div>
 		</div>
@@ -126,20 +126,33 @@ import Base from '../../layouts/Base.astro';
 		position: absolute;
 		top: 0;
 		left: 0;
-		display: flex;
+		display: inline-flex;
 		align-items: center;
-		gap: 0.4rem;
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		color: rgba(240, 237, 232, 0.4);
+		gap: 0.6rem;
+		padding: 0.75rem 1.25rem;
+		font-family: var(--font-display);
+		font-size: 1rem;
+		color: rgba(240, 237, 232, 0.6);
 		text-transform: uppercase;
-		letter-spacing: 0.15em;
+		letter-spacing: 0.12em;
 		text-decoration: none;
-		transition: color 0.3s ease;
+		transition: all 0.3s ease;
+		border: 1px solid rgba(232, 200, 50, 0.15);
+		background: rgba(232, 200, 50, 0.05);
+	}
+
+	.renovar-page__back svg {
+		transition: transform 0.3s ease;
 	}
 
 	.renovar-page__back:hover {
 		color: var(--brand-gold);
+		border-color: var(--brand-gold);
+		background: rgba(232, 200, 50, 0.1);
+	}
+
+	.renovar-page__back:hover svg {
+		transform: translateX(-3px);
 	}
 
 	.renovar-page__tagline {
@@ -729,7 +742,9 @@ import Base from '../../layouts/Base.astro';
 		.renovar-page__back {
 			position: static;
 			align-self: flex-start;
-			margin-bottom: 1rem;
+			margin-bottom: 1.5rem;
+			font-size: 0.95rem;
+			padding: 0.6rem 1rem;
 		}
 
 		.renovar-page__hero {
