@@ -65,7 +65,7 @@ import Base from '../../layouts/Base.astro';
 	</div>
 </Base>
 
-<style>
+<style is:global>
 	.portal-dashboard {
 		min-height: 100vh;
 		padding: 10rem 1.5rem 4rem;
@@ -328,18 +328,32 @@ import Base from '../../layouts/Base.astro';
 	}
 
 	.dashboard-btn {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
 		width: 100%;
-		padding: 1rem;
+		padding: 1.5rem 2rem;
 		font-family: var(--font-display);
-		font-size: 1.125rem;
+		font-size: 1.5rem;
 		text-transform: uppercase;
-		letter-spacing: -0.01em;
+		letter-spacing: 0.02em;
 		border: none;
 		cursor: pointer;
 		transition: all 0.3s ease;
 		text-decoration: none;
 		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.dashboard-btn__arrow {
+		display: inline-block;
+		transition: transform 0.3s ease;
+	}
+
+	.dashboard-btn:hover .dashboard-btn__arrow {
+		transform: translateX(4px);
 	}
 
 	.dashboard-btn--gold {
@@ -603,8 +617,23 @@ function renderDashboard(data: PortalMeResponse): void {
 		(data.active_membership.status === 'active' && data.active_membership.days_remaining < 30);
 
 	if (needsRenewal) {
+		const daysLeft = data.active_membership?.days_remaining;
+		let urgencyText = '¡NO PARES! RENUEVA TU PLAN';
+		if (daysLeft !== undefined && daysLeft <= 7) {
+			urgencyText = `¡ÚLTIMOS ${daysLeft} DÍAS! RENUEVA AHORA`;
+		} else if (daysLeft !== undefined && daysLeft <= 15) {
+			urgencyText = `QUEDAN ${daysLeft} DÍAS — RENUEVA HOY`;
+		} else if (!data.active_membership) {
+			urgencyText = '¡VOLVÉ A ENTRENAR! ACTIVA TU PLAN';
+		}
+
 		actions.innerHTML = `
-			<a href="/portal/renovar" class="dashboard-btn dashboard-btn--gold">RENOVAR PLAN</a>
+			<a href="/portal/renovar" class="dashboard-btn dashboard-btn--gold">
+				${urgencyText}
+				<span class="dashboard-btn__arrow">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+				</span>
+			</a>
 		`;
 	} else {
 		actions.innerHTML = '';
