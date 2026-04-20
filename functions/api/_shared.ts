@@ -21,7 +21,7 @@ export async function proxyToFaceGYM(
 	env: { FACEGYM_API_URL?: string },
 	targetPath: string,
 ): Promise<Response> {
-	const facegymBase = (env.FACEGYM_API_URL || 'https://facegym.powerhousegym.co').replace(/\/$/, '');
+	const facegymBase = (env.FACEGYM_API_URL || 'https://faceapp.powerhousegym.co').replace(/\/$/, '');
 	const url = new URL(request.url);
 	const targetUrl = `${facegymBase}${targetPath}${url.search}`;
 
