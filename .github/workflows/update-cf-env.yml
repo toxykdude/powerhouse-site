@@ -30,14 +30,14 @@ jobs:
             -d "{
               \"deployment_configs\": {
                 \"production\": {
-                  \"env\": {
+                  \"env_vars\": {
                     \"FACEGYM_API_URL\": {
                       \"value\": \"${{ github.event.inputs.facegym_api_url }}\"
                     }
                   }
                 },
                 \"preview\": {
-                  \"env\": {
+                  \"env_vars\": {
                     \"FACEGYM_API_URL\": {
                       \"value\": \"${{ github.event.inputs.facegym_api_url }}\"
                     }
