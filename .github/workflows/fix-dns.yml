@@ -20,26 +20,17 @@ jobs:
           ZONE_ID=$(curl -s "https://api.cloudflare.com/client/v4/zones?name=${ZONE}" \
             -H "X-Auth-Email: ${CF_EMAIL}" \
             -H "X-Auth-Key: ${CF_KEY}" \
-            | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['result'][0]['id'])")
+            | jq -r '.result[0].id')
           echo "Zone ID: ${ZONE_ID}"
 
-          # Get existing DNS record ID for faceapp.powerhousegym.co
-          RECORD_ID=$(curl -s "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?name=faceapp.${ZONE}" \
+          # Get existing DNS record for faceapp.powerhousegym.co
+          RECORD_RESPONSE=$(curl -s "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?name=faceapp.${ZONE}" \
             -H "X-Auth-Email: ${CF_EMAIL}" \
-            -H "X-Auth-Key: ${CF_KEY}" \
-            | python3 -c "
-          import json,sys
-          d = json.load(sys.stdin)
-          records = d.get('result', [])
-          if records:
-              for r in records:
-                  print(f'Found: {r[\"type\"]} {r[\"name\"]} -> {r[\"content\"]}')
-                  print(r['id'])
-          else:
-              print('NONE')
-          ")
+            -H "X-Auth-Key: ${CF_KEY}")
 
-          if [ "$RECORD_ID" = "NONE" ]; then
+          RECORD_COUNT=$(echo "$RECORD_RESPONSE" | jq '.result | length')
+
+          if [ "$RECORD_COUNT" = "0" ]; then
             echo "No existing record. Creating CNAME..."
             curl -s -X POST \
               "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records" \
@@ -47,39 +38,19 @@ jobs:
               -H "X-Auth-Key: ${CF_KEY}" \
               -H "Content-Type: application/json" \
               --data "{\"type\":\"CNAME\",\"name\":\"faceapp\",\"content\":\"${TARGET}\",\"ttl\":1,\"proxied\":true}" \
-              | python3 -c "
-            import json,sys
-            d=json.load(sys.stdin)
-            if d.get('success'):
-                r=d['result']
-                print(f'CREATED: {r[\"type\"]} {r[\"name\"]} -> {r[\"content\"]} proxied={r[\"proxied\"]}')
-            else:
-                print(f'CREATE FAILED: {json.dumps(d.get(\"errors\",[]))}')
-            "
+              | jq '{success: .success, record: .result | {type, name, content, proxied}, errors: .errors}'
           else
-            FIRST_LINE=$(echo "$RECORD_ID" | head -1)
-            RECORD_UUID=$(echo "$RECORD_ID" | tail -1)
-            if [[ "$RECORD_UUID" =~ ^[a-f0-9]{32}$ ]]; then
-              echo "Updating existing record ${RECORD_UUID}..."
-              curl -s -X PUT \
-                "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/${RECORD_UUID}" \
-                -H "X-Auth-Email: ${CF_EMAIL}" \
-                -H "X-Auth-Key: ${CF_KEY}" \
-                -H "Content-Type: application/json" \
-                --data "{\"type\":\"CNAME\",\"name\":\"faceapp\",\"content\":\"${TARGET}\",\"ttl\":1,\"proxied\":true}" \
-                | python3 -c "
-              import json,sys
-              d=json.load(sys.stdin)
-              if d.get('success'):
-                  r=d['result']
-                  print(f'UPDATED: {r[\"type\"]} {r[\"name\"]} -> {r[\"content\"]} proxied={r[\"proxied\"]}')
-              else:
-                  print(f'UPDATE FAILED: {json.dumps(d.get(\"errors\",[]))}')
-              "
-            else
-              echo "Could not parse record ID. Output was: $RECORD_ID"
-              exit 1
-            fi
+            RECORD_ID=$(echo "$RECORD_RESPONSE" | jq -r '.result[0].id')
+            RECORD_CONTENT=$(echo "$RECORD_RESPONSE" | jq -r '.result[0].content')
+            echo "Found existing record: ${RECORD_ID} -> ${RECORD_CONTENT}"
+            echo "Updating to point to tunnel..."
+            curl -s -X PUT \
+              "https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/${RECORD_ID}" \
+              -H "X-Auth-Email: ${CF_EMAIL}" \
+              -H "X-Auth-Key: ${CF_KEY}" \
+              -H "Content-Type: application/json" \
+              --data "{\"type\":\"CNAME\",\"name\":\"faceapp\",\"content\":\"${TARGET}\",\"ttl\":1,\"proxied\":true}" \
+              | jq '{success: .success, record: .result | {type, name, content, proxied}, errors: .errors}'
           fi
 
       - name: Redeploy Pages to pick up env var
