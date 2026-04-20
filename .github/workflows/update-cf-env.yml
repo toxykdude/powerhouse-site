@@ -1,0 +1,56 @@
+name: Update Cloudflare Pages env
+
+on:
+  workflow_dispatch:
+    inputs:
+      facegym_api_url:
+        description: 'FACEGYM_API_URL value'
+        required: true
+        default: 'https://faceapp.powerhousegym.co'
+
+jobs:
+  update-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Pages environment variable
+        env:
+          CF_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CF_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Get current deployment production URL
+          echo "Updating FACEGYM_API_URL for powerhouse-site..."
+
+          # Use Cloudflare API to set production environment variable
+          RESPONSE=$(curl -s -X PATCH \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/powerhouse-site" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"deployment_configs\": {
+                \"production\": {
+                  \"env\": {
+                    \"FACEGYM_API_URL\": {
+                      \"value\": \"${{ github.event.inputs.facegym_api_url }}\"
+                    }
+                  }
+                },
+                \"preview\": {
+                  \"env\": {
+                    \"FACEGYM_API_URL\": {
+                      \"value\": \"${{ github.event.inputs.facegym_api_url }}\"
+                    }
+                  }
+                }
+              }
+            }")
+
+          echo "$RESPONSE" | python3 -m json.tool
+
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "SUCCESS: FACEGYM_API_URL updated"
+          else
+            echo "FAILED: Check the response above"
+            exit 1
+          fi
