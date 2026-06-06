@@ -1,0 +1,124 @@
+name: Deploy Dev
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: ./.github/actions/ci-validate
+
+  deploy-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate
+    environment: development
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    outputs:
+      deploy-url: ${{ steps.deploy.outputs.deploy-url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Log deployment metadata
+        run: |
+          echo "=== Dev Deployment ==="
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Branch: ${{ github.head_ref }}"
+          echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+      - name: Deploy to Cloudflare Pages (dev)
+        id: deploy
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          DEPLOY_OUTPUT=$(npx wrangler pages deploy dist --project-name powerhouse-site-dev 2>&1)
+          echo "$DEPLOY_OUTPUT"
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[a-zA-Z0-9.-]+\.pages\.dev' | head -1)
+          echo "deploy-url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Post preview URL as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployUrl = '${{ steps.deploy.outputs.deploy-url }}' || 'See Cloudflare dashboard';
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: [
+                '**Dev Preview Deployed**',
+                '',
+                '- **Commit**: `' + context.sha.slice(0, 7) + '`',
+                '- **Branch**: `' + context.payload.pull_request.head.ref + '`',
+                '- **Preview URL**: ' + deployUrl,
+                '- **Author**: @' + context.actor
+              ].join('\n')
+            });
+
+  deploy-workers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate
+    environment: development
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check worker changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            workers:
+              - 'workers/**'
+
+      - name: Deploy contact worker (dev)
+        if: steps.filter.outputs.workers == 'true'
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config wrangler.toml --env dev
+
+      - name: Deploy media proxy worker (dev)
+        if: steps.filter.outputs.workers == 'true'
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config wrangler-media.toml --env dev

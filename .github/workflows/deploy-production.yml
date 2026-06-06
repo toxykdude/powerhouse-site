@@ -1,0 +1,116 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: ./.github/actions/ci-validate
+
+  deploy-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate
+    environment: production
+    permissions:
+      contents: write
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Log deployment metadata
+        run: |
+          echo "=== Production Deployment ==="
+          echo "Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Environment: production"
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name powerhouse-site
+
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Log deployment result
+        if: always()
+        run: |
+          echo "=== Deployment Result ==="
+          echo "Status: ${{ job.status }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Environment: production"
+          echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  deploy-workers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate
+    environment: production
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check worker changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            workers:
+              - 'workers/**'
+
+      - name: Deploy contact worker (production)
+        if: steps.filter.outputs.workers == 'true'
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config wrangler.toml --env production
+
+      - name: Deploy media proxy worker (production)
+        if: steps.filter.outputs.workers == 'true'
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config wrangler-media.toml --env production

@@ -1,0 +1,24 @@
+name: 'CI Validate'
+description: 'Run lint, typecheck, test, build, and security audit. Expects Node 20 + npm ci already set up.'
+runs:
+  using: 'composite'
+  steps:
+    - name: Lint
+      run: npm run lint
+      shell: bash
+
+    - name: Typecheck
+      run: npm run typecheck
+      shell: bash
+
+    - name: Test
+      run: npm test
+      shell: bash
+
+    - name: Build
+      run: npm run build
+      shell: bash
+
+    - name: Security Audit
+      run: npm audit --audit-level=high
+      shell: bash
