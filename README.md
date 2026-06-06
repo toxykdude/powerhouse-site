@@ -8,15 +8,15 @@ Sitio web oficial de **PowerHouse Gym Manizales**, construido con [Astro](https:
 
 ## Stack Técnico
 
-| Capa | Tecnología |
-|---|---|
-| **Framework** | Astro 5.7 (Static SSG) |
-| **Hosting** | Cloudflare Pages |
-| **Backend** | Cloudflare Pages Functions (serverless) |
-| **Media** | Cloudflare R2 + Worker proxy |
-| **Pagos** | Wompi Widget (Widget + API) |
-| **CI/CD** | GitHub Actions → Cloudflare Pages |
-| **Contacto** | Cloudflare Workers (WhatsApp) |
+| Capa          | Tecnología                              |
+| ------------- | --------------------------------------- |
+| **Framework** | Astro 5.7 (Static SSG)                  |
+| **Hosting**   | Cloudflare Pages                        |
+| **Backend**   | Cloudflare Pages Functions (serverless) |
+| **Media**     | Cloudflare R2 + Worker proxy            |
+| **Pagos**     | Wompi Widget (Widget + API)             |
+| **CI/CD**     | GitHub Actions → Cloudflare Pages       |
+| **Contacto**  | Cloudflare Workers (WhatsApp)           |
 
 ---
 
@@ -119,13 +119,13 @@ Usuario clickea "PAGAR AHORA"
 
 ### Planes configurados
 
-| Plan ID | Nombre | Precio (COP) |
-|---|---|---|
-| `mensual` | Membresía Mensual | $69.900 |
-| `power-pack` | Power Pack | $140.000 |
-| `trimestral` | Plan Trimestral | $186.000 |
-| `semestral` | Plan Semestral | $360.000 |
-| `anual` | Plan Anual | $620.000 |
+| Plan ID      | Nombre            | Precio (COP) |
+| ------------ | ----------------- | ------------ |
+| `mensual`    | Membresía Mensual | $69.900      |
+| `power-pack` | Power Pack        | $140.000     |
+| `trimestral` | Plan Trimestral   | $186.000     |
+| `semestral`  | Plan Semestral    | $360.000     |
+| `anual`      | Plan Anual        | $620.000     |
 
 ### Variables de entorno (Cloudflare Pages)
 
@@ -174,6 +174,7 @@ Las imágenes se sirven desde `media.powerhousegym.co` vía un Worker proxy sobr
 **Bucket**: `powerhouse-media`
 
 **Estructura de carpetas**:
+
 ```
 gym/        → Fotos del gimnasio
 trainers/   → Fotos de entrenadores
@@ -187,6 +188,7 @@ icons/      → Favicons y logos
 **URLs resultantes**: `https://media.powerhousegym.co/{carpeta}/{archivo}`
 
 El Worker agrega automáticamente:
+
 - Cache CDN por 30 días (`max-age=2592000, immutable`)
 - CORS abierto (`Access-Control-Allow-Origin: *`)
 - ETags para caché condicional (304 Not Modified)
@@ -209,11 +211,11 @@ El sitio incluye SEO técnico completo:
 
 ## Dominios
 
-| Dominio | Destino |
-|---|---|
-| `powerhousegym.co` | Cloudflare Pages (sitio principal) |
-| `www.powerhousegym.co` | Cloudflare Pages |
-| `media.powerhousegym.co` | Worker proxy → R2 bucket |
+| Dominio                  | Destino                            |
+| ------------------------ | ---------------------------------- |
+| `powerhousegym.co`       | Cloudflare Pages (sitio principal) |
+| `www.powerhousegym.co`   | Cloudflare Pages                   |
+| `media.powerhousegym.co` | Worker proxy → R2 bucket           |
 
 ---
 

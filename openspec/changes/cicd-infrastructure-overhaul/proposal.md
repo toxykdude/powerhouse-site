@@ -7,6 +7,7 @@ Replace the single unprotected deploy workflow with a complete CI/CD pipeline th
 ## Scope
 
 ### In Scope
+
 - 4 GitHub Actions workflows: `pr-validation`, `deploy-dev`, `deploy-production`, `rollback`
 - Path-based worker deployment (only when `workers/` changes)
 - Separate Cloudflare Pages dev project on `*.pages.dev`
@@ -19,6 +20,7 @@ Replace the single unprotected deploy workflow with a complete CI/CD pipeline th
 - GitHub Environments: Development + Production with independent rules
 
 ### Out of Scope
+
 - Secret rotation (deferred until after CI/CD is configured)
 - E2E tests (future work)
 - Dependabot/Renovate configuration (future work)
@@ -28,6 +30,7 @@ Replace the single unprotected deploy workflow with a complete CI/CD pipeline th
 ## Capabilities
 
 ### New Capabilities
+
 - `pr-validation`: Lint, typecheck, unit tests, build verification, and security scan on every PR. Blocks merge on failure.
 - `dev-deployment`: Preview deploys to `*.pages.dev` on every PR. Logs version, commit SHA, author.
 - `production-deployment`: Deploy to `powerhousegym.co` on push to `main`. All validations must pass. Auto semver tag + GitHub Release.
@@ -36,6 +39,7 @@ Replace the single unprotected deploy workflow with a complete CI/CD pipeline th
 - `semantic-versioning`: Automatic semver via `semantic-release` with conventional commits. Creates GitHub Releases with changelog.
 
 ### Modified Capabilities
+
 None — no existing specs to modify.
 
 ## Approach
@@ -44,25 +48,25 @@ Full GitHub Actions matrix (4 workflows + 1 worker workflow). Each workflow is a
 
 ## Affected Areas
 
-| Area | Impact | Description |
-|------|--------|-------------|
-| `.github/workflows/` | New | 4 new workflow files, 1 existing replaced |
-| `package.json` | Modified | New scripts (lint, format, test, typecheck), new devDependencies |
-| `.gitignore` | Modified | Add `.env` |
-| `wrangler.toml` | Modified | Add `[env.dev]` / `[env.production]` |
-| `wrangler-media.toml` | Modified | Add `[env.dev]` / `[env.production]` |
-| `functions/api/**/*.ts` | None | Must work in both dev and prod environments |
-| `src/` | None | No source changes, only build pipeline |
+| Area                    | Impact   | Description                                                      |
+| ----------------------- | -------- | ---------------------------------------------------------------- |
+| `.github/workflows/`    | New      | 4 new workflow files, 1 existing replaced                        |
+| `package.json`          | Modified | New scripts (lint, format, test, typecheck), new devDependencies |
+| `.gitignore`            | Modified | Add `.env`                                                       |
+| `wrangler.toml`         | Modified | Add `[env.dev]` / `[env.production]`                             |
+| `wrangler-media.toml`   | Modified | Add `[env.dev]` / `[env.production]`                             |
+| `functions/api/**/*.ts` | None     | Must work in both dev and prod environments                      |
+| `src/`                  | None     | No source changes, only build pipeline                           |
 
 ## Risks
 
-| Risk | Likelihood | Mitigation |
-|------|------------|------------|
-| Payment signature logic break from env var changes | High | Unit tests for Wompi signature as first priority; env vars verified in dev before prod |
-| `.env` already in git history | High | `.gitignore` added now; BFG or git-filter-repo cleanup after secret rotation |
-| Cloudflare Pages Functions runtime differs from local | Medium | Type-check passes but edge may fail — dev preview catches this before merge |
-| `semantic-release` misconfiguration creates wrong version | Low | Test on feature branch first; rollback workflow available |
-| Worker R2 binding missing in dev environment | Medium | Document required bindings; dev deploy may fail until Cloudflare dev project is configured |
+| Risk                                                      | Likelihood | Mitigation                                                                                 |
+| --------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------ |
+| Payment signature logic break from env var changes        | High       | Unit tests for Wompi signature as first priority; env vars verified in dev before prod     |
+| `.env` already in git history                             | High       | `.gitignore` added now; BFG or git-filter-repo cleanup after secret rotation               |
+| Cloudflare Pages Functions runtime differs from local     | Medium     | Type-check passes but edge may fail — dev preview catches this before merge                |
+| `semantic-release` misconfiguration creates wrong version | Low        | Test on feature branch first; rollback workflow available                                  |
+| Worker R2 binding missing in dev environment              | Medium     | Document required bindings; dev deploy may fail until Cloudflare dev project is configured |
 
 ## Rollback Plan
 

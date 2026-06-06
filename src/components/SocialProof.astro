@@ -37,7 +37,7 @@ function initCounters() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        const el = entry.target;
+        const el = entry.target as HTMLElement;
         if (el.dataset.animated === "true") return;
 
         el.dataset.animated = "true";

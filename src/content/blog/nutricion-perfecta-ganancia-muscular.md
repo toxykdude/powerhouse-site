@@ -22,17 +22,18 @@ Pero ojo — "nutrición para ganar músculo" no significa comer todo lo que vea
 Para ganar músculo sin acumular grasa excesiva, necesitás un **superávit calórico moderado** de 300-500 calorías por encima de tu mantenimiento.
 
 **Fórmula rápida**:
+
 - Multiplicá tu peso en kg × 33-35 (si sos activo).
 - Ejemplo: 70kg × 35 = 2,450 calorías de mantenimiento.
 - Agregá 300-500 = **2,750-2,950 calorías diarias**.
 
 ### Paso 2: Distribuí tus Macros
 
-| Macro | Rango | Para 70kg | Función |
-|---|---|---|---|
-| **Proteína** | 1.6-2.2g/kg | 112-154g | Construcción y reparación muscular |
-| **Grasa** | 0.8-1.2g/kg | 56-84g | Hormonas, salud celular |
-| **Carbohidratos** | El resto | ~350-400g | Energía, recuperación, rendimiento |
+| Macro             | Rango       | Para 70kg | Función                            |
+| ----------------- | ----------- | --------- | ---------------------------------- |
+| **Proteína**      | 1.6-2.2g/kg | 112-154g  | Construcción y reparación muscular |
+| **Grasa**         | 0.8-1.2g/kg | 56-84g    | Hormonas, salud celular            |
+| **Carbohidratos** | El resto    | ~350-400g | Energía, recuperación, rendimiento |
 
 **Punto clave**: NO cortes los carbohidratos. Son tu combustible para entrenar fuerte. Sin carbohidratos, entrenás débil, estimulás menos, crecés menos.
 
@@ -40,35 +41,35 @@ Para ganar músculo sin acumular grasa excesiva, necesitás un **superávit cal�
 
 ### Proteínas Económicas
 
-| Alimento | Proteína/100g | Precio Aprox. (COP) | Nota |
-|---|---|---|---|
-| Pechuga de pollo | 31g | $12,000-15,000/kg | La mejor relación costo/beneficio |
-| Huevos enteros | 13g (por unidad) | $15,000-18,000/30 | Comé la yema, no la tires |
-| Atún en agua | 25g | $5,000-7,000/lata | Conveniente para loncheras |
-| Lentejas | 9g | $4,000-5,000/kg | Proteína vegetal + fibra |
-| Queso campesino | 14g | $8,000-10,000/500g | Bajo en grasa vs. otros quesos |
-| Carne molida | 26g | $18,000-22,000/kg | Económica vs. cortes finos |
-| Leche entera | 3.3g/100ml | $3,500-4,000/litro | Proteína + calorías conveniente |
+| Alimento         | Proteína/100g    | Precio Aprox. (COP) | Nota                              |
+| ---------------- | ---------------- | ------------------- | --------------------------------- |
+| Pechuga de pollo | 31g              | $12,000-15,000/kg   | La mejor relación costo/beneficio |
+| Huevos enteros   | 13g (por unidad) | $15,000-18,000/30   | Comé la yema, no la tires         |
+| Atún en agua     | 25g              | $5,000-7,000/lata   | Conveniente para loncheras        |
+| Lentejas         | 9g               | $4,000-5,000/kg     | Proteína vegetal + fibra          |
+| Queso campesino  | 14g              | $8,000-10,000/500g  | Bajo en grasa vs. otros quesos    |
+| Carne molida     | 26g              | $18,000-22,000/kg   | Económica vs. cortes finos        |
+| Leche entera     | 3.3g/100ml       | $3,500-4,000/litro  | Proteína + calorías conveniente   |
 
 ### Carbohidratos de Calidad
 
-| Alimento | Carbs/100g | Precio Aprox. (COP) | Cuándo |
-|---|---|---|---|
-| Arroz blanco | 28g (cocido) | $3,500-4,500/kg | Todo el día |
-| Plátano maduro | 23g | $2,000-3,000/kg | Pre/post entreno |
-| Avena | 66g | $5,000-7,000/kg | Desayuno |
-| Papa cocida | 17g | $2,500-3,500/kg | Almuerzo |
-| Arepa de maíz | 30g | $1,500-2,500/unidad | Desayuno/merienda |
-| Yuca cocida | 38g | $3,000-4,000/kg | Almuerzo |
+| Alimento       | Carbs/100g   | Precio Aprox. (COP) | Cuándo            |
+| -------------- | ------------ | ------------------- | ----------------- |
+| Arroz blanco   | 28g (cocido) | $3,500-4,500/kg     | Todo el día       |
+| Plátano maduro | 23g          | $2,000-3,000/kg     | Pre/post entreno  |
+| Avena          | 66g          | $5,000-7,000/kg     | Desayuno          |
+| Papa cocida    | 17g          | $2,500-3,500/kg     | Almuerzo          |
+| Arepa de maíz  | 30g          | $1,500-2,500/unidad | Desayuno/merienda |
+| Yuca cocida    | 38g          | $3,000-4,000/kg     | Almuerzo          |
 
 ### Grasas Saludables
 
-| Alimento | Grasa/100g | Precio Aprox. (COP) | Nota |
-|---|---|---|---|
-| Aguacate | 15g | $3,000-5,000/unidad | Local y barato en Manizales |
-| Crema de maní | 50g | $15,000-20,000/500g | Calorías densas, conveniente |
-| Aceite de oliva | 100g | $18,000-25,000/500ml | Para ensaladas |
-| Huevo (yema) | 5g por yema | Incluido arriba | No tires las yemas |
+| Alimento        | Grasa/100g  | Precio Aprox. (COP)  | Nota                         |
+| --------------- | ----------- | -------------------- | ---------------------------- |
+| Aguacate        | 15g         | $3,000-5,000/unidad  | Local y barato en Manizales  |
+| Crema de maní   | 50g         | $15,000-20,000/500g  | Calorías densas, conveniente |
+| Aceite de oliva | 100g        | $18,000-25,000/500ml | Para ensaladas               |
+| Huevo (yema)    | 5g por yema | Incluido arriba      | No tires las yemas           |
 
 ## Menú Semanal de Ganancia Muscular
 
@@ -77,16 +78,19 @@ Este menú está diseñado para alguien de ~70kg que necesita ~2,800 calorías. 
 ### Lunes a Viernes (Días de Entrenamiento)
 
 **Desayuno (7:00am) — ~600 kcal**
+
 - 3 huevos revueltos con tomate y cebolla
 - 2 arepas de maíz
 - 1 plátano maduro con crema de maní (1 cucharada)
 - Café o aguapanela sin azúcar
 
 **Media Mañana (10:00am) — ~350 kcal**
+
 - 1 porción de avena (50g) con leche y 1 plátano
 - O: 1 sándwich de pechuga de pollo con queso
 
 **Almuerzo (1:00pm) — ~800 kcal**
+
 - 150g pechuga de pollo a la plancha (o carne molida)
 - 1 plato generoso de arroz (200g cocido)
 - 1 porción de lentejas (150g cocidas)
@@ -94,17 +98,20 @@ Este menú está diseñado para alguien de ~70kg que necesita ~2,800 calorías. 
 - Jugo natural o agua
 
 **Merienda Pre-Entreno (4:00pm) — ~300 kcal**
+
 - 1 plátano maduro
 - 1 lata de atún con galletas de soda
 - O: batido de leche + plátano + crema de maní
 
 **Cena Post-Entreno (7:30pm) — ~550 kcal**
+
 - 150g carne (res o pollo)
 - 1 porción de papa cocida (200g)
 - Ensalada verde
 - 1 vaso de leche
 
 **Antes de Dormir (9:30pm) — ~200 kcal**
+
 - 1 porción de queso campesino (50g)
 - O: 1 yogurt con avena
 
@@ -118,25 +125,25 @@ Reducí un poco los carbohidratos (eliminá la merienda pre-entreno) pero manten
 
 Todo lo que necesitás para una semana, con precios aproximados en Manizales:
 
-| Producto | Cantidad | Precio (COP) |
-|---|---|---|
-| Pechuga de pollo | 1.5 kg | $20,000 |
-| Carne molida | 1 kg | $20,000 |
-| Huevos | 30 unidades | $16,000 |
-| Atún en agua | 6 latas | $36,000 |
-| Arroz | 2 kg | $8,000 |
-| Plátano | 2 kg | $5,000 |
-| Avena | 500g | $4,000 |
-| Lentejas | 500g | $3,000 |
-| Papa | 2 kg | $6,000 |
-| Arepas de maíz | 10 unidades | $15,000 |
-| Leche entera | 6 litros | $22,000 |
-| Queso campesino | 500g | $9,000 |
-| Crema de maní | 250g | $10,000 |
-| Aguacate | 4 unidades | $16,000 |
-| Verduras/ensalada | Varias | $15,000 |
-| Frutas (plátano, etc.) | Varias | $10,000 |
-| **TOTAL SEMANAL** | | **~$215,000 COP** |
+| Producto               | Cantidad    | Precio (COP)      |
+| ---------------------- | ----------- | ----------------- |
+| Pechuga de pollo       | 1.5 kg      | $20,000           |
+| Carne molida           | 1 kg        | $20,000           |
+| Huevos                 | 30 unidades | $16,000           |
+| Atún en agua           | 6 latas     | $36,000           |
+| Arroz                  | 2 kg        | $8,000            |
+| Plátano                | 2 kg        | $5,000            |
+| Avena                  | 500g        | $4,000            |
+| Lentejas               | 500g        | $3,000            |
+| Papa                   | 2 kg        | $6,000            |
+| Arepas de maíz         | 10 unidades | $15,000           |
+| Leche entera           | 6 litros    | $22,000           |
+| Queso campesino        | 500g        | $9,000            |
+| Crema de maní          | 250g        | $10,000           |
+| Aguacate               | 4 unidades  | $16,000           |
+| Verduras/ensalada      | Varias      | $15,000           |
+| Frutas (plátano, etc.) | Varias      | $10,000           |
+| **TOTAL SEMANAL**      |             | **~$215,000 COP** |
 
 Eso es ~$860,000 COP al mes. Para un plan de nutrición completo que te da resultados reales, es una inversión más que razonable. Y si cocinás vos mismo, ahorrás aún más.
 
@@ -196,4 +203,4 @@ En PowerHouse Gym Manizales no solo te entrenamos — te enseñamos a alimentart
 
 ---
 
-*El gym construye la demanda. La comida construye el músculo. Entrená duro, comé inteligente, descansá bien. Es así de simple — pero simple no significa fácil.*
+_El gym construye la demanda. La comida construye el músculo. Entrená duro, comé inteligente, descansá bien. Es así de simple — pero simple no significa fácil._

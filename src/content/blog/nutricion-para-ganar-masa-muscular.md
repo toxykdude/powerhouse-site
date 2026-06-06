@@ -46,16 +46,16 @@ Para alguien de 75 kg, eso significa entre **120 y 165 gramos de proteína diari
 
 ### Fuentes de proteína accesibles en Colombia
 
-| Alimento | Proteína por porción | Peso aproximado |
-|----------|---------------------|-----------------|
-| Pechuga de pollo | 31g | 100g crudos |
-| Carne de res (lomo) | 26g | 100g crudos |
-| Huevos enteros | 6g | 1 unidad |
-| Claras de huevo | 3.6g | 1 unidad |
-| Queso campesino | 14g | 50g |
-| Lentejas cocidas | 9g | 100g |
-| Arepa de maíz | 3g | 1 unidad mediana |
-| Proteína whey | 25g | 1 scoop (30g) |
+| Alimento            | Proteína por porción | Peso aproximado  |
+| ------------------- | -------------------- | ---------------- |
+| Pechuga de pollo    | 31g                  | 100g crudos      |
+| Carne de res (lomo) | 26g                  | 100g crudos      |
+| Huevos enteros      | 6g                   | 1 unidad         |
+| Claras de huevo     | 3.6g                 | 1 unidad         |
+| Queso campesino     | 14g                  | 50g              |
+| Lentejas cocidas    | 9g                   | 100g             |
+| Arepa de maíz       | 3g                   | 1 unidad mediana |
+| Proteína whey       | 25g                  | 1 scoop (30g)    |
 
 Fíjate que las lentejas y el arroz que come cualquier familia colombiana tienen proteína. No necesitas importar alimentos exóticos ni gastar fortunas en productos gringos.
 

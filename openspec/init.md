@@ -17,22 +17,22 @@ PowerHouse Gym Manizales official website — a static site with serverless API 
 
 ## Detected Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Framework** | Astro (Static SSG) | ^5.7.0 |
-| **Runtime** | Node.js (build), Cloudflare Workers/Pages (deploy) | 20 |
-| **Language** | TypeScript + JavaScript (workers) | strict tsconfig |
-| **Build Tool** | Vite (via Astro) | bundled |
-| **Package Manager** | npm | lockfile present |
-| **CSS** | Custom CSS with design tokens | no preprocessor |
-| **Fonts** | Google Fonts (Bebas Neue, Space Mono) | external |
-| **Integrations** | @astrojs/sitemap | ^3.3.0 |
-| **Image Processing** | sharp | ^0.33.0 |
-| **Deployment** | Cloudflare Pages + Workers | wrangler ^4.81.1 |
-| **Payments** | Wompi Widget (Widget + API) | production |
-| **Email** | MailChannels (via Workers) | free tier |
-| **Media Storage** | Cloudflare R2 | powerhouse-media bucket |
-| **Backend Proxy** | FaceGYM API | faceapp.powerhousegym.co |
+| Layer                | Technology                                         | Version                  |
+| -------------------- | -------------------------------------------------- | ------------------------ |
+| **Framework**        | Astro (Static SSG)                                 | ^5.7.0                   |
+| **Runtime**          | Node.js (build), Cloudflare Workers/Pages (deploy) | 20                       |
+| **Language**         | TypeScript + JavaScript (workers)                  | strict tsconfig          |
+| **Build Tool**       | Vite (via Astro)                                   | bundled                  |
+| **Package Manager**  | npm                                                | lockfile present         |
+| **CSS**              | Custom CSS with design tokens                      | no preprocessor          |
+| **Fonts**            | Google Fonts (Bebas Neue, Space Mono)              | external                 |
+| **Integrations**     | @astrojs/sitemap                                   | ^3.3.0                   |
+| **Image Processing** | sharp                                              | ^0.33.0                  |
+| **Deployment**       | Cloudflare Pages + Workers                         | wrangler ^4.81.1         |
+| **Payments**         | Wompi Widget (Widget + API)                        | production               |
+| **Email**            | MailChannels (via Workers)                         | free tier                |
+| **Media Storage**    | Cloudflare R2                                      | powerhouse-media bucket  |
+| **Backend Proxy**    | FaceGYM API                                        | faceapp.powerhousegym.co |
 
 ---
 
@@ -134,7 +134,7 @@ powerhouse-site/
 ### Test Layers
 
 | Layer       | Available | Tool |
-|-------------|-----------|------|
+| ----------- | --------- | ---- |
 | Unit        | ❌        | —    |
 | Integration | ❌        | —    |
 | E2E         | ❌        | —    |
@@ -146,11 +146,11 @@ powerhouse-site/
 
 ### Quality Tools
 
-| Tool         | Available | Command |
-|--------------|-----------|---------|
-| Linter       | ❌        | —       |
-| Type checker | ❌ (local only via `astro check`) | — |
-| Formatter    | ❌        | —       |
+| Tool         | Available                         | Command |
+| ------------ | --------------------------------- | ------- |
+| Linter       | ❌                                | —       |
+| Type checker | ❌ (local only via `astro check`) | —       |
+| Formatter    | ❌                                | —       |
 
 ---
 
@@ -185,19 +185,19 @@ actions/checkout@v4 → setup-node@v4 (node 20) → npm ci → npm run build →
 
 ### Cloudflare Pages Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
-| `WOMPI_PUBLIC_KEY` | Wompi checkout widget |
-| `WOMPI_INTEGRITY_SECRET` | Payment signature generation |
-| `WOMPI_PRIVATE_KEY` | Transaction status queries |
-| `WOMPI_EVENTS_SECRET` | Webhook signature verification |
-| `WOMPI_API_URL` | Wompi API base URL |
-| `FACEGYM_API_URL` | FaceGYM backend URL (optional, has default) |
+| Variable                 | Purpose                                     |
+| ------------------------ | ------------------------------------------- |
+| `WOMPI_PUBLIC_KEY`       | Wompi checkout widget                       |
+| `WOMPI_INTEGRITY_SECRET` | Payment signature generation                |
+| `WOMPI_PRIVATE_KEY`      | Transaction status queries                  |
+| `WOMPI_EVENTS_SECRET`    | Webhook signature verification              |
+| `WOMPI_API_URL`          | Wompi API base URL                          |
+| `FACEGYM_API_URL`        | FaceGYM backend URL (optional, has default) |
 
 ### Cloudflare Workers Bindings
 
-| Worker | Binding | Resource |
-|--------|---------|----------|
+| Worker                 | Binding        | Resource                     |
+| ---------------------- | -------------- | ---------------------------- |
 | powerhouse-media-proxy | `MEDIA_BUCKET` | R2 bucket `powerhouse-media` |
 
 ---

@@ -35,13 +35,13 @@ La disciplina es diferente. La disciplina no pregunta "tengo ganas?". La discipl
 
 ### La Diferencia Clave
 
-| | Motivación | Disciplina |
-|---|---|---|
-| **Origen** | Externo (videos, frases, estados de ánimo) | Interno (hábito, compromiso, identidad) |
-| **Duración** | Horas, días | Meses, años |
-| **Dependencia** | Del estado de ánimo | De un sistema |
-| **Resultado** | Arranques esporádicos | Progreso constante |
-| **Analogía** | Gasolina: arranca fuerte, se gasta rápido | Diésel: arranca lento, dura mucho |
+|                 | Motivación                                 | Disciplina                              |
+| --------------- | ------------------------------------------ | --------------------------------------- |
+| **Origen**      | Externo (videos, frases, estados de ánimo) | Interno (hábito, compromiso, identidad) |
+| **Duración**    | Horas, días                                | Meses, años                             |
+| **Dependencia** | Del estado de ánimo                        | De un sistema                           |
+| **Resultado**   | Arranques esporádicos                      | Progreso constante                      |
+| **Analogía**    | Gasolina: arranca fuerte, se gasta rápido  | Diésel: arranca lento, dura mucho       |
 
 ## Cómo Construir Disciplina (El Método Práctico)
 
@@ -79,7 +79,7 @@ El objetivo de las primeras semanas NO es transformar tu cuerpo. Es **construir 
 
 ### Paso 4: El Tracker de Marcas
 
-James Clear lo explica bien en *Hábitos Atómicos*: usá un calendario visible. Cada día que entrenás, hacé una X grande. Después de unos días, vas a ver una cadena de Xs. Tu único objetivo es **no romper la cadena**.
+James Clear lo explica bien en _Hábitos Atómicos_: usá un calendario visible. Cada día que entrenás, hacé una X grande. Después de unos días, vas a ver una cadena de Xs. Tu único objetivo es **no romper la cadena**.
 
 Pegá ese calendario en la nevera o en la puerta de tu cuarto. Que te vea todos los días. La presión visual funciona.
 
@@ -116,6 +116,7 @@ Te propongo algo. No un desafío de "transformá tu cuerpo en 30 días" (eso es 
 **30 días seguidos comprometiéndote con tu entrenamiento.** No tienen que ser 30 días en el gym — podés ser 20 gym + 10 actividad física (caminata rápida, deporte, lo que sea). Pero 30 días sin un espacio en blanco.
 
 Reglas:
+
 1. Entrená al menos 3 veces por semana en el gym.
 2. Los días que no vayas al gym, hacé 20 minutos de actividad física.
 3. Nunca te saltes 2 días seguidos.
@@ -133,4 +134,4 @@ En PowerHouse Gym Manizales, no te vendemos la ilusión de que va a ser fácil. 
 
 ---
 
-*La motivación te hace empezar. La disciplina te hace terminar. Y la identidad te hace mantener.*
+_La motivación te hace empezar. La disciplina te hace terminar. Y la identidad te hace mantener._

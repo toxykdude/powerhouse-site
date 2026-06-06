@@ -3,7 +3,9 @@
 ### Current State
 
 #### Build & Deploy Pipeline
+
 A single GitHub Actions workflow (`.github/workflows/deploy.yml`) handles production deployment:
+
 - **Trigger**: Push to `main` + manual `workflow_dispatch`
 - **Steps**: checkout → Node 20 setup → `npm ci` → `npm run build` → `npx wrangler pages deploy dist --project-name powerhouse-site --branch main`
 - **Auth**: Uses `CLOUDFLARE_EMAIL`, `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID` from GitHub Secrets
@@ -11,45 +13,53 @@ A single GitHub Actions workflow (`.github/workflows/deploy.yml`) handles produc
 - **Worker deployments**: NOT in CI — `wrangler.toml` and `wrangler-media.toml` workers are deployed manually outside the pipeline
 
 #### Wrangler Configuration
+
 Two standalone Workers defined in separate config files:
+
 - `wrangler.toml` → `powerhouse-contact` (contact form email via MailChannels)
 - `wrangler-media.toml` → `powerhouse-media-proxy` (R2 bucket proxy for media.powerhousegym.co)
 - Neither defines environments (`[env.dev]`, `[env.production]`) — single config only
 - Workers use Cloudflare-specific bindings (R2 bucket `MEDIA_BUCKET`)
 
 #### Astro Site
+
 - Astro 5.7 static SSG, output: `static`, site: `https://powerhousegym.co`
 - Build: Vite via `npm run build` → `dist/`
 - Integrations: `@astrojs/sitemap` only
 - Content collections: blog (glob loader, markdown)
-- Pages: landing, planes, contacto, blog/*, portal/* (dashboard, renovar, salir), pago/confirmacion, privacidad, terminos, 404
+- Pages: landing, planes, contacto, blog/_, portal/_ (dashboard, renovar, salir), pago/confirmacion, privacidad, terminos, 404
 - No UI framework — custom Astro components + custom CSS
 
 #### Cloudflare Pages Functions (`functions/api/`)
+
 Serverless API functions that run on Cloudflare Pages runtime:
+
 - **Auth** (3 endpoints): `member-login`, `member-verify`, `member-resend` → proxy to FaceGYM API
 - **Payment** (3 endpoints): `signature` (Wompi integrity hash), `status` (Wompi transaction query), `webhook` (Wompi event receiver → FaceGYM activation)
 - **Portal** (6 endpoints): `me`, `plans`, `renew`, `webhook-renew`, `pending-payment`, `pending-payment/[reference]` → proxy to FaceGYM API
 - Shared utility: `_shared.ts` provides CORS headers and `proxyToFaceGYM()` helper
 
 #### Environment Variables (required at runtime)
-| Variable | Used By | Required |
-|---|---|---|
-| `WOMPI_PUBLIC_KEY` | `payment/signature.ts` | Yes |
-| `WOMPI_INTEGRITY_SECRET` | `payment/signature.ts` | Yes |
-| `WOMPI_PRIVATE_KEY` | `payment/status.ts` | Yes |
-| `WOMPI_API_URL` | `payment/status.ts`, `payment/webhook.ts` | Optional (defaults to production) |
-| `WOMPI_EVENTS_SECRET` | `payment/webhook.ts` | Yes |
-| `FACEGYM_API_URL` | `_shared.ts`, various proxies | Optional (defaults to `faceapp.powerhousegym.co`) |
+
+| Variable                 | Used By                                   | Required                                          |
+| ------------------------ | ----------------------------------------- | ------------------------------------------------- |
+| `WOMPI_PUBLIC_KEY`       | `payment/signature.ts`                    | Yes                                               |
+| `WOMPI_INTEGRITY_SECRET` | `payment/signature.ts`                    | Yes                                               |
+| `WOMPI_PRIVATE_KEY`      | `payment/status.ts`                       | Yes                                               |
+| `WOMPI_API_URL`          | `payment/status.ts`, `payment/webhook.ts` | Optional (defaults to production)                 |
+| `WOMPI_EVENTS_SECRET`    | `payment/webhook.ts`                      | Yes                                               |
+| `FACEGYM_API_URL`        | `_shared.ts`, various proxies             | Optional (defaults to `faceapp.powerhousegym.co`) |
 
 #### Environment Variables (required by CI)
-| Variable | Purpose |
-|---|---|
-| `CLOUDFLARE_EMAIL` | Wrangler auth (legacy) |
-| `CLOUDFLARE_API_KEY` | Wrangler auth (legacy) |
+
+| Variable                | Purpose                      |
+| ----------------------- | ---------------------------- |
+| `CLOUDFLARE_EMAIL`      | Wrangler auth (legacy)       |
+| `CLOUDFLARE_API_KEY`    | Wrangler auth (legacy)       |
 | `CLOUDFLARE_ACCOUNT_ID` | Wrangler pages deploy target |
 
 #### Security Headers & Static Config
+
 - `public/_headers`: Cloudflare Pages headers — security headers on `/*`, immutable cache on `/_astro/*`, 24h cache on `/uploads/*`
 - `public/robots.txt`: Allows all bots, sitemap at `https://powerhousegym.co/sitemap.xml`
 
@@ -95,20 +105,20 @@ Serverless API functions that run on Cloudflare Pages runtime:
 
 ### Gaps vs Target State
 
-| Gap | Severity | Notes |
-|---|---|---|
-| No linter (ESLint) | High | Zero code quality enforcement |
-| No formatter (Prettier) | Medium | Inconsistent code style |
-| No type-checking in CI | High | TypeScript errors can ship to prod |
-| No test framework | High | No automated regression safety |
-| No preview deployments | High | No way to review changes before merge |
-| No dev environment | High | Only production exists |
-| Workers not in CI | High | Manual deployment, drift risk |
-| `.env` not in `.gitignore` | **CRITICAL** | Real secrets exposed in repo |
-| No semantic versioning | Medium | No release tracking |
-| No dependabot/renovate | Medium | Dependency drift and security risk |
-| No branch protection | Medium | Anyone can push to main |
-| `package.json` version is `1.0.0` static | Low | Never updated, no versioning tool |
+| Gap                                      | Severity     | Notes                                 |
+| ---------------------------------------- | ------------ | ------------------------------------- |
+| No linter (ESLint)                       | High         | Zero code quality enforcement         |
+| No formatter (Prettier)                  | Medium       | Inconsistent code style               |
+| No type-checking in CI                   | High         | TypeScript errors can ship to prod    |
+| No test framework                        | High         | No automated regression safety        |
+| No preview deployments                   | High         | No way to review changes before merge |
+| No dev environment                       | High         | Only production exists                |
+| Workers not in CI                        | High         | Manual deployment, drift risk         |
+| `.env` not in `.gitignore`               | **CRITICAL** | Real secrets exposed in repo          |
+| No semantic versioning                   | Medium       | No release tracking                   |
+| No dependabot/renovate                   | Medium       | Dependency drift and security risk    |
+| No branch protection                     | Medium       | Anyone can push to main               |
+| `package.json` version is `1.0.0` static | Low          | Never updated, no versioning tool     |
 
 ### Risks
 
