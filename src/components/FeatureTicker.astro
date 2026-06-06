@@ -31,7 +31,7 @@ const tickerItems = [...features, ...features];
 
 <div class="ticker-wrapper" aria-hidden="true">
   <div class="ticker-track">
-    {tickerItems.map((item, i) => (
+    {tickerItems.map((item, _i) => (
       <div class="ticker-item">
         <Fragment set:html={item.icon} />
         <span class="ticker-label">{item.label}</span>
