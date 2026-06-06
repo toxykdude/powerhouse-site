@@ -7,3 +7,17 @@ binding = "MEDIA_BUCKET"
 bucket_name = "powerhouse-media"
 
 # Route: media.powerhousegym.co/*
+
+[env.dev]
+name = "powerhouse-media-proxy-dev"
+
+[[env.dev.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "powerhouse-media-dev"
+
+[env.production]
+name = "powerhouse-media-proxy"
+
+[[env.production.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "powerhouse-media"
