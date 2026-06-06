@@ -20,7 +20,7 @@ const {
 	jsonLd,
 } = Astro.props;
 
-const siteTitle = "POWERHOUSE";
+const siteDomain = "https://powerhousegym.co";
 
 /**
  * Title tag logic:
@@ -38,8 +38,6 @@ const siteDescription =
 const defaultOgImage = "https://powerhousegym.co/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png";
 const ogImage = image ? (image.startsWith('http') ? image : `${siteDomain}${image}`) : defaultOgImage;
 const ogType = articleType ? "article" : "website";
-
-const siteDomain = "https://powerhousegym.co";
 const canonicalUrl = new URL(Astro.url.pathname, siteDomain).href;
 
 // BreadcrumbList schema
@@ -375,9 +373,10 @@ if (pathSegments.length > 0) {
 				mobileMenu?.classList.toggle("open", mobileOpen);
 				navbar?.classList.toggle("mobile-open", mobileOpen);
 				const svg = navToggle.querySelector("svg");
+				if (!svg) return;
 				if (mobileOpen) {
-					svg?.setAttribute("width", "32");
-					svg?.setAttribute("height", "32");
+					svg.setAttribute("width", "32");
+					svg.setAttribute("height", "32");
 					svg.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
 				} else {
 					svg.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';

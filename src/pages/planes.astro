@@ -554,7 +554,7 @@ const plans = [...row1, ...row2];
 		e.preventDefault();
 		const form = e.currentTarget as HTMLFormElement;
 		const name = (form.querySelector('#signup-name') as HTMLInputElement).value.trim();
-		const phone = (form.querySelector('#signup-phone') as HTMLInputElement).value.trim();
+		const _phone = (form.querySelector('#signup-phone') as HTMLInputElement).value.trim();
 		const plan = (form.querySelector('#signup-plan') as HTMLSelectElement).value;
 		const message = (form.querySelector('#signup-message') as HTMLTextAreaElement).value.trim();
 		const text = encodeURIComponent(`Hola PowerHouse! Me interesa el ${plan}. Mi nombre es ${name}.${message ? ' ' + message : ''}`);
