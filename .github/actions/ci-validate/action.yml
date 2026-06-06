@@ -1,7 +1,7 @@
-name: 'CI Validate'
-description: 'Run lint, typecheck, test, build, and security audit. Expects Node 20 + npm ci already set up.'
+name: "CI Validate"
+description: "Run lint, typecheck, test, build, and security audit. Expects Node 20 + npm ci already set up."
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Lint
       run: npm run lint

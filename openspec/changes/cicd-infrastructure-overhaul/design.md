@@ -6,17 +6,17 @@ Replace the single unprotected `deploy.yml` with a 4-workflow GitHub Actions pip
 
 ## Architecture Decisions
 
-| Decision | Choice | Rejected | Rationale |
-|----------|--------|----------|-----------|
-| Validation reuse | Composite action (`.github/actions/ci-validate/`) | `workflow_call` reusable workflow | Composite action is simpler — no artifact passing, runs in same job context, shares the npm cache directly |
-| Lint config | `eslint.config.js` (flat config) | `.eslintrc.json` | ESLint 9+ defaults to flat config; future-proof |
-| Test runner | Vitest | Jest | Native ESM support (project is `"type": "module"`), Vite-native, zero config for Astro/TS |
-| Security scan | `npm audit --audit-level=high` | Snyk / CodeQL | Zero additional config; sufficient for project size; can upgrade later |
-| semantic-release config | `.releaserc.json` | `package.json` `"release"` key | Separate file is clearer; avoids bloating package.json |
-| Worker path filter | `dorny/paths-filter` action | Manual `git diff` in script | Battle-tested, declarative, handles renames correctly |
-| Dev deploy project name | `powerhouse-site-dev` | `powerhouse-dev` | Keeps naming consistent with existing `powerhouse-site` production project |
-| PR comment with preview URL | `actions/github-script` step | Third-party PR comment action | No additional dependencies; one step to post URL |
-| semantic-release plugins | commit-analyzer, release-notes-generator, npm, github, git | With exec plugin | Standard 5-plugin set covers version bump, changelog, npm publish (dry-run for monorepo safety), GitHub Release, and git push of version commit |
+| Decision                    | Choice                                                     | Rejected                          | Rationale                                                                                                                                       |
+| --------------------------- | ---------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validation reuse            | Composite action (`.github/actions/ci-validate/`)          | `workflow_call` reusable workflow | Composite action is simpler — no artifact passing, runs in same job context, shares the npm cache directly                                      |
+| Lint config                 | `eslint.config.js` (flat config)                           | `.eslintrc.json`                  | ESLint 9+ defaults to flat config; future-proof                                                                                                 |
+| Test runner                 | Vitest                                                     | Jest                              | Native ESM support (project is `"type": "module"`), Vite-native, zero config for Astro/TS                                                       |
+| Security scan               | `npm audit --audit-level=high`                             | Snyk / CodeQL                     | Zero additional config; sufficient for project size; can upgrade later                                                                          |
+| semantic-release config     | `.releaserc.json`                                          | `package.json` `"release"` key    | Separate file is clearer; avoids bloating package.json                                                                                          |
+| Worker path filter          | `dorny/paths-filter` action                                | Manual `git diff` in script       | Battle-tested, declarative, handles renames correctly                                                                                           |
+| Dev deploy project name     | `powerhouse-site-dev`                                      | `powerhouse-dev`                  | Keeps naming consistent with existing `powerhouse-site` production project                                                                      |
+| PR comment with preview URL | `actions/github-script` step                               | Third-party PR comment action     | No additional dependencies; one step to post URL                                                                                                |
+| semantic-release plugins    | commit-analyzer, release-notes-generator, npm, github, git | With exec plugin                  | Standard 5-plugin set covers version bump, changelog, npm publish (dry-run for monorepo safety), GitHub Release, and git push of version commit |
 
 ### Decision: Parallel vs Sequential Jobs in PR Validation
 
@@ -59,22 +59,22 @@ Manual ──→ rollback.yml ──→ checkout target → build → deploy to 
 
 ## File Changes
 
-| File | Action | Description |
-|------|--------|-------------|
-| `.github/workflows/deploy.yml` | Delete | Replaced by 4 new workflows |
-| `.github/workflows/pr-validation.yml` | Create | PR quality gate — lint, typecheck, test, build, security |
-| `.github/workflows/deploy-dev.yml` | Create | Preview deploy on PR to main |
-| `.github/workflows/deploy-production.yml` | Create | Production deploy on push to main + semantic-release |
-| `.github/workflows/rollback.yml` | Create | Manual rollback to commit/tag/release |
-| `.github/actions/ci-validate/action.yml` | Create | Composite action: shared validation steps |
-| `package.json` | Modify | Add scripts (lint, format, typecheck, test), add devDependencies |
-| `.releaserc.json` | Create | semantic-release plugin configuration |
-| `eslint.config.js` | Create | ESLint flat config with Astro + Prettier integration |
-| `vitest.config.ts` | Create | Vitest configuration for Astro/Cloudflare Pages Functions |
-| `wrangler.toml` | Modify | Add `[env.dev]` and `[env.production]` sections |
-| `wrangler-media.toml` | Modify | Add `[env.dev]` and `[env.production]` with R2 bindings |
-| `.gitignore` | Modify | Add `.env` |
-| `__tests__/payment/signature.test.ts` | Create | Wompi payment signature unit tests (priority) |
+| File                                      | Action | Description                                                      |
+| ----------------------------------------- | ------ | ---------------------------------------------------------------- |
+| `.github/workflows/deploy.yml`            | Delete | Replaced by 4 new workflows                                      |
+| `.github/workflows/pr-validation.yml`     | Create | PR quality gate — lint, typecheck, test, build, security         |
+| `.github/workflows/deploy-dev.yml`        | Create | Preview deploy on PR to main                                     |
+| `.github/workflows/deploy-production.yml` | Create | Production deploy on push to main + semantic-release             |
+| `.github/workflows/rollback.yml`          | Create | Manual rollback to commit/tag/release                            |
+| `.github/actions/ci-validate/action.yml`  | Create | Composite action: shared validation steps                        |
+| `package.json`                            | Modify | Add scripts (lint, format, typecheck, test), add devDependencies |
+| `.releaserc.json`                         | Create | semantic-release plugin configuration                            |
+| `eslint.config.js`                        | Create | ESLint flat config with Astro + Prettier integration             |
+| `vitest.config.ts`                        | Create | Vitest configuration for Astro/Cloudflare Pages Functions        |
+| `wrangler.toml`                           | Modify | Add `[env.dev]` and `[env.production]` sections                  |
+| `wrangler-media.toml`                     | Modify | Add `[env.dev]` and `[env.production]` with R2 bindings          |
+| `.gitignore`                              | Modify | Add `.env`                                                       |
+| `__tests__/payment/signature.test.ts`     | Create | Wompi payment signature unit tests (priority)                    |
 
 ## Interfaces / Contracts
 
@@ -166,10 +166,13 @@ bucket_name = "powerhouse-media"
     "@semantic-release/release-notes-generator",
     ["@semantic-release/npm", { "npmPublish": false }],
     "@semantic-release/github",
-    ["@semantic-release/git", {
-      "assets": ["package.json"],
-      "message": "chore(release): ${nextRelease.version}"
-    }]
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json"],
+        "message": "chore(release): ${nextRelease.version}"
+      }
+    ]
   ]
 }
 ```
@@ -177,23 +180,25 @@ bucket_name = "powerhouse-media"
 ### GitHub Environments & Secrets
 
 **Environment: `development`**
+
 - No protection rules (auto-deploy on PR)
 - Secrets: `CLOUDFLARE_EMAIL`, `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`
 
 **Environment: `production`**
+
 - Protection: required reviewers (1), wait timer 0s
 - Secrets: `CLOUDFLARE_EMAIL`, `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`
 - Branch protection on `main`: require PR review (1 approval), require status checks (pr-validation), require up-to-date branch
 
 ## Testing Strategy
 
-| Layer | What to Test | Approach |
-|-------|-------------|----------|
-| Unit | Wompi payment signature (`sha256`, `generateSignature`, `generateReference`) | Vitest — pure functions, crypto.subtle available in Node 20+ |
-| Unit | Plan validation (invalid plan ID) | Vitest — test `onRequestPost` with mock Request/Env |
-| Integration | ESLint catches errors | CI step — `npm run lint` exits non-zero |
-| Integration | Build produces `dist/` | CI step — `npm run build` exits non-zero on failure |
-| E2E | (Future) | Not in scope |
+| Layer       | What to Test                                                                 | Approach                                                     |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Unit        | Wompi payment signature (`sha256`, `generateSignature`, `generateReference`) | Vitest — pure functions, crypto.subtle available in Node 20+ |
+| Unit        | Plan validation (invalid plan ID)                                            | Vitest — test `onRequestPost` with mock Request/Env          |
+| Integration | ESLint catches errors                                                        | CI step — `npm run lint` exits non-zero                      |
+| Integration | Build produces `dist/`                                                       | CI step — `npm run build` exits non-zero on failure          |
+| E2E         | (Future)                                                                     | Not in scope                                                 |
 
 ## Migration / Rollout
 

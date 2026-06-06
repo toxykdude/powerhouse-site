@@ -28,13 +28,14 @@ La sentadilla es el rey de los ejercicios de tren inferior. Trabaja cuádriceps,
 
 ### Programa Recomendado
 
-| Nivel | Series × Reps | Descanso | Frecuencia |
-|---|---|---|---|
-| Principiante | 3 × 12-15 | 90 seg | 2x/semana |
-| Intermedio | 4 × 8-12 | 120 seg | 2-3x/semana |
-| Avanzado | 5 × 5 | 180 seg | 2-3x/semana |
+| Nivel        | Series × Reps | Descanso | Frecuencia  |
+| ------------ | ------------- | -------- | ----------- |
+| Principiante | 3 × 12-15     | 90 seg   | 2x/semana   |
+| Intermedio   | 4 × 8-12      | 120 seg  | 2-3x/semana |
+| Avanzado     | 5 × 5         | 180 seg  | 2-3x/semana |
 
 ### Error #1: Rodillas hacia adentro
+
 Esto pasa cuando los glúteos medios son débiles. Solución: agregá clamshells y band walks como calentamiento.
 
 ## 2. Peso Muerto (Deadlift)
@@ -50,15 +51,16 @@ Si la sentadilla es el rey del tren inferior, el peso muerto es el rey de la cad
 - **Bajada**: Cadera primero, luego rodillas. La barra baja pegada al cuerpo.
 
 ### Error #2: Espalda redonda
+
 El pecado capital del peso muerto. Si no podés mantener la espalda neutral con ese peso, BAJÁ EL PESO. Sin discusión. Una hernia de disco no vale la pena.
 
 ### Programa Recomendado
 
-| Nivel | Series × Reps | Descanso | Frecuencia |
-|---|---|---|---|
-| Principiante | 3 × 10-12 | 120 seg | 1-2x/semana |
-| Intermedio | 4 × 6-8 | 150 seg | 1-2x/semana |
-| Avanzado | 5 × 3-5 | 180 seg | 1-2x/semana |
+| Nivel        | Series × Reps | Descanso | Frecuencia  |
+| ------------ | ------------- | -------- | ----------- |
+| Principiante | 3 × 10-12     | 120 seg  | 1-2x/semana |
+| Intermedio   | 4 × 6-8       | 150 seg  | 1-2x/semana |
+| Avanzado     | 5 × 3-5       | 180 seg  | 1-2x/semana |
 
 ## 3. Press de Banca (Bench Press)
 
@@ -73,15 +75,16 @@ El clásico. Pecho, hombros anteriores y tríceps. Es el ejercicio que todo el m
 - **Subida**: Empujá la barra hacia arriba y ligeramente hacia la cabeza (arco natural). Pies clavados en el piso como anclas.
 
 ### Error #3: Rebote en el pecho
+
 La barra NO debe rebotar en el pecho. Bajá controlado, hacé una micro-pausa (0.5 seg), y subí. Ese rebote es tu ego hablando, no tus músculos trabajando.
 
 ### Programa Recomendado
 
-| Nivel | Series × Reps | Descanso | Frecuencia |
-|---|---|---|---|
-| Principiante | 3 × 10-12 | 90 seg | 2x/semana |
-| Intermedio | 4 × 6-10 | 120 seg | 2-3x/semana |
-| Avanzado | 5 × 3-5 | 180 seg | 2-3x/semana |
+| Nivel        | Series × Reps | Descanso | Frecuencia  |
+| ------------ | ------------- | -------- | ----------- |
+| Principiante | 3 × 10-12     | 90 seg   | 2x/semana   |
+| Intermedio   | 4 × 6-10      | 120 seg  | 2-3x/semana |
+| Avanzado     | 5 × 3-5       | 180 seg  | 2-3x/semana |
 
 ## 4. Dominadas (Pull-ups)
 
@@ -105,11 +108,11 @@ No te preocupes, casi nadie puede al principio. Usá esta progresión:
 
 ### Programa Recomendado
 
-| Nivel | Series × Reps | Descanso | Frecuencia |
-|---|---|---|---|
-| Principiante | 3 × negativas (5-8) | 120 seg | 2-3x/semana |
-| Intermedio | 4 × 6-10 | 120 seg | 2-3x/semana |
-| Avanzado | 5 × 5-8 + peso | 150 seg | 2-3x/semana |
+| Nivel        | Series × Reps       | Descanso | Frecuencia  |
+| ------------ | ------------------- | -------- | ----------- |
+| Principiante | 3 × negativas (5-8) | 120 seg  | 2-3x/semana |
+| Intermedio   | 4 × 6-10            | 120 seg  | 2-3x/semana |
+| Avanzado     | 5 × 5-8 + peso      | 150 seg  | 2-3x/semana |
 
 ## 5. Press Militar (Overhead Press)
 
@@ -123,29 +126,33 @@ Hombros, tríceps, core. El press militar es el indicador de fuerza del tren sup
 - **Bajada**: Inverso a la subida. Cabeza atrás, barra baja, cabeza adelante.
 
 ### Error #4: Arquear excesivamente la espalda baja
+
 Un poco de extensión es normal, pero si parecés un arco de puente, estás usando demasiado peso o tu core es débil. Apretá los glúteos y la barriga durante todo el movimiento.
 
 ### Error #5: La barra queda adelante
+
 Si terminás con la barra adelante de tu cabeza, tus hombros van a sufrir. La posición final correcta es: barra, hombro, cadera, tobillo — todo en una línea vertical.
 
 ### Programa Recomendado
 
-| Nivel | Series × Reps | Descanso | Frecuencia |
-|---|---|---|---|
-| Principiante | 3 × 10-12 | 90 seg | 2x/semana |
-| Intermedio | 4 × 6-8 | 120 seg | 2-3x/semana |
-| Avanzado | 5 × 3-5 | 180 seg | 2-3x/semana |
+| Nivel        | Series × Reps | Descanso | Frecuencia  |
+| ------------ | ------------- | -------- | ----------- |
+| Principiante | 3 × 10-12     | 90 seg   | 2x/semana   |
+| Intermedio   | 4 × 6-8       | 120 seg  | 2-3x/semana |
+| Avanzado     | 5 × 3-5       | 180 seg  | 2-3x/semana |
 
 ## Cómo Armar tu Semana
 
 No hagás los 5 en un día. Distribuílos a lo largo de la semana:
 
 **Opción A (3 días/semana)**:
+
 - Lunes: Sentadilla + Press de Banca + Peso Muerto
 - Miércoles: Press Militar + Dominadas + Accesorios
 - Viernes: Sentadilla + Press de Banca (variante) + Peso Muerto (variante)
 
 **Opción B (4 días/semana)**:
+
 - Lunes: Sentadilla + Press de Banca
 - Martes: Peso Muerto + Dominadas
 - Jueves: Sentadilla (variante) + Press Militar
@@ -161,4 +168,4 @@ En PowerHouse Gym Manizales tenemos el equipo y el espacio para que ejecutes est
 
 ---
 
-*Estos 5 ejercicios representan el 20% de los movimientos que te dan el 80% de los resultados. Dominálos antes de buscar variaciones exoticas.*
+_Estos 5 ejercicios representan el 20% de los movimientos que te dan el 80% de los resultados. Dominálos antes de buscar variaciones exoticas._

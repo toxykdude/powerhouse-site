@@ -21,7 +21,7 @@ Antes de hablar de lo que SÍ necesitas, hablemos de lo que NO necesitás:
 
 ### Suplementos Que No Necesitás
 
-**BCAAs (Aminoácidos Ramificados)** — Si ya consumís suficiente proteína (y deberías), los BCAAs son literalmente tirar plata a la basura. Un estudio de 2018 en el *Journal of the International Society of Sports Nutrition* demostró que los BCAAs por sí solos no mejoran la síntesis de proteína muscular comparados con una proteína completa. Precio promedio en Manizales: $80,000-$120,000 COP. Guardá esa plata.
+**BCAAs (Aminoácidos Ramificados)** — Si ya consumís suficiente proteína (y deberías), los BCAAs son literalmente tirar plata a la basura. Un estudio de 2018 en el _Journal of the International Society of Sports Nutrition_ demostró que los BCAAs por sí solos no mejoran la síntesis de proteína muscular comparados con una proteína completa. Precio promedio en Manizales: $80,000-$120,000 COP. Guardá esa plata.
 
 **Fat Burners (Quemadores de Grasa)** — La mayoría contienen cafeína + ingredientes con dosis subterapéuticas. La efedrina, el único ingrediente que realmente funcionaba, fue prohibida hace décadas. Todo lo demás es marketing con un precio de $90,000-$150,000 COP por un frasco que no hace nada que no haga una taza de café negro.
 
@@ -64,14 +64,14 @@ No necesitás un pre-workout de $120,000 COP. Necesitás café.
 
 ## La Tabla de Inversión Inteligente
 
-| Suplemento | Costo/Mes (COP) | Prioridad | Evidencia Científica |
-|---|---|---|---|
-| Creatina monohidratada | $20,000-$30,000 | 🔴 Esencial | ★★★★★ |
-| Whey protein | $45,000-$70,000 | 🟡 Conveniente | ★★★★☆ |
-| Cafeína (café) | $5,000-$10,000 | 🟡 Opcional | ★★★★★ |
-| BCAAs | $0 | ⚫ Innecesario | ★☆☆☆☆ |
-| Fat burners | $0 | ⚫ Innecesario | ★☆☆☆☆ |
-| Glutamina | $0 | ⚫ Innecesario | ★★☆☆☆ |
+| Suplemento             | Costo/Mes (COP) | Prioridad      | Evidencia Científica |
+| ---------------------- | --------------- | -------------- | -------------------- |
+| Creatina monohidratada | $20,000-$30,000 | 🔴 Esencial    | ★★★★★                |
+| Whey protein           | $45,000-$70,000 | 🟡 Conveniente | ★★★★☆                |
+| Cafeína (café)         | $5,000-$10,000  | 🟡 Opcional    | ★★★★★                |
+| BCAAs                  | $0              | ⚫ Innecesario | ★☆☆☆☆                |
+| Fat burners            | $0              | ⚫ Innecesario | ★☆☆☆☆                |
+| Glutamina              | $0              | ⚫ Innecesario | ★★☆☆☆                |
 
 **Total mensual inteligente: $25,000-$100,000 COP** vs. $200,000+ COP gastando en todo lo que te venden.
 
@@ -106,4 +106,4 @@ En PowerHouse Gym tenemos asesores que pueden ayudarte a armar un plan de suplem
 
 ---
 
-*La suplementación es el garnish del plato, no el plato principal. Entrena duro, comé bien, descansá inteligente. Los suplementos son exactamente eso: un suplemento.*
+_La suplementación es el garnish del plato, no el plato principal. Entrena duro, comé bien, descansá inteligente. Los suplementos son exactamente eso: un suplemento._

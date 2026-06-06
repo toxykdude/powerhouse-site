@@ -38,12 +38,12 @@ Si no podés hacer esto, el peso es demasiado. Bajalo sin ego.
 
 Estos 4 movimientos son la base de TODO:
 
-| Ejercicio | Músculo Principal | Error Más Común |
-|---|---|---|
-| Sentadilla | Cuádriceps, Glúteos | Rodillas hacia adentro |
-| Peso Muerto | Cadena Posterior | Espalda redonda |
-| Press de Banca | Pecho, Hombros | Rebote en el pecho |
-| Press Militar | Hombros | Arco excesivo en espalda baja |
+| Ejercicio      | Músculo Principal   | Error Más Común               |
+| -------------- | ------------------- | ----------------------------- |
+| Sentadilla     | Cuádriceps, Glúteos | Rodillas hacia adentro        |
+| Peso Muerto    | Cadena Posterior    | Espalda redonda               |
+| Press de Banca | Pecho, Hombros      | Rebote en el pecho            |
+| Press Militar  | Hombros             | Arco excesivo en espalda baja |
 
 Dominá estos 4 con la barra vacía antes de cargar peso. Te prometo que los meses que "perdas" aprendiendo técnica se van a convertir en años de progreso sin lesiones.
 
@@ -65,16 +65,16 @@ Este método es hermoso porque funciona SIEMPRE. Te garantiza progreso continuo 
 
 ### La Tabla de Progresión Semanal
 
-| Semana | Objetivo | Carga |
-|---|---|---|
-| 1 | 3 × 8 reps | Base |
-| 2 | 3 × 9 reps | Misma carga |
-| 3 | 3 × 10 reps | Misma carga |
-| 4 | 3 × 11 reps | Misma carga |
-| 5 | 3 × 12 reps | Misma carga |
-| 6 | 3 × 8 reps | +2.5-5kg |
-| 7 | 3 × 9 reps | Misma carga nueva |
-| ... | Continuá el ciclo | ... |
+| Semana | Objetivo          | Carga             |
+| ------ | ----------------- | ----------------- |
+| 1      | 3 × 8 reps        | Base              |
+| 2      | 3 × 9 reps        | Misma carga       |
+| 3      | 3 × 10 reps       | Misma carga       |
+| 4      | 3 × 11 reps       | Misma carga       |
+| 5      | 3 × 12 reps       | Misma carga       |
+| 6      | 3 × 8 reps        | +2.5-5kg          |
+| 7      | 3 × 9 reps        | Misma carga nueva |
+| ...    | Continuá el ciclo | ...               |
 
 ### Cuánto Deberías Mejorar por Mes
 
@@ -94,13 +94,13 @@ La periodización es simplemente planificar la variación del entrenamiento a lo
 
 **4 semanas de carga + 1 semana de descarga = 1 ciclo**
 
-| Semana | Intensidad | Volumen | Objetivo |
-|---|---|---|---|
-| 1 | 70% (moderada) | Alto (4 × 10) | Base |
-| 2 | 75% | Moderado (4 × 8) | Progresión |
-| 3 | 80% | Moderado (4 × 6) | Fuerza |
-| 4 | 85% | Bajo (3 × 4) | Pico de fuerza |
-| 5 | 60% (ligera) | Bajo (3 × 8) | Descarga activiva |
+| Semana | Intensidad     | Volumen          | Objetivo          |
+| ------ | -------------- | ---------------- | ----------------- |
+| 1      | 70% (moderada) | Alto (4 × 10)    | Base              |
+| 2      | 75%            | Moderado (4 × 8) | Progresión        |
+| 3      | 80%            | Moderado (4 × 6) | Fuerza            |
+| 4      | 85%            | Bajo (3 × 4)     | Pico de fuerza    |
+| 5      | 60% (ligera)   | Bajo (3 × 8)     | Descarga activiva |
 
 La semana 5 es CLAVE. Es cuando tu cuerpo realmente se recupera y supercompensa. Mucha gente piensa que descansar es perder tiempo, pero es exactamente lo opuesto: es cuando creces.
 
@@ -124,6 +124,7 @@ Entrenás para estimular. Crecés cuando descansás. Este pilar es el que más s
 - Menos de 6 horas = 30% menos de fuerza y 60% más de cortisol (hormona del estrés).
 
 **Tips para dormir mejor**:
+
 - Apagá pantallas 1 hora antes de dormir.
 - Mantené el cuarto fresco (18-20°C — ideal para Manizales).
 - No entrenés dentro de las 3 horas previas a dormir.
@@ -146,34 +147,36 @@ Entrenás para estimular. Crecés cuando descansás. Este pilar es el que más s
 Acá tenés un programa completo de 4 semanas basado en los 4 pilares. Podés empezar mañana:
 
 ### Día A — Tren Inferior + Empuje
-| Ejercicio | Series × Reps | Descanso |
-|---|---|---|
-| Sentadilla | 4 × 8-12 | 120 seg |
-| Press de Banca | 4 × 8-12 | 120 seg |
-| Prensa de Piernas | 3 × 10-15 | 90 seg |
-| Press Inclinado Mancuernas | 3 × 10-12 | 90 seg |
-| Elevaciones Laterales | 3 × 15 | 60 seg |
+
+| Ejercicio                  | Series × Reps | Descanso |
+| -------------------------- | ------------- | -------- |
+| Sentadilla                 | 4 × 8-12      | 120 seg  |
+| Press de Banca             | 4 × 8-12      | 120 seg  |
+| Prensa de Piernas          | 3 × 10-15     | 90 seg   |
+| Press Inclinado Mancuernas | 3 × 10-12     | 90 seg   |
+| Elevaciones Laterales      | 3 × 15        | 60 seg   |
 
 ### Día B — Tren Inferior + Tirón
-| Ejercicio | Series × Reps | Descanso |
-|---|---|---|
-| Peso Muerto | 4 × 6-8 | 150 seg |
-| Dominadas / Jalón al Pecho | 4 × 8-12 | 120 seg |
-| Peso Muerto Rumano | 3 × 10-12 | 90 seg |
-| Remo con Barra | 3 × 8-12 | 90 seg |
-| Curl de Bíceps | 3 × 12 | 60 seg |
+
+| Ejercicio                  | Series × Reps | Descanso |
+| -------------------------- | ------------- | -------- |
+| Peso Muerto                | 4 × 6-8       | 150 seg  |
+| Dominadas / Jalón al Pecho | 4 × 8-12      | 120 seg  |
+| Peso Muerto Rumano         | 3 × 10-12     | 90 seg   |
+| Remo con Barra             | 3 × 8-12      | 90 seg   |
+| Curl de Bíceps             | 3 × 12        | 60 seg   |
 
 ### Calendario Semanal
 
-| Día | Actividad |
-|---|---|
-| Lunes | Día A |
-| Martes | Descanso activo (caminata) |
-| Miércoles | Día B |
-| Jueves | Descanso activo |
-| Viernes | Día A |
-| Sábado | Día B (carga ligera, semana 5: descanso total) |
-| Domingo | Descanso completo |
+| Día       | Actividad                                      |
+| --------- | ---------------------------------------------- |
+| Lunes     | Día A                                          |
+| Martes    | Descanso activo (caminata)                     |
+| Miércoles | Día B                                          |
+| Jueves    | Descanso activo                                |
+| Viernes   | Día A                                          |
+| Sábado    | Día B (carga ligera, semana 5: descanso total) |
+| Domingo   | Descanso completo                              |
 
 Progresá usando el método de doble progresión. Cada 4 semanas, evaluá y ajustá.
 
@@ -187,4 +190,4 @@ En PowerHouse Gym Manizales tenemos el equipamiento, el espacio y los profesiona
 
 ---
 
-*La diferencia entre los que logran resultados y los que no no es talento — es sistema. Construí tu sistema sobre estos 4 pilares y los resultados son inevitables.*
+_La diferencia entre los que logran resultados y los que no no es talento — es sistema. Construí tu sistema sobre estos 4 pilares y los resultados son inevitables._

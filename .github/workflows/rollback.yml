@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Commit SHA, tag (e.g. v1.0.0), or release to restore'
+        description: "Commit SHA, tag (e.g. v1.0.0), or release to restore"
         required: true
         type: string
       reason:
-        description: 'Why is this rollback needed?'
+        description: "Why is this rollback needed?"
         required: true
         type: string
 

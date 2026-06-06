@@ -56,7 +56,7 @@ No me crean. Pregúntale a cualquier levantador olímpico colombiano — como lo
 4. Visualízate completando cada repetición con buena forma
 5. Abre los ojos y ejecuta
 
-Hacer esto consistentemente mejora la activación muscular entre un 10% y un 15% según estudios publicados en el *Journal of Strength and Conditioning Research*. No es magia, es neurociencia aplicada.
+Hacer esto consistentemente mejora la activación muscular entre un 10% y un 15% según estudios publicados en el _Journal of Strength and Conditioning Research_. No es magia, es neurociencia aplicada.
 
 ### 4. Tu relación con el fracaso define tus resultados
 
