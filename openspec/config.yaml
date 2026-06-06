@@ -1,0 +1,38 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Astro 5.7 (Static SSG) + Cloudflare Pages Functions + Workers
+  Language: TypeScript + JavaScript (workers plain JS)
+  Runtime: Node.js 20, Cloudflare Workers/Pages
+  Architecture: Static site with serverless API functions and FaceGYM proxy
+  Build: Vite via Astro (`npm run build`)
+  CSS: Custom CSS with design tokens (no preprocessor)
+  Testing: None detected — no test runner, linter, formatter, or type-check in CI
+  Style: Custom Astro components, no UI framework
+  Payments: Wompi Widget (in-site modal checkout)
+  Media: Cloudflare R2 via Worker proxy
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Document impact on Wompi payment flow if touched
+    - Note FaceGYM API dependencies explicitly
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - All user-facing copy is in Spanish (Colombia)
+  design:
+    - Document architecture decisions with rationale
+    - Note Cloudflare-specific constraints (Workers runtime, env bindings)
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: ""
+    build_command: "npm run build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
