@@ -8,10 +8,8 @@ runs:
       shell: bash
 
     - name: Typecheck
-      run: npm run typecheck 2>&1 | tail -5
+      run: npm run typecheck
       shell: bash
-      # TODO: Remove continue-on-error once 14 pre-existing TS errors are fixed
-      continue-on-error: true
 
     - name: Test
       run: npm test
