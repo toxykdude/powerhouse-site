@@ -29,11 +29,11 @@ const siteDomain = "https://powerhousegym.co";
  * - Otherwise fall back to "PowerHouse Gym Manizales | Gimnasio Sin Contrato"
  */
 const fullTitle = seoTitle
-	|| (title ? `${title} | PowerHouse Manizales` : "Gimnasio PowerHouse Manizales | Sin Contrato · 5am–10pm");
+	|| (title ? `${title} | PowerHouse Manizales` : "PowerHouse Gym Manizales | Gimnasio Sin Contrato");
 
 const siteDescription =
 	description
-	|| "Gimnasio en Manizales sin contrato. Entrenamiento semipersonalizado, equipos de tráfico pesado, 96% de recomendación. Parque de la Mujer, Avenida Santander. ¡Agenda tu clase gratis hoy!";
+	|| "Gimnasio en Manizales sin contrato. Entrenamiento semipersonalizado, equipos de tráfico pesado y 96% de recomendación. Parque de la Mujer, Av. Santander";
 
 const defaultOgImage = "https://powerhousegym.co/uploads/Logo%20Arm%20Only%20White%20Neon%20Glow1.png";
 const ogImage = image ? (image.startsWith('http') ? image : `${siteDomain}${image}`) : defaultOgImage;
