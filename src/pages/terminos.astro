@@ -2,86 +2,94 @@
 import Base from "../layouts/Base.astro";
 ---
 <Base
-\ttitle="Términos y Condiciones"
-\tdescription="Términos y condiciones de uso del servicio de PowerHouse Gym Manizales. Gimnasio sin contrato en Manizales, Colombia."
+	title="Términos y Condiciones"
+	description="Términos y condiciones de uso del servicio de PowerHouse Gym Manizales. Gimnasio sin contrato en Manizales, Colombia."
 >
-\t<div class="legal-page">
-\t\t<div class="legal-page__inner">
-\t\t\t<a class="legal-page__back" href="/">${"<"} Volver al inicio</a>
-\t\t\t<h1>Términos y Condiciones</h1>
-\t\t\t<p class="legal-page__updated">Última actualización: Abril 2026</p>
+	<div class="legal-page">
+		<div class="legal-page__inner">
+			<a class="legal-page__back" href="/">${"<"} Volver al inicio</a>
+			<h1>Términos y Condiciones</h1>
+			<p class="legal-page__updated">Última actualización: Abril 2026</p>
 
-\t\t\t<h2>1. Generalidades</h2>
-\t\t\t<p>PowerHouse Gym Manizales (en adelante "PowerHouse") es un gimnasio ubicado en la Avenida Santander, Parque de la Mujer, Manizales, Caldas, Colombia. Al utilizar nuestros servicios, aceptás los siguientes términos y condiciones.</p>
+			<h2>1. Generalidades</h2>
+			<p>PowerHouse Gym Manizales (en adelante "PowerHouse") es un gimnasio ubicado en la Avenida Santander, Parque de la Mujer, Manizales, Caldas, Colombia. Al utilizar nuestros servicios, aceptás los siguientes términos y condiciones.</p>
 
-\t\t\t<h2>2. Membresía</h2>
-\t\t\t<p>Nuestras membresías no requieren contrato de permanencia ni documentos adicionales. El pago se realiza por el período seleccionado (mensual, quincenal o diario) y vence automáticamente al finalizar dicho período. No hay renovación automática ni cargos recurrentes.</p>
+			<h2>2. Membresía</h2>
+			<p>Nuestras membresías no requieren contrato de permanencia ni documentos adicionales. El pago se realiza por el período seleccionado (mensual, quincenal o diario) y vence automáticamente al finalizar dicho período. No hay renovación automática ni cargos recurrentes.</p>
 
-\t\t\t<h2>3. Uso de Instalaciones</h2>
-\t\t\t<p>El uso de las instalaciones de PowerHouse está sujeto a las normas internas del gimnasio, que incluyen el cuidado de los equipos, el respeto a otros usuarios y el seguimiento de las indicaciones del personal. PowerHouse se reserva el derecho de suspender el acceso a cualquier usuario que incumpla estas normas.</p>
+			<h2>3. Uso de Instalaciones</h2>
+			<p>El uso de las instalaciones de PowerHouse está sujeto a las normas internas del gimnasio, que incluyen el cuidado de los equipos, el respeto a otros usuarios y el seguimiento de las indicaciones del personal. PowerHouse se reserva el derecho de suspender el acceso a cualquier usuario que incumpla estas normas.</p>
 
-\t\t\t<h2>4. Responsabilidad</h2>
-\t\t\t<p>PowerHouse no se hace responsable por lesiones derivadas del uso inadecuado de los equipos o de no seguir las indicaciones del personal. Recomendamos siempre consultar con un profesional de la salud antes de iniciar cualquier programa de entrenamiento.</p>
+			<h2>4. Responsabilidad</h2>
+			<p>PowerHouse no se hace responsable por lesiones derivadas del uso inadecuado de los equipos o de no seguir las indicaciones del personal. Recomendamos siempre consultar con un profesional de la salud antes de iniciar cualquier programa de entrenamiento.</p>
 
-\t\t\t<h2>5. Horarios</h2>
-\t\t\t<p>Nuestros horarios son: lunes a viernes de 5:00am a 10:00pm, sábados y domingos de 9:00am a 2:00pm. Los horarios pueden variar en días festivos y serán comunicados con anticipación.</p>
+			<h2>5. Horarios</h2>
+			<p>Nuestros horarios son: lunes a viernes de 5:00am a 10:00pm, sábados y domingos de 9:00am a 2:00pm. Los horarios pueden variar en días festivos y serán comunicados con anticipación.</p>
 
-\t\t\t<h2>6. Contacto</h2>
-\t\t\t<p>Para cualquier consulta sobre estos términos, podés contactarnos al WhatsApp +57 315 471 1900 o al correo gerencia@powerhousegym.co.</p>
-\t\t</div>
-\t</div>
+			<h2>6. Contacto</h2>
+			<p>Para cualquier consulta sobre estos términos, podés contactarnos al WhatsApp +57 315 471 1900 o al correo gerencia@powerhousegym.co.</p>
+		</div>
+	</div>
 </Base>
 
-<style>
-\t.legal-page {
-\t\tpadding: 8rem 1.5rem 6rem;
-\t\tbackground: var(--brand-black);
-\t}
-\t.legal-page__inner {
-\t\tmax-width: 48rem;
-\t\tmargin: 0 auto;
-\t}
-\t.legal-page__back {
-\t\tdisplay: inline-flex;
-\t\talign-items: center;
-\t\tgap: 0.5rem;
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.8rem;
-\t\tcolor: rgba(240, 237, 232, 0.6);
-\t\ttext-transform: uppercase;
-\t\tletter-spacing: 0.2em;
-\t\ttext-decoration: none;
-\t\tmargin-bottom: 3rem;
-\t}
-\t.legal-page__back:hover {
-\t\tcolor: var(--brand-gold);
-\t}
-\t.legal-page h1 {
-\t\tfont-family: var(--font-display);
-\t\tfont-size: clamp(2.5rem, 5vw, 3.75rem);
-\t\tcolor: var(--brand-gold);
-\t\ttext-transform: uppercase;
-\t\tmargin-bottom: 0.5rem;
-\t}
-\t.legal-page__updated {
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.875rem;
-\t\tcolor: rgba(240, 237, 232, 0.4);
-\t\tmargin-bottom: 3rem;
-\t}
-\t.legal-page h2 {
-\t\tfont-family: var(--font-display);
-\t\tfont-size: 1.75rem;
-\t\tcolor: var(--brand-white);
-\t\ttext-transform: uppercase;
-\t\tmargin-top: 2.5rem;
-\t\tmargin-bottom: 0.75rem;
-\t}
-\t.legal-page p {
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.9375rem;
-\t\tcolor: rgba(240, 237, 232, 0.7);
-\t\tline-height: 1.8;
-\t\tmargin-bottom: 1rem;
-\t}
+<style is:global>
+	.legal-page {
+		padding: 8rem 1.5rem 6rem;
+		background: var(--brand-black);
+	}
+	.legal-page__inner {
+		max-width: 48rem;
+		margin: 0 auto;
+	}
+	.legal-page__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.6);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		text-decoration: none;
+		margin-bottom: 3rem;
+	}
+	.legal-page__back:hover {
+		color: var(--brand-gold);
+	}
+	.legal-page h1 {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 5vw, 3.75rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		margin-bottom: 0.5rem;
+		letter-spacing: 0.02em;
+	}
+	.legal-page__updated {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+		margin-bottom: 3rem;
+	}
+	.legal-page h2 {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-white);
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		margin-top: 2.5rem;
+		margin-bottom: 0.75rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid rgba(240, 237, 232, 0.1);
+	}
+	.legal-page p {
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: rgba(240, 237, 232, 0.85);
+		line-height: 1.9;
+		margin-bottom: 1.25rem;
+		max-width: 65ch;
+	}
+	.legal-page p:last-child {
+		margin-bottom: 0;
+	}
 </style>

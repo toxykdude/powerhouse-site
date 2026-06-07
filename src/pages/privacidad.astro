@@ -2,86 +2,94 @@
 import Base from "../layouts/Base.astro";
 ---
 <Base
-\ttitle="Política de Privacidad"
-\tdescription="Política de privacidad y protección de datos de PowerHouse Gym Manizales. Gimnasio en Manizales, Colombia."
+	title="Política de Privacidad"
+	description="Política de privacidad y protección de datos de PowerHouse Gym Manizales. Gimnasio en Manizales, Colombia."
 >
-\t<div class="legal-page">
-\t\t<div class="legal-page__inner">
-\t\t\t<a class="legal-page__back" href="/">${"<"} Volver al inicio</a>
-\t\t\t<h1>Política de Privacidad</h1>
-\t\t\t<p class="legal-page__updated">Última actualización: Abril 2026</p>
+	<div class="legal-page">
+		<div class="legal-page__inner">
+			<a class="legal-page__back" href="/">${"<"} Volver al inicio</a>
+			<h1>Política de Privacidad</h1>
+			<p class="legal-page__updated">Última actualización: Abril 2026</p>
 
-\t\t\t<h2>1. Datos que Recopilamos</h2>
-\t\t\t<p>PowerHouse Gym Manizales recopila los datos mínimos necesarios para prestar nuestros servicios: nombre completo, número de teléfono, correo electrónico (opcional) y datos de pago. No solicitamos números de identificación ni documentos personales.</p>
+			<h2>1. Datos que Recopilamos</h2>
+			<p>PowerHouse Gym Manizales recopila los datos mínimos necesarios para prestar nuestros servicios: nombre completo, número de teléfono, correo electrónico (opcional) y datos de pago. No solicitamos números de identificación ni documentos personales.</p>
 
-\t\t\t<h2>2. Uso de los Datos</h2>
-\t\t\t<p>Utilizamos tus datos exclusivamente para: gestionar tu membresía, comunicar cambios en horarios o servicios, y enviar información relevante sobre promociones. No compartimos ni vendemos tus datos a terceros bajo ninguna circunstancia.</p>
+			<h2>2. Uso de los Datos</h2>
+			<p>Utilizamos tus datos exclusivamente para: gestionar tu membresía, comunicar cambios en horarios o servicios, y enviar información relevante sobre promociones. No compartimos ni vendemos tus datos a terceros bajo ninguna circunstancia.</p>
 
-\t\t\t<h2>3. Protección de Datos</h2>
-\t\t\t<p>Implementamos medidas de seguridad técnicas y organizativas para proteger tus datos personales. Los pagos se procesan a través de plataformas seguras (Wompi) que cumplen con estándares PCI DSS.</p>
+			<h2>3. Protección de Datos</h2>
+			<p>Implementamos medidas de seguridad técnicas y organizativas para proteger tus datos personales. Los pagos se procesan a través de plataformas seguras (Wompi) que cumplen con estándares PCI DSS.</p>
 
-\t\t\t<h2>4> Derechos del Titular</h2>
-\t\t\t<p>De acuerdo con la Ley 1581 de 2012 (Ley de Protección de Datos Personales de Colombia), tenés derecho a: acceder a tus datos, solicitar su corrección, solicitar su eliminación, y revocar la autorización para su tratamiento.</p>
+			<h2>4. Derechos del Titular</h2>
+			<p>De acuerdo con la Ley 1581 de 2012 (Ley de Protección de Datos Personales de Colombia), tenés derecho a: acceder a tus datos, solicitar su corrección, solicitar su eliminación, y revocar la autorización para su tratamiento.</p>
 
-\t\t\t<h2>5. Cookies</h2>
-\t\t\t<p>Nuestro sitio web utiliza cookies técnicas necesarias para su funcionamiento. No utilizamos cookies de rastreo publicitario ni compartimos datos de navegación con terceros.</p>
+			<h2>5. Cookies</h2>
+			<p>Nuestro sitio web utiliza cookies técnicas necesarias para su funcionamiento. No utilizamos cookies de rastreo publicitario ni compartimos datos de navegación con terceros.</p>
 
-\t\t\t<h2>6. Contacto</h2>
-\t\t\t<p>Para ejercer tus derechos sobre datos personales o cualquier consulta de privacidad, contactanos al correo gerencia@powerhousegym.co o al WhatsApp +57 315 471 1900.</p>
-\t\t</div>
-\t</div>
+			<h2>6. Contacto</h2>
+			<p>Para ejercer tus derechos sobre datos personales o cualquier consulta de privacidad, contactanos al correo gerencia@powerhousegym.co o al WhatsApp +57 315 471 1900.</p>
+		</div>
+	</div>
 </Base>
 
-<style>
-\t.legal-page {
-\t\tpadding: 8rem 1.5rem 6rem;
-\t\tbackground: var(--brand-black);
-\t}
-\t.legal-page__inner {
-\t\tmax-width: 48rem;
-\t\tmargin: 0 auto;
-\t}
-\t.legal-page__back {
-\t\tdisplay: inline-flex;
-\t\talign-items: center;
-\t\tgap: 0.5rem;
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.8rem;
-\t\tcolor: rgba(240, 237, 232, 0.6);
-\t\ttext-transform: uppercase;
-\t\tletter-spacing: 0.2em;
-\t\ttext-decoration: none;
-\t\tmargin-bottom: 3rem;
-\t}
-\t.legal-page__back:hover {
-\t\tcolor: var(--brand-gold);
-\t}
-\t.legal-page h1 {
-\t\tfont-family: var(--font-display);
-\t\tfont-size: clamp(2.5rem, 5vw, 3.75rem);
-\t\tcolor: var(--brand-gold);
-\t\ttext-transform: uppercase;
-\t\tmargin-bottom: 0.5rem;
-\t}
-\t.legal-page__updated {
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.875rem;
-\t\tcolor: rgba(240, 237, 232, 0.4);
-\t\tmargin-bottom: 3rem;
-\t}
-\t.legal-page h2 {
-\t\tfont-family: var(--font-display);
-\t\tfont-size: 1.75rem;
-\t\tcolor: var(--brand-white);
-\t\ttext-transform: uppercase;
-\t\tmargin-top: 2.5rem;
-\t\tmargin-bottom: 0.75rem;
-\t}
-\t.legal-page p {
-\t\tfont-family: var(--font-mono);
-\t\tfont-size: 0.9375rem;
-\t\tcolor: rgba(240, 237, 232, 0.7);
-\t\tline-height: 1.8;
-\t\tmargin-bottom: 1rem;
-\t}
+<style is:global>
+	.legal-page {
+		padding: 8rem 1.5rem 6rem;
+		background: var(--brand-black);
+	}
+	.legal-page__inner {
+		max-width: 48rem;
+		margin: 0 auto;
+	}
+	.legal-page__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: rgba(240, 237, 232, 0.6);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		text-decoration: none;
+		margin-bottom: 3rem;
+	}
+	.legal-page__back:hover {
+		color: var(--brand-gold);
+	}
+	.legal-page h1 {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 5vw, 3.75rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		margin-bottom: 0.5rem;
+		letter-spacing: 0.02em;
+	}
+	.legal-page__updated {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.5);
+		margin-bottom: 3rem;
+	}
+	.legal-page h2 {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-white);
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		margin-top: 2.5rem;
+		margin-bottom: 0.75rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid rgba(240, 237, 232, 0.1);
+	}
+	.legal-page p {
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: rgba(240, 237, 232, 0.85);
+		line-height: 1.9;
+		margin-bottom: 1.25rem;
+		max-width: 65ch;
+	}
+	.legal-page p:last-child {
+		margin-bottom: 0;
+	}
 </style>
