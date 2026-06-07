@@ -216,17 +216,9 @@ if (pathSegments.length > 0) {
 		{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
 		{breadcrumbLd && <script type="application/ld+json" set:html={breadcrumbLd} />}
 
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-		/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-			rel="stylesheet"
-		/>
+		<!-- Self-hosted fonts — eliminates FOUT by serving from same origin -->
+		<link rel="preload" href="/fonts/fonts.css" as="style" />
+		<link rel="stylesheet" href="/fonts/fonts.css" />
 
 		<!-- Slot for page-specific head content (scripts, meta, etc.) -->
 		<slot name="head" />
