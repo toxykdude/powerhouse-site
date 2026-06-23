@@ -26,6 +26,8 @@ export interface PricingTier {
 	isFeatured: boolean;
 	/** The four identical included features (see SHARED_FEATURES). */
 	features: string[];
+	/** Wompi plan id — MUST match a key in functions/api/payment/signature.ts PLANS. */
+	planId: string;
 	/** Full raw ES message; the detail page URL-encodes it for wa.me. */
 	whatsappText: string;
 }
@@ -299,12 +301,13 @@ const formatCOP = (n: number): string => n.toString().replace(/\B(?=(\d{3})+(?!\
 
 function buildPricing(
 	trainerName: string,
+	slug: string,
 	base: { twelve: number; sixteen: number; twenty: number },
 ): PricingTier[] {
 	const tiers = [
-		{ name: "12 clases/mes", price: formatCOP(base.twelve + MEMBERSHIP), isFeatured: false },
-		{ name: "16 clases/mes", price: formatCOP(base.sixteen + MEMBERSHIP), isFeatured: true },
-		{ name: "20 clases/mes", price: formatCOP(base.twenty + MEMBERSHIP), isFeatured: false },
+		{ name: "12 clases/mes", price: formatCOP(base.twelve + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-12` },
+		{ name: "16 clases/mes", price: formatCOP(base.sixteen + MEMBERSHIP), isFeatured: true, planId: `pt-${slug}-16` },
+		{ name: "20 clases/mes", price: formatCOP(base.twenty + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-20` },
 	];
 	return tiers.map((tier) => ({
 		name: tier.name,
@@ -312,6 +315,7 @@ function buildPricing(
 		currency: "COP" as Currency,
 		isFeatured: tier.isFeatured,
 		features: SHARED_FEATURES,
+		planId: tier.planId,
 		whatsappText: `Hola PowerHouse, me interesa el plan de ${tier.name} de entrenamiento personal con ${trainerName}. ¿Me das información sobre disponibilidad y inicio?`,
 	}));
 }
@@ -337,7 +341,7 @@ export const trainers: Trainer[] = [
 			"Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. Analiza la postura y los patrones de movimiento de cada cliente para diseñar rutinas seguras, eficientes y orientadas a resultados sostenibles.",
 			"Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.",
 		],
-		pricing: buildPricing("Esteban Morales", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
+		pricing: buildPricing("Esteban Morales", "esteban-morales", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
 		results: ESTEBAN_RESULTS,
 		seoTitle: "Esteban Morales · Entrenador Personal",
 		seoDescription:
@@ -355,7 +359,7 @@ export const trainers: Trainer[] = [
 			"Preparador Físico y Tecnólogo en Entrenamiento Deportivo. Su enfoque combina entrenamiento funcional y musculación con control técnico riguroso, diseñando programas que se ajustan al nivel y al objetivo de cada persona.",
 			"Acompaña a cada cliente desde la valoración inicial hasta el seguimiento semanal, priorizando la ejecución correcta de cada movimiento para maximizar resultados y reducir el riesgo de lesión.",
 		],
-		pricing: buildPricing("Harold Giraldo", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
+		pricing: buildPricing("Harold Giraldo", "harold-giraldo", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
 		results: HAROLD_RESULTS,
 		seoTitle: "Harold Giraldo · Preparador Físico",
 		seoDescription:
@@ -380,7 +384,7 @@ export const trainers: Trainer[] = [
 			"Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria como entrenador de planta y personalizado, además de contar con más de 5 diplomados en nutrición, alimentación y métodos de periodización y dosificación de la carga.",
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
 		],
-		pricing: buildPricing("Brayan Molina", { twelve: 300000, sixteen: 380000, twenty: 420000 }),
+		pricing: buildPricing("Brayan Molina", "brayan-molina", { twelve: 300000, sixteen: 380000, twenty: 420000 }),
 		results: BRAYAN_RESULTS,
 		seoTitle: "Brayan Molina · Entrenador Personal",
 		seoDescription:
