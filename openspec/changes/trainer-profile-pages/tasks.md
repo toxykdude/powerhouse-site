@@ -37,7 +37,7 @@ Each work unit keeps the project building. Commit per `work-unit-commits` skill 
 
 ## Phase 1: Foundation — Data Module
 
-- [ ] **1.1** Create `src/data/trainers.ts`: export types (`Specialty`, `Currency`, `PricingTier`, `Trainer`), `WHATSAPP_NUMBER`, `SHARED_FEATURES`, and `trainers` array — **4 records in display order** (Juan Manuel → Esteban → Harold → Brayan). Use **Content Reference §A–§F** verbatim. Add optional `seoTitle?: string` / `seoDescription?: string` to `Trainer` (interface extension to satisfy spec R4 per-trainer SEO from one dynamic template); set them on the 3 slugged records per §E.
+- [x] **1.1** Create `src/data/trainers.ts`: export types (`Specialty`, `Currency`, `PricingTier`, `Trainer`), `WHATSAPP_NUMBER`, `SHARED_FEATURES`, and `trainers` array — **4 records in display order** (Juan Manuel → Esteban → Harold → Brayan). Use **Content Reference §A–§F** verbatim. Add optional `seoTitle?: string` / `seoDescription?: string` to `Trainer` (interface extension to satisfy spec R4 per-trainer SEO from one dynamic template); set them on the 3 slugged records per §E.
   - **Acceptance (automated: `npm run typecheck`):** passes. `trainers.length === 4`; exactly 3 records have `slug`+`pricing`(3 tiers)+`extendedBio`+`seoTitle`+`seoDescription`; Juan Manuel has **none** of those; Brayan omits `photo`. Refs: D2, D3, D4, spec R5.
 
 ## Phase 2: Shared Component + Planes Refactor (HIGHEST RISK)
