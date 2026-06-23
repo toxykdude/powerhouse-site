@@ -1,0 +1,209 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Entrenadores
+      - heading "Brayan Molina" [level=1] [ref=e19]
+      - generic [ref=e20]: Entrenador Personal
+      - img "Brayan Molina, entrenador personal en PowerHouse Gym Manizales, especialista en composición corporal y culturismo natural" [ref=e22]
+    - generic [ref=e24]:
+      - paragraph [ref=e25]: Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria como entrenador de planta y personalizado, además de contar con más de 5 diplomados en nutrición, alimentación y métodos de periodización y dosificación de la carga.
+      - paragraph [ref=e26]: Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.
+    - generic [ref=e28]:
+      - heading "ESPECIALIDADES" [level=2] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Composición Corporal
+        - generic [ref=e32]: Nutrición Deportiva
+        - generic [ref=e33]: Culturismo Natural
+        - generic [ref=e34]: Alto Rendimiento
+        - generic [ref=e35]: Entrenamiento Femenino
+        - generic [ref=e36]: Adulto Mayor
+    - generic [ref=e38]:
+      - generic [ref=e39]: Rendimiento
+      - heading "ESTADÍSTICAS Y RESULTADOS" [level=2] [ref=e40]
+      - generic [ref=e41]:
+        - article [ref=e42]:
+          - generic [ref=e43]:
+            - img [ref=e44]
+            - generic [ref=e47]: +12%
+          - generic [ref=e48]: 1,200+
+          - generic [ref=e49]: HORAS ENTRENADAS
+        - article [ref=e50]:
+          - generic [ref=e51]:
+            - img [ref=e52]
+            - generic [ref=e57]: +8%
+          - generic [ref=e58]: "45"
+          - generic [ref=e62]: MIEMBROS ACTIVOS
+        - article [ref=e63]:
+          - img [ref=e65]
+          - generic [ref=e68]: 96.8%
+          - img [ref=e70]
+          - generic [ref=e73]: ÍNDICE DE SATISFACCIÓN
+        - article [ref=e74]:
+          - generic [ref=e75]:
+            - img [ref=e76]
+            - generic [ref=e80]: "+2"
+          - generic [ref=e81]: "8"
+          - generic [ref=e82]: CERTIFICACIONES AVANZADAS
+    - generic [ref=e84]:
+      - heading "PLANES DE ENTRENAMIENTO PERSONAL" [level=2] [ref=e85]
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - heading "12 clases/mes" [level=3] [ref=e89]
+            - generic [ref=e90]:
+              - generic [ref=e91]: COP
+              - generic [ref=e92]: $300.000
+          - list [ref=e93]:
+            - listitem [ref=e94]:
+              - img [ref=e95]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e97]:
+              - img [ref=e98]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e100]:
+              - img [ref=e101]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e103]:
+              - img [ref=e104]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e106] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2012%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e107]:
+          - generic [ref=e108]: RECOMENDADO
+          - generic [ref=e109]:
+            - heading "16 clases/mes" [level=3] [ref=e110]
+            - generic [ref=e111]:
+              - generic [ref=e112]: COP
+              - generic [ref=e113]: $380.000
+          - list [ref=e114]:
+            - listitem [ref=e115]:
+              - img [ref=e116]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e118]:
+              - img [ref=e119]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e121]:
+              - img [ref=e122]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e124]:
+              - img [ref=e125]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e127] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2016%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - heading "20 clases/mes" [level=3] [ref=e130]
+            - generic [ref=e131]:
+              - generic [ref=e132]: COP
+              - generic [ref=e133]: $420.000
+          - list [ref=e134]:
+            - listitem [ref=e135]:
+              - img [ref=e136]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e138]:
+              - img [ref=e139]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e141]:
+              - img [ref=e142]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e144]:
+              - img [ref=e145]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e147] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2020%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+  - contentinfo [ref=e148]:
+    - generic [ref=e149]:
+      - generic [ref=e150]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e151] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e152]
+        - paragraph [ref=e153]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e154]:
+          - link "Instagram" [ref=e155] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e156]
+          - link "Facebook" [ref=e160] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e161]
+          - link "YouTube" [ref=e163] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e164]
+      - generic [ref=e167]:
+        - heading "Navegación" [level=4] [ref=e168]
+        - list [ref=e169]:
+          - listitem [ref=e170]:
+            - link "Inicio" [ref=e171] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e172]:
+            - link "Planes" [ref=e173] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e174]:
+            - link "Nosotros" [ref=e175] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e176]:
+            - link "Blog" [ref=e177] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e178]:
+            - link "Contacto" [ref=e179] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e180]:
+            - link "Portal Clientes" [ref=e181] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e182]:
+        - heading "Contacto" [level=4] [ref=e183]
+        - list [ref=e184]:
+          - listitem [ref=e185]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e186] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e188]
+              - generic [ref=e191]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e192]:
+            - link "+57 315 471 1900" [ref=e193] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e195]
+              - generic [ref=e197]: +57 315 471 1900
+          - listitem [ref=e198]:
+            - link "gerencia@powerhousegym.co" [ref=e199] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e201]
+              - generic [ref=e204]: gerencia@powerhousegym.co
+      - generic [ref=e205]:
+        - heading "Horarios" [level=4] [ref=e206]
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]: "Lun – Vie:"
+            - generic [ref=e210]: 5:00am – 10:00pm
+          - generic [ref=e211]:
+            - generic [ref=e212]: "Sáb – Dom:"
+            - generic [ref=e213]: 9:00am – 2:00pm
+    - generic [ref=e214]:
+      - paragraph [ref=e215]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e216]:
+        - link "Términos y Condiciones" [ref=e217] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e218] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e219] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e220]

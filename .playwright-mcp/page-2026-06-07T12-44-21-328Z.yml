@@ -1,0 +1,135 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - text: \t
+    - generic [ref=e16]:
+      - text: \t\t
+      - generic [ref=e17]:
+        - text: \t\t\t
+        - link "$< Volver al inicio" [ref=e18] [cursor=pointer]:
+          - /url: /
+        - text: \t\t\t
+        - heading "Términos y Condiciones" [level=1] [ref=e19]
+        - text: \t\t\t
+        - paragraph [ref=e20]: "Última actualización: Abril 2026"
+        - text: \t\t\t
+        - heading "1. Generalidades" [level=2] [ref=e21]
+        - text: \t\t\t
+        - paragraph [ref=e22]: PowerHouse Gym Manizales (en adelante "PowerHouse") es un gimnasio ubicado en la Avenida Santander, Parque de la Mujer, Manizales, Caldas, Colombia. Al utilizar nuestros servicios, aceptás los siguientes términos y condiciones.
+        - text: \t\t\t
+        - heading "2. Membresía" [level=2] [ref=e23]
+        - text: \t\t\t
+        - paragraph [ref=e24]: Nuestras membresías no requieren contrato de permanencia ni documentos adicionales. El pago se realiza por el período seleccionado (mensual, quincenal o diario) y vence automáticamente al finalizar dicho período. No hay renovación automática ni cargos recurrentes.
+        - text: \t\t\t
+        - heading "3. Uso de Instalaciones" [level=2] [ref=e25]
+        - text: \t\t\t
+        - paragraph [ref=e26]: El uso de las instalaciones de PowerHouse está sujeto a las normas internas del gimnasio, que incluyen el cuidado de los equipos, el respeto a otros usuarios y el seguimiento de las indicaciones del personal. PowerHouse se reserva el derecho de suspender el acceso a cualquier usuario que incumpla estas normas.
+        - text: \t\t\t
+        - heading "4. Responsabilidad" [level=2] [ref=e27]
+        - text: \t\t\t
+        - paragraph [ref=e28]: PowerHouse no se hace responsable por lesiones derivadas del uso inadecuado de los equipos o de no seguir las indicaciones del personal. Recomendamos siempre consultar con un profesional de la salud antes de iniciar cualquier programa de entrenamiento.
+        - text: \t\t\t
+        - heading "5. Horarios" [level=2] [ref=e29]
+        - text: \t\t\t
+        - paragraph [ref=e30]: "Nuestros horarios son: lunes a viernes de 5:00am a 10:00pm, sábados y domingos de 9:00am a 2:00pm. Los horarios pueden variar en días festivos y serán comunicados con anticipación."
+        - text: \t\t\t
+        - heading "6. Contacto" [level=2] [ref=e31]
+        - text: \t\t\t
+        - paragraph [ref=e32]: Para cualquier consulta sobre estos términos, podés contactarnos al WhatsApp +57 315 471 1900 o al correo gerencia@powerhousegym.co.
+        - text: \t\t
+      - text: \t
+  - contentinfo [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e36] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e37]
+        - paragraph [ref=e38]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e39]:
+          - link "Instagram" [ref=e40] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e41]
+          - link "Facebook" [ref=e45] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e46]
+          - link "YouTube" [ref=e48] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e49]
+      - generic [ref=e52]:
+        - heading "Navegación" [level=4] [ref=e53]
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - link "Inicio" [ref=e56] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e57]:
+            - link "Planes" [ref=e58] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e59]:
+            - link "Nosotros" [ref=e60] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e61]:
+            - link "Blog" [ref=e62] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e63]:
+            - link "Contacto" [ref=e64] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e65]:
+            - link "Portal Clientes" [ref=e66] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e67]:
+        - heading "Contacto" [level=4] [ref=e68]
+        - list [ref=e69]:
+          - listitem [ref=e70]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e71] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e73]
+              - generic [ref=e76]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e77]:
+            - link "+57 315 471 1900" [ref=e78] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e80]
+              - generic [ref=e82]: +57 315 471 1900
+          - listitem [ref=e83]:
+            - link "gerencia@powerhousegym.co" [ref=e84] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e86]
+              - generic [ref=e89]: gerencia@powerhousegym.co
+      - generic [ref=e90]:
+        - heading "Horarios" [level=4] [ref=e91]
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]: "Lun – Vie:"
+            - generic [ref=e95]: 5:00am – 10:00pm
+          - generic [ref=e96]:
+            - generic [ref=e97]: "Sáb – Dom:"
+            - generic [ref=e98]: 9:00am – 2:00pm
+    - generic [ref=e99]:
+      - paragraph [ref=e100]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e101]:
+        - link "Términos y Condiciones" [ref=e102] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e103] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e104] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e105]

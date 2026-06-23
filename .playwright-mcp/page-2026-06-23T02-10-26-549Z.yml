@@ -1,0 +1,250 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - img "Sala de entrenamiento con máquinas de tráfico pesado en PowerHouse Gym Manizales, Avenida Santander" [ref=e19]
+      - generic [ref=e20]:
+        - heading "FORJA TU VERSIÓN MÁS FUERTE" [level=1] [ref=e21]
+        - paragraph [ref=e22]: Gimnasio en Manizales · Entrenamiento semi-personalizado · Sin contratos
+        - generic [ref=e23]:
+          - link "VER PLANES" [ref=e24] [cursor=pointer]:
+            - /url: /planes
+          - link "CONOCE EL GYM" [ref=e25] [cursor=pointer]:
+            - /url: /nosotros
+      - generic [ref=e27]: Desliza
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - img [ref=e34]
+          - generic [ref=e38]: Máquinas de Tráfico Pesado
+          - generic [ref=e39]: /
+        - generic [ref=e40]:
+          - img [ref=e42]
+          - generic [ref=e47]: Suplementación In-House
+          - generic [ref=e48]: /
+        - generic [ref=e49]:
+          - img [ref=e51]
+          - generic [ref=e54]: Sin Contratos ni Papeleo
+          - generic [ref=e55]: /
+        - generic [ref=e56]:
+          - img [ref=e58]
+          - generic [ref=e63]: Entrenadores Siempre Presentes
+          - generic [ref=e64]: /
+        - generic [ref=e65]:
+          - img [ref=e67]
+          - generic [ref=e70]: Horario Privilegiado (5am–10pm)
+          - generic [ref=e71]: /
+        - generic [ref=e72]:
+          - img [ref=e74]
+          - generic [ref=e80]: Entrenamiento Semi-Personalizado
+          - generic [ref=e81]: /
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - img [ref=e85]
+          - generic [ref=e89]: Máquinas de Tráfico Pesado
+          - generic [ref=e90]: /
+        - generic [ref=e91]:
+          - img [ref=e93]
+          - generic [ref=e98]: Suplementación In-House
+          - generic [ref=e99]: /
+        - generic [ref=e100]:
+          - img [ref=e102]
+          - generic [ref=e105]: Sin Contratos ni Papeleo
+          - generic [ref=e106]: /
+        - generic [ref=e107]:
+          - img [ref=e109]
+          - generic [ref=e114]: Entrenadores Siempre Presentes
+          - generic [ref=e115]: /
+        - generic [ref=e116]:
+          - img [ref=e118]
+          - generic [ref=e121]: Horario Privilegiado (5am–10pm)
+          - generic [ref=e122]: /
+        - generic [ref=e123]:
+          - img [ref=e125]
+          - generic [ref=e131]: Entrenamiento Semi-Personalizado
+          - generic [ref=e132]: /
+    - generic [ref=e133]:
+      - generic: POWER
+      - generic [ref=e134]:
+        - generic [ref=e135]:
+          - heading "NUESTRA FILOSOFÍA" [level=2] [ref=e136]
+          - paragraph [ref=e137]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+          - paragraph [ref=e139]: Ubicados en el corazón de Manizales, somos el refugio de quienes buscan resultados reales. Sin contratos abusivos, sin complicaciones. Solo hierro, sudor y progreso constante.
+          - link "LEER MÁS" [ref=e140] [cursor=pointer]:
+            - /url: /nosotros
+            - text: LEER MÁS
+            - img [ref=e141]
+        - generic [ref=e143]:
+          - img "Interior del gimnasio PowerHouse Manizales con zona de cardio y vista a la ciudad" [ref=e145]
+          - generic [ref=e146]: EST. 2017
+    - generic [ref=e148]:
+      - generic [ref=e149]:
+        - generic [ref=e150]:
+          - generic [ref=e151]: El Equipo
+          - heading "ENTRENADORES ELITE" [level=2] [ref=e152]
+        - paragraph [ref=e153]: Profesionales certificados con años de experiencia en transformación física y rendimiento deportivo.
+      - generic [ref=e154]:
+        - article [ref=e155]:
+          - img "Juan Manuel Cano, fundador y entrenador personal de PowerHouse Gym Manizales, especialista en fisiculturismo e hipertrofia" [ref=e157]
+          - generic [ref=e159]:
+            - heading "Juan Manuel Cano" [level=3] [ref=e160]
+            - generic [ref=e161]: Founder & CEO de PowerHouse
+            - paragraph [ref=e162]: Fisiculturista con 16 años de experiencia en el gremio. Fundador de PowerHouse Gym Manizales.
+            - generic [ref=e163]:
+              - generic [ref=e164]: Fisiculturismo
+              - generic [ref=e165]: Hipertrofia
+              - generic [ref=e166]: Nutrición Deportiva
+              - generic [ref=e167]: Transformación Corporal
+        - link [ref=e168] [cursor=pointer]:
+          - /url: /entrenadores/esteban-morales
+          - article [ref=e169]:
+            - img "Esteban Morales, entrenador personal certificado en PowerHouse Gym Manizales, especialista en biomecánica y pérdida de peso" [ref=e171]
+            - generic [ref=e173]:
+              - heading "Esteban Morales" [level=3] [ref=e174]
+              - generic [ref=e175]: Entrenador Personal PowerHouse
+              - paragraph [ref=e176]: Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. 500+ clientes transformados.
+              - generic [ref=e177]:
+                - generic [ref=e178]: Biomecánica
+                - generic [ref=e179]: Pérdida de Peso
+                - generic [ref=e180]: Fuerza
+                - generic [ref=e181]: Prevención de Lesiones
+        - link [ref=e182] [cursor=pointer]:
+          - /url: /entrenadores/harold-giraldo
+          - article [ref=e183]:
+            - img "Harold Giraldo, preparador físico en PowerHouse Gym Manizales, especialista en entrenamiento funcional y musculación" [ref=e185]
+            - generic [ref=e187]:
+              - heading "Harold Giraldo" [level=3] [ref=e188]
+              - generic [ref=e189]: Preparador Físico
+              - paragraph [ref=e190]: Preparador Físico y Tecnólogo en Entrenamiento Deportivo con amplio conocimiento en funcional y musculación.
+              - generic [ref=e191]:
+                - generic [ref=e192]: Funcional
+                - generic [ref=e193]: Musculación
+                - generic [ref=e194]: Wellness
+                - generic [ref=e195]: Core
+        - link [ref=e196] [cursor=pointer]:
+          - /url: /entrenadores/brayan-molina
+          - article [ref=e197]:
+            - img "Brayan Molina, entrenador personal en PowerHouse Gym Manizales, especialista en composición corporal y culturismo natural" [ref=e199]
+            - generic [ref=e201]:
+              - heading "Brayan Molina" [level=3] [ref=e202]
+              - generic [ref=e203]: Entrenador Personal
+              - paragraph [ref=e204]: Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria. Especialista en composición corporal, nutrición deportiva y culturismo natural.
+              - generic [ref=e205]:
+                - generic [ref=e206]: Composición Corporal
+                - generic [ref=e207]: Nutrición Deportiva
+                - generic [ref=e208]: Culturismo Natural
+                - generic [ref=e209]: Alto Rendimiento
+                - generic [ref=e210]: Entrenamiento Femenino
+                - generic [ref=e211]: Adulto Mayor
+    - generic [ref=e213]:
+      - generic [ref=e214]:
+        - generic [ref=e215]: 96%
+        - paragraph [ref=e216]: De miembros nos recomiendan
+      - generic [ref=e217]:
+        - generic [ref=e218]: 20+
+        - paragraph [ref=e219]: Reseñas verificadas
+      - generic [ref=e220]:
+        - generic [ref=e221]: 500+
+        - paragraph [ref=e222]: Vidas transformadas
+    - generic [ref=e223]:
+      - generic: JOIN THE POWERHOUSE
+      - generic [ref=e224]:
+        - heading "¿LISTO PARA EMPEZAR?" [level=2] [ref=e225]
+        - paragraph [ref=e226]: No dejes para mañana la versión que puedes empezar a construir hoy.
+        - link "VER PLANES DE MEMBRESÍA" [ref=e227] [cursor=pointer]:
+          - /url: /planes
+  - contentinfo [ref=e228]:
+    - generic [ref=e229]:
+      - generic [ref=e230]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e231] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e232]
+        - paragraph [ref=e233]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e234]:
+          - link "Instagram" [ref=e235] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e236]
+          - link "Facebook" [ref=e240] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e241]
+          - link "YouTube" [ref=e243] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e244]
+      - generic [ref=e247]:
+        - heading "Navegación" [level=4] [ref=e248]
+        - list [ref=e249]:
+          - listitem [ref=e250]:
+            - link "Inicio" [ref=e251] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e252]:
+            - link "Planes" [ref=e253] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e254]:
+            - link "Nosotros" [ref=e255] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e256]:
+            - link "Blog" [ref=e257] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e258]:
+            - link "Contacto" [ref=e259] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e260]:
+            - link "Portal Clientes" [ref=e261] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e262]:
+        - heading "Contacto" [level=4] [ref=e263]
+        - list [ref=e264]:
+          - listitem [ref=e265]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e266] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e268]
+              - generic [ref=e271]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e272]:
+            - link "+57 315 471 1900" [ref=e273] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e275]
+              - generic [ref=e277]: +57 315 471 1900
+          - listitem [ref=e278]:
+            - link "gerencia@powerhousegym.co" [ref=e279] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e281]
+              - generic [ref=e284]: gerencia@powerhousegym.co
+      - generic [ref=e285]:
+        - heading "Horarios" [level=4] [ref=e286]
+        - generic [ref=e287]:
+          - generic [ref=e288]:
+            - generic [ref=e289]: "Lun – Vie:"
+            - generic [ref=e290]: 5:00am – 10:00pm
+          - generic [ref=e291]:
+            - generic [ref=e292]: "Sáb – Dom:"
+            - generic [ref=e293]: 9:00am – 2:00pm
+    - generic [ref=e294]:
+      - paragraph [ref=e295]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e296]:
+        - link "Términos y Condiciones" [ref=e297] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e298] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e299] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e300]

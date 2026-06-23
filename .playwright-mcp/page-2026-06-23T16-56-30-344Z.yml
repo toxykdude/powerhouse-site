@@ -1,0 +1,266 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Entrenadores
+      - heading "Esteban Morales" [level=1] [ref=e19]
+      - generic [ref=e20]: Entrenador Personal PowerHouse
+      - img "Esteban Morales, entrenador personal certificado en PowerHouse Gym Manizales, especialista en biomecánica y pérdida de peso" [ref=e22]
+    - generic [ref=e24]:
+      - paragraph [ref=e25]: Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. Analiza la postura y los patrones de movimiento de cada cliente para diseñar rutinas seguras, eficientes y orientadas a resultados sostenibles.
+      - paragraph [ref=e26]: Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.
+    - generic [ref=e28]:
+      - heading "ESPECIALIDADES" [level=2] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Biomecánica
+        - generic [ref=e32]: Pérdida de Peso
+        - generic [ref=e33]: Fuerza
+        - generic [ref=e34]: Prevención de Lesiones
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]: Resultados
+        - heading "RESULTADOS DE CLIENTES" [level=2] [ref=e38]
+      - generic [ref=e39]:
+        - article [ref=e40]:
+          - heading "SATISFACCIÓN GENERAL DE CLIENTES" [level=3] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - img "Distribución de satisfacción de clientes" [ref=e44]
+              - generic:
+                - generic: 97.5%
+                - generic: Positivo
+            - list [ref=e45]:
+              - listitem [ref=e46]:
+                - generic [ref=e48]: Muy satisfecho
+                - generic [ref=e49]: 58%
+              - listitem [ref=e50]:
+                - generic [ref=e52]: Satisfecho
+                - generic [ref=e53]: 39.5%
+              - listitem [ref=e54]:
+                - generic [ref=e56]: Neutral
+                - generic [ref=e57]: 1.5%
+              - listitem [ref=e58]:
+                - generic [ref=e60]: Insatisfecho
+                - generic [ref=e61]: 1%
+          - paragraph [ref=e62]: El 97.5% de los clientes reportan satisfacción positiva con su proceso de entrenamiento.
+          - generic [ref=e63]: n = 58 clientes activos · 2026
+        - article [ref=e64]:
+          - heading "FACTORES CLAVE DE SATISFACCIÓN" [level=3] [ref=e65]
+          - generic [ref=e66]:
+            - generic [ref=e68]:
+              - generic [ref=e69]: Técnica biomecánica
+              - generic [ref=e70]: 94%
+            - generic [ref=e74]:
+              - generic [ref=e75]: Seguimiento personalizado
+              - generic [ref=e76]: 88%
+            - generic [ref=e80]:
+              - generic [ref=e81]: Resultados visibles
+              - generic [ref=e82]: 83%
+            - generic [ref=e86]:
+              - generic [ref=e87]: Nutrición y macros
+              - generic [ref=e88]: 71%
+            - generic [ref=e92]:
+              - generic [ref=e93]: Precio / valor percibido
+              - generic [ref=e94]: 65%
+          - paragraph [ref=e97]: La técnica biomecánica y el seguimiento personalizado son los factores más valorados por los clientes.
+        - article [ref=e98]:
+          - heading "CORRELACIÓN SATISFACCIÓN · RESULTADOS" [level=3] [ref=e99]
+          - img "Correlación entre satisfacción y logro de resultados" [ref=e101]
+          - paragraph [ref=e102]: Los clientes con mayor satisfacción alcanzan sus metas en un 28% menos de tiempo promedio.
+        - generic [ref=e103]:
+          - article [ref=e104]:
+            - heading "MODALIDAD PREFERIDA" [level=3] [ref=e105]
+            - img "Distribución de modalidades preferidas" [ref=e107]
+            - list [ref=e108]:
+              - listitem [ref=e109]:
+                - generic [ref=e111]: Presencial
+                - generic [ref=e112]: 72%
+              - listitem [ref=e113]:
+                - generic [ref=e115]: Híbrido
+                - generic [ref=e116]: 21%
+              - listitem [ref=e117]:
+                - generic [ref=e119]: Online
+                - generic [ref=e120]: 7%
+            - paragraph [ref=e121]: La mayoría prefiere sesiones presenciales con Esteban.
+          - article [ref=e122]:
+            - heading "RESULTADOS CLAVE" [level=3] [ref=e123]
+            - generic [ref=e124]:
+              - generic [ref=e125]:
+                - generic [ref=e126]:
+                  - generic [ref=e127]: "97"
+                  - generic [ref=e128]: "%"
+                - generic [ref=e129]: de clientes satisfechos en total
+              - generic [ref=e130]:
+                - generic [ref=e131]:
+                  - generic [ref=e132]: "+28"
+                  - generic [ref=e133]: "%"
+                - generic [ref=e134]: más rápido al objetivo
+            - list [ref=e136]:
+              - listitem [ref=e137]:
+                - generic [ref=e138]: ⚡
+                - generic [ref=e139]: "Técnica biomecánica y supervisión directa son los factores #1 de retención."
+              - listitem [ref=e140]:
+                - generic [ref=e141]: 🏋
+                - generic [ref=e142]: Clientes activos alcanzan metas sostenibles desde la 4ta semana.
+    - generic [ref=e144]:
+      - heading "PLANES DE ENTRENAMIENTO PERSONAL" [level=2] [ref=e145]
+      - generic [ref=e146]:
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - heading "12 clases/mes" [level=3] [ref=e149]
+            - generic [ref=e150]:
+              - generic [ref=e151]: COP
+              - generic [ref=e152]: $270.000
+          - list [ref=e153]:
+            - listitem [ref=e154]:
+              - img [ref=e155]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e157]:
+              - img [ref=e158]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e160]:
+              - img [ref=e161]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e163]:
+              - img [ref=e164]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e166] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2012%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e167]:
+          - generic [ref=e168]: RECOMENDADO
+          - generic [ref=e169]:
+            - heading "16 clases/mes" [level=3] [ref=e170]
+            - generic [ref=e171]:
+              - generic [ref=e172]: COP
+              - generic [ref=e173]: $350.000
+          - list [ref=e174]:
+            - listitem [ref=e175]:
+              - img [ref=e176]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e178]:
+              - img [ref=e179]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e181]:
+              - img [ref=e182]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e184]:
+              - img [ref=e185]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e187] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2016%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e188]:
+          - generic [ref=e189]:
+            - heading "20 clases/mes" [level=3] [ref=e190]
+            - generic [ref=e191]:
+              - generic [ref=e192]: COP
+              - generic [ref=e193]: $400.000
+          - list [ref=e194]:
+            - listitem [ref=e195]:
+              - img [ref=e196]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e198]:
+              - img [ref=e199]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e201]:
+              - img [ref=e202]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e204]:
+              - img [ref=e205]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e207] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2020%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+  - contentinfo [ref=e208]:
+    - generic [ref=e209]:
+      - generic [ref=e210]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e211] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e212]
+        - paragraph [ref=e213]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e214]:
+          - link "Instagram" [ref=e215] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e216]
+          - link "Facebook" [ref=e220] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e221]
+          - link "YouTube" [ref=e223] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e224]
+      - generic [ref=e227]:
+        - heading "Navegación" [level=4] [ref=e228]
+        - list [ref=e229]:
+          - listitem [ref=e230]:
+            - link "Inicio" [ref=e231] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e232]:
+            - link "Planes" [ref=e233] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e234]:
+            - link "Nosotros" [ref=e235] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e236]:
+            - link "Blog" [ref=e237] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e238]:
+            - link "Contacto" [ref=e239] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e240]:
+            - link "Portal Clientes" [ref=e241] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e242]:
+        - heading "Contacto" [level=4] [ref=e243]
+        - list [ref=e244]:
+          - listitem [ref=e245]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e246] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e248]
+              - generic [ref=e251]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e252]:
+            - link "+57 315 471 1900" [ref=e253] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e255]
+              - generic [ref=e257]: +57 315 471 1900
+          - listitem [ref=e258]:
+            - link "gerencia@powerhousegym.co" [ref=e259] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e261]
+              - generic [ref=e264]: gerencia@powerhousegym.co
+      - generic [ref=e265]:
+        - heading "Horarios" [level=4] [ref=e266]
+        - generic [ref=e267]:
+          - generic [ref=e268]:
+            - generic [ref=e269]: "Lun – Vie:"
+            - generic [ref=e270]: 5:00am – 10:00pm
+          - generic [ref=e271]:
+            - generic [ref=e272]: "Sáb – Dom:"
+            - generic [ref=e273]: 9:00am – 2:00pm
+    - generic [ref=e274]:
+      - paragraph [ref=e275]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e276]:
+        - link "Términos y Condiciones" [ref=e277] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e278] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e279] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e280]
