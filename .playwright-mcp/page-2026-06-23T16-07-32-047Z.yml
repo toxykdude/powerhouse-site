@@ -1,0 +1,207 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Entrenadores
+      - heading "Esteban Morales" [level=1] [ref=e19]
+      - generic [ref=e20]: Entrenador Personal PowerHouse
+      - img "Esteban Morales, entrenador personal certificado en PowerHouse Gym Manizales, especialista en biomecánica y pérdida de peso" [ref=e22]
+    - generic [ref=e24]:
+      - paragraph [ref=e25]: Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. Analiza la postura y los patrones de movimiento de cada cliente para diseñar rutinas seguras, eficientes y orientadas a resultados sostenibles.
+      - paragraph [ref=e26]: Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.
+    - generic [ref=e28]:
+      - heading "ESPECIALIDADES" [level=2] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Biomecánica
+        - generic [ref=e32]: Pérdida de Peso
+        - generic [ref=e33]: Fuerza
+        - generic [ref=e34]: Prevención de Lesiones
+    - generic [ref=e36]:
+      - generic [ref=e37]: Rendimiento
+      - heading "ESTADÍSTICAS Y RESULTADOS" [level=2] [ref=e38]
+      - generic [ref=e39]:
+        - article [ref=e40]:
+          - generic [ref=e41]:
+            - img [ref=e42]
+            - generic [ref=e45]: +12%
+          - generic [ref=e46]: 1,200+
+          - generic [ref=e47]: HORAS ENTRENADAS
+        - article [ref=e48]:
+          - generic [ref=e49]:
+            - img [ref=e50]
+            - generic [ref=e55]: +8%
+          - generic [ref=e56]: "45"
+          - generic [ref=e60]: MIEMBROS ACTIVOS
+        - article [ref=e61]:
+          - img [ref=e63]
+          - generic [ref=e66]: 96.8%
+          - img [ref=e68]
+          - generic [ref=e71]: ÍNDICE DE SATISFACCIÓN
+        - article [ref=e72]:
+          - generic [ref=e73]:
+            - img [ref=e74]
+            - generic [ref=e78]: "+2"
+          - generic [ref=e79]: "8"
+          - generic [ref=e80]: CERTIFICACIONES AVANZADAS
+    - generic [ref=e82]:
+      - heading "PLANES DE ENTRENAMIENTO PERSONAL" [level=2] [ref=e83]
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - heading "12 clases/mes" [level=3] [ref=e87]
+            - generic [ref=e88]:
+              - generic [ref=e89]: COP
+              - generic [ref=e90]: $270.000
+          - list [ref=e91]:
+            - listitem [ref=e92]:
+              - img [ref=e93]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e95]:
+              - img [ref=e96]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e98]:
+              - img [ref=e99]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e101]:
+              - img [ref=e102]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e104] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2012%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e105]:
+          - generic [ref=e106]: RECOMENDADO
+          - generic [ref=e107]:
+            - heading "16 clases/mes" [level=3] [ref=e108]
+            - generic [ref=e109]:
+              - generic [ref=e110]: COP
+              - generic [ref=e111]: $350.000
+          - list [ref=e112]:
+            - listitem [ref=e113]:
+              - img [ref=e114]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e116]:
+              - img [ref=e117]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e119]:
+              - img [ref=e120]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e122]:
+              - img [ref=e123]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e125] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2016%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - heading "20 clases/mes" [level=3] [ref=e128]
+            - generic [ref=e129]:
+              - generic [ref=e130]: COP
+              - generic [ref=e131]: $400.000
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - img [ref=e134]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e136]:
+              - img [ref=e137]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e139]:
+              - img [ref=e140]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e142]:
+              - img [ref=e143]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e145] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2020%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Esteban%20Morales.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+  - contentinfo [ref=e146]:
+    - generic [ref=e147]:
+      - generic [ref=e148]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e149] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e150]
+        - paragraph [ref=e151]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e152]:
+          - link "Instagram" [ref=e153] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e154]
+          - link "Facebook" [ref=e158] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e159]
+          - link "YouTube" [ref=e161] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e162]
+      - generic [ref=e165]:
+        - heading "Navegación" [level=4] [ref=e166]
+        - list [ref=e167]:
+          - listitem [ref=e168]:
+            - link "Inicio" [ref=e169] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e170]:
+            - link "Planes" [ref=e171] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e172]:
+            - link "Nosotros" [ref=e173] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e174]:
+            - link "Blog" [ref=e175] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e176]:
+            - link "Contacto" [ref=e177] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e178]:
+            - link "Portal Clientes" [ref=e179] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e180]:
+        - heading "Contacto" [level=4] [ref=e181]
+        - list [ref=e182]:
+          - listitem [ref=e183]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e184] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e186]
+              - generic [ref=e189]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e190]:
+            - link "+57 315 471 1900" [ref=e191] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e193]
+              - generic [ref=e195]: +57 315 471 1900
+          - listitem [ref=e196]:
+            - link "gerencia@powerhousegym.co" [ref=e197] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e199]
+              - generic [ref=e202]: gerencia@powerhousegym.co
+      - generic [ref=e203]:
+        - heading "Horarios" [level=4] [ref=e204]
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - generic [ref=e207]: "Lun – Vie:"
+            - generic [ref=e208]: 5:00am – 10:00pm
+          - generic [ref=e209]:
+            - generic [ref=e210]: "Sáb – Dom:"
+            - generic [ref=e211]: 9:00am – 2:00pm
+    - generic [ref=e212]:
+      - paragraph [ref=e213]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e214]:
+        - link "Términos y Condiciones" [ref=e215] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e216] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e217] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e218]

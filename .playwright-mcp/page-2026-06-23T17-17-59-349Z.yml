@@ -1,0 +1,277 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander POWERHOUSE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e5]
+        - generic [ref=e6]: POWERHOUSE
+      - generic [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Planes" [ref=e9] [cursor=pointer]:
+          - /url: /planes
+        - link "Nosotros" [ref=e10] [cursor=pointer]:
+          - /url: /nosotros
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+        - link "Contacto" [ref=e12] [cursor=pointer]:
+          - /url: /contacto
+        - link "Portal Clientes" [ref=e13] [cursor=pointer]:
+          - /url: /portal
+      - link "ÚNETE" [ref=e14] [cursor=pointer]:
+        - /url: /planes
+  - main [ref=e15]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Entrenadores
+      - heading "Brayan Molina" [level=1] [ref=e19]
+      - generic [ref=e20]: Entrenador Personal
+      - img "Brayan Molina, entrenador personal en PowerHouse Gym Manizales, especialista en composición corporal y culturismo natural" [ref=e22]
+    - generic [ref=e24]:
+      - paragraph [ref=e25]: Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria como entrenador de planta y personalizado, además de contar con más de 5 diplomados en nutrición, alimentación y métodos de periodización y dosificación de la carga.
+      - paragraph [ref=e26]: Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.
+    - generic [ref=e28]:
+      - heading "ESPECIALIDADES" [level=2] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Composición Corporal
+        - generic [ref=e32]: Nutrición Deportiva
+        - generic [ref=e33]: Culturismo Natural
+        - generic [ref=e34]: Alto Rendimiento
+        - generic [ref=e35]: Entrenamiento Femenino
+        - generic [ref=e36]: Adulto Mayor
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e39]: Resultados
+        - heading "RESULTADOS DE CLIENTES" [level=2] [ref=e40]
+      - generic [ref=e41]:
+        - article [ref=e42]:
+          - heading "SATISFACCIÓN GENERAL DE CLIENTES" [level=3] [ref=e43]
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - img "Distribución de satisfacción de clientes" [ref=e46]
+              - generic:
+                - generic: 96.8%
+                - generic: Positivo
+            - list [ref=e47]:
+              - listitem [ref=e48]:
+                - generic [ref=e50]: Muy satisfecho
+                - generic [ref=e51]: 56%
+              - listitem [ref=e52]:
+                - generic [ref=e54]: Satisfecho
+                - generic [ref=e55]: 40.8%
+              - listitem [ref=e56]:
+                - generic [ref=e58]: Neutral
+                - generic [ref=e59]: 2.2%
+              - listitem [ref=e60]:
+                - generic [ref=e62]: Insatisfecho
+                - generic [ref=e63]: 1%
+          - paragraph [ref=e64]: El 96.8% de los clientes reportan satisfacción positiva con su proceso de transformación corporal.
+          - generic [ref=e65]: n = 45 clientes activos · 2026
+        - article [ref=e66]:
+          - heading "FACTORES CLAVE DE SATISFACCIÓN" [level=3] [ref=e67]
+          - generic [ref=e68]:
+            - generic [ref=e70]:
+              - generic [ref=e71]: Composición corporal
+              - generic [ref=e72]: 93%
+            - generic [ref=e76]:
+              - generic [ref=e77]: Nutrición y macros
+              - generic [ref=e78]: 90%
+            - generic [ref=e82]:
+              - generic [ref=e83]: Culturismo natural
+              - generic [ref=e84]: 86%
+            - generic [ref=e88]:
+              - generic [ref=e89]: Plan individualizado
+              - generic [ref=e90]: 84%
+            - generic [ref=e94]:
+              - generic [ref=e95]: Precio / valor percibido
+              - generic [ref=e96]: 67%
+          - paragraph [ref=e99]: El manejo de composición corporal y la nutrición son los factores más valorados.
+        - article [ref=e100]:
+          - heading "CORRELACIÓN SATISFACCIÓN · RESULTADOS" [level=3] [ref=e101]
+          - img "Correlación entre satisfacción y logro de resultados" [ref=e103]
+          - paragraph [ref=e104]: Los clientes con mayor adherencia alcanzan sus metas en un 26% menos de tiempo promedio.
+        - generic [ref=e105]:
+          - article [ref=e106]:
+            - heading "MODALIDAD PREFERIDA" [level=3] [ref=e107]
+            - img "Distribución de modalidades preferidas" [ref=e109]
+            - list [ref=e110]:
+              - listitem [ref=e111]:
+                - generic [ref=e113]: Presencial
+                - generic [ref=e114]: 70%
+              - listitem [ref=e115]:
+                - generic [ref=e117]: Híbrido
+                - generic [ref=e118]: 22%
+              - listitem [ref=e119]:
+                - generic [ref=e121]: Online
+                - generic [ref=e122]: 8%
+            - paragraph [ref=e123]: La mayoría prefiere sesiones presenciales con Brayan.
+          - article [ref=e124]:
+            - heading "RESULTADOS CLAVE" [level=3] [ref=e125]
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - generic [ref=e129]: "97"
+                  - generic [ref=e130]: "%"
+                - generic [ref=e131]: de clientes satisfechos en total
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - generic [ref=e134]: "+26"
+                  - generic [ref=e135]: "%"
+                - generic [ref=e136]: más rápido al objetivo
+            - list [ref=e138]:
+              - listitem [ref=e139]:
+                - generic [ref=e140]: ⚡
+                - generic [ref=e141]: "Composición corporal y nutrición son los factores #1 de retención."
+              - listitem [ref=e142]:
+                - generic [ref=e143]: 🏋
+                - generic [ref=e144]: Clientes activos alcanzan metas sostenibles desde la 4ta semana.
+    - generic [ref=e146]:
+      - heading "PLANES DE ENTRENAMIENTO PERSONAL" [level=2] [ref=e147]
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - generic [ref=e150]:
+            - heading "12 clases/mes" [level=3] [ref=e151]
+            - generic [ref=e152]:
+              - generic [ref=e153]: COP
+              - generic [ref=e154]: $369.900
+          - list [ref=e155]:
+            - listitem [ref=e156]:
+              - img [ref=e157]
+              - text: Incluida Membresía Mensual PowerHouse
+            - listitem [ref=e159]:
+              - img [ref=e160]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e162]:
+              - img [ref=e163]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e165]:
+              - img [ref=e166]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e168]:
+              - img [ref=e169]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e171] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2012%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e172]:
+          - generic [ref=e173]: RECOMENDADO
+          - generic [ref=e174]:
+            - heading "16 clases/mes" [level=3] [ref=e175]
+            - generic [ref=e176]:
+              - generic [ref=e177]: COP
+              - generic [ref=e178]: $449.900
+          - list [ref=e179]:
+            - listitem [ref=e180]:
+              - img [ref=e181]
+              - text: Incluida Membresía Mensual PowerHouse
+            - listitem [ref=e183]:
+              - img [ref=e184]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e186]:
+              - img [ref=e187]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e189]:
+              - img [ref=e190]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e192]:
+              - img [ref=e193]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e195] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2016%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+        - generic [ref=e196]:
+          - generic [ref=e197]:
+            - heading "20 clases/mes" [level=3] [ref=e198]
+            - generic [ref=e199]:
+              - generic [ref=e200]: COP
+              - generic [ref=e201]: $489.900
+          - list [ref=e202]:
+            - listitem [ref=e203]:
+              - img [ref=e204]
+              - text: Incluida Membresía Mensual PowerHouse
+            - listitem [ref=e206]:
+              - img [ref=e207]
+              - text: Esquema de alimentación con conteo de macros
+            - listitem [ref=e209]:
+              - img [ref=e210]
+              - text: Estructura de plan de entrenamiento individual
+            - listitem [ref=e212]:
+              - img [ref=e213]
+              - text: Valoración antropométrica y acompañamiento
+            - listitem [ref=e215]:
+              - img [ref=e216]
+              - text: Resultados desde la 4ta semana
+          - link "CONSULTAR AGENDAMIENTO" [ref=e218] [cursor=pointer]:
+            - /url: https://wa.me/573154711900?text=Hola%20PowerHouse%2C%20me%20interesa%20el%20plan%20de%2020%20clases%2Fmes%20de%20entrenamiento%20personal%20con%20Brayan%20Molina.%20%C2%BFMe%20das%20informaci%C3%B3n%20sobre%20disponibilidad%20y%20inicio%3F
+  - contentinfo [ref=e219]:
+    - generic [ref=e220]:
+      - generic [ref=e221]:
+        - link "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e222] [cursor=pointer]:
+          - /url: /
+          - img "Logo PowerHouse Gym Manizales - Gimnasio sin contrato en Avenida Santander" [ref=e223]
+        - paragraph [ref=e224]: "\"En PowerHouse no solo construyes músculo. Construyes disciplina, confianza y una versión más fuerte de ti mismo.\""
+        - generic [ref=e225]:
+          - link "Instagram" [ref=e226] [cursor=pointer]:
+            - /url: https://instagram.com/powerhousegymmanizales
+            - img [ref=e227]
+          - link "Facebook" [ref=e231] [cursor=pointer]:
+            - /url: https://facebook.com/powerhousegymmanizales
+            - img [ref=e232]
+          - link "YouTube" [ref=e234] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC5qjRjcQncAwL9AG-dIERPA
+            - img [ref=e235]
+      - generic [ref=e238]:
+        - heading "Navegación" [level=4] [ref=e239]
+        - list [ref=e240]:
+          - listitem [ref=e241]:
+            - link "Inicio" [ref=e242] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e243]:
+            - link "Planes" [ref=e244] [cursor=pointer]:
+              - /url: /planes
+          - listitem [ref=e245]:
+            - link "Nosotros" [ref=e246] [cursor=pointer]:
+              - /url: /nosotros
+          - listitem [ref=e247]:
+            - link "Blog" [ref=e248] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e249]:
+            - link "Contacto" [ref=e250] [cursor=pointer]:
+              - /url: /contacto
+          - listitem [ref=e251]:
+            - link "Portal Clientes" [ref=e252] [cursor=pointer]:
+              - /url: /portal
+      - generic [ref=e253]:
+        - heading "Contacto" [level=4] [ref=e254]
+        - list [ref=e255]:
+          - listitem [ref=e256]:
+            - link "Avenida Santander, Parque de la Mujer, Manizales, Colombia" [ref=e257] [cursor=pointer]:
+              - /url: https://www.google.com/maps/place/Power+House+GYM+Manizales/@5.0649845,-75.4998569,17z/data=!3m1!4b1!4m6!3m5!1s0x8e476fa3ce9f2f59:0x67f563eb9d19f9de!8m2!3d5.0649845!4d-75.4998569!16s%2Fg%2F11gjp3rj8m?entry=ttu&g_ep=EgoyMDI2MDQwNS4wIKXMDSoASAFQAw%3D%3D
+              - img [ref=e259]
+              - generic [ref=e262]: Avenida Santander, Parque de la Mujer, Manizales, Colombia
+          - listitem [ref=e263]:
+            - link "+57 315 471 1900" [ref=e264] [cursor=pointer]:
+              - /url: https://wa.me/573154711900
+              - img [ref=e266]
+              - generic [ref=e268]: +57 315 471 1900
+          - listitem [ref=e269]:
+            - link "gerencia@powerhousegym.co" [ref=e270] [cursor=pointer]:
+              - /url: mailto:gerencia@powerhousegym.co
+              - img [ref=e272]
+              - generic [ref=e275]: gerencia@powerhousegym.co
+      - generic [ref=e276]:
+        - heading "Horarios" [level=4] [ref=e277]
+        - generic [ref=e278]:
+          - generic [ref=e279]:
+            - generic [ref=e280]: "Lun – Vie:"
+            - generic [ref=e281]: 5:00am – 10:00pm
+          - generic [ref=e282]:
+            - generic [ref=e283]: "Sáb – Dom:"
+            - generic [ref=e284]: 9:00am – 2:00pm
+    - generic [ref=e285]:
+      - paragraph [ref=e286]: © 2026 PowerHouse Gym — Manizales, Colombia
+      - generic [ref=e287]:
+        - link "Términos y Condiciones" [ref=e288] [cursor=pointer]:
+          - /url: /terminos
+        - link "Privacidad" [ref=e289] [cursor=pointer]:
+          - /url: /privacidad
+  - link "Chat por WhatsApp" [ref=e290] [cursor=pointer]:
+    - /url: https://wa.me/573154711900
+    - img [ref=e291]
