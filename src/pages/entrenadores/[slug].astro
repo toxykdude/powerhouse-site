@@ -68,7 +68,7 @@ const initials = trainer.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
 		</div>
 	</section>
 
-	{trainer.stats && <TrainerStats stats={trainer.stats} />}
+	{trainer.results && <TrainerStats results={trainer.results} />}
 
 	<section class="trainer-profile__pricing">
 		<div class="trainer-profile__pricing-inner">

@@ -31,22 +31,64 @@ export interface PricingTier {
 }
 
 /**
- * A single metric rendered in the "Estadísticas y Resultados" section
- * of a trainer detail page (see TrainerStats.astro).
+ * Rich infographic data model rendered by TrainerStats.astro as a
+ * multi-card "Resultados de clientes" section (donut + bars + grouped
+ * chart + pie + key takeaways). Adapted from an owner-provided template
+ * that used Chart.js; the component maps these values onto Chart.js
+ * visualizations served via CDN.
  */
-export interface TrainerStat {
-	/** Which inline SVG icon to render. */
-	icon: "hours" | "clients" | "satisfaction" | "certifications";
-	/** Display value, e.g. "1,200+" or "96.8%". */
-	value: string;
-	/** Uppercase Spanish label, e.g. "HORAS ENTRENADAS". */
+export interface ResultsSegment {
 	label: string;
-	/** Optional growth badge text, e.g. "+12%". */
-	growth?: string;
-	/** Optional 0–100 progress value; renders an indicator when present. */
-	progress?: number;
-	/** Indicator style when progress is set. Default "bar". */
-	progressVariant?: "bar" | "radial";
+	value: number;
+}
+
+export interface ResultsFactor {
+	label: string;
+	pct: number;
+}
+
+export interface ResultsSeries {
+	label: string;
+	data: number[];
+	muted?: boolean;
+}
+
+export interface ResultsBigStat {
+	num: string;
+	unit: string;
+	label: string;
+}
+
+export interface ResultsPoint {
+	icon: string;
+	text: string;
+}
+
+export interface TrainerResults {
+	/** Card footer sample size, e.g. "n = 58 clientes activos · 2026". */
+	sampleSize: string;
+	satisfaction: {
+		positive: string;
+		segments: ResultsSegment[];
+		insight: string;
+	};
+	factors: {
+		items: ResultsFactor[];
+		insight: string;
+	};
+	correlation: {
+		categories: string[];
+		series: ResultsSeries[];
+		insight: string;
+	};
+	modality: {
+		items: ResultsSegment[];
+		insight: string;
+	};
+	takeaways: {
+		stats: ResultsBigStat[];
+		points: ResultsPoint[];
+	};
 }
 
 /** A trainer record. Optional fields gate detail-page generation. */
@@ -65,8 +107,8 @@ export interface Trainer {
 	extendedBio?: string[];
 	/** Exactly 3 tiers. Required when slug is present. */
 	pricing?: PricingTier[];
-	/** The 4 standard metrics. Required when slug is present (detail page renders it). */
-	stats?: TrainerStat[];
+	/** Infographic data. Required when slug is present (detail page renders it). */
+	results?: TrainerResults;
 	/** Per-trainer <title> for the detail page (Base.astro). */
 	seoTitle?: string;
 	/** Per-trainer meta description for the detail page (Base.astro). */
@@ -85,63 +127,163 @@ export const SHARED_FEATURES: string[] = [
 ];
 
 /**
- * Per-trainer stats. Values below are ESTIMATES derived from each trainer's
- * profile (years of experience, bio claims) — replace with real per-trainer
- * numbers when available. Structure is identical; only the numbers differ.
+ * Per-trainer results data for the "Resultados de clientes" infographic.
+ *
+ * ESTEBAN_RESULTS is the owner-provided template data (real-ish).
+ * HAROLD_RESULTS and BRAYAN_RESULTS are DERIVED ESTIMATES pending real
+ * survey numbers — replace them when per-trainer data is collected.
  */
-function buildStats(o: {
-	hours: string;
-	hoursGrowth: string;
-	clients: string;
-	clientsGrowth: string;
-	clientsProgress: number;
-	satisfaction: string;
-	satisfactionProgress: number;
-	certs: string;
-	certsGrowth: string;
-}): TrainerStat[] {
-	return [
-		{ icon: "hours", value: o.hours, label: "HORAS ENTRENADAS", growth: o.hoursGrowth },
-		{
-			icon: "clients",
-			value: o.clients,
-			label: "MIEMBROS ACTIVOS",
-			growth: o.clientsGrowth,
-			progress: o.clientsProgress,
-			progressVariant: "bar",
-		},
-		{
-			icon: "satisfaction",
-			value: o.satisfaction,
-			label: "ÍNDICE DE SATISFACCIÓN",
-			progress: o.satisfactionProgress,
-			progressVariant: "radial",
-		},
-		{ icon: "certifications", value: o.certs, label: "CERTIFICACIONES AVANZADAS", growth: o.certsGrowth },
-	];
-}
+const ESTEBAN_RESULTS: TrainerResults = {
+	sampleSize: "n = 58 clientes activos · 2026",
+	satisfaction: {
+		positive: "97.5%",
+		segments: [
+			{ label: "Muy satisfecho", value: 58 },
+			{ label: "Satisfecho", value: 39.5 },
+			{ label: "Neutral", value: 1.5 },
+			{ label: "Insatisfecho", value: 1 },
+		],
+		insight: "El 97.5% de los clientes reportan satisfacción positiva con su proceso de entrenamiento.",
+	},
+	factors: {
+		items: [
+			{ label: "Técnica biomecánica", pct: 94 },
+			{ label: "Seguimiento personalizado", pct: 88 },
+			{ label: "Resultados visibles", pct: 83 },
+			{ label: "Nutrición y macros", pct: 71 },
+			{ label: "Precio / valor percibido", pct: 65 },
+		],
+		insight: "La técnica biomecánica y el seguimiento personalizado son los factores más valorados por los clientes.",
+	},
+	correlation: {
+		categories: ["Muy satisfecho", "Satisfecho", "Neutral", "Insatisfecho"],
+		series: [
+			{ label: "Nivel de motivación", data: [9.2, 7.8, 5.1, 3.4] },
+			{ label: "Logro de resultados", data: [8.8, 7.1, 4.6, 2.9], muted: true },
+		],
+		insight: "Los clientes con mayor satisfacción alcanzan sus metas en un 28% menos de tiempo promedio.",
+	},
+	modality: {
+		items: [
+			{ label: "Presencial", value: 72 },
+			{ label: "Híbrido", value: 21 },
+			{ label: "Online", value: 7 },
+		],
+		insight: "La mayoría prefiere sesiones presenciales con Esteban.",
+	},
+	takeaways: {
+		stats: [
+			{ num: "97", unit: "%", label: "de clientes satisfechos en total" },
+			{ num: "+28", unit: "%", label: "más rápido al objetivo" },
+		],
+		points: [
+			{ icon: "⚡", text: "Técnica biomecánica y supervisión directa son los factores #1 de retención." },
+			{ icon: "🏋", text: "Clientes activos alcanzan metas sostenibles desde la 4ta semana." },
+		],
+	},
+};
 
-// Esteban — most senior (500+ clientes transformados, biomecánica).
-const ESTEBAN_STATS = buildStats({
-	hours: "2,500+", hoursGrowth: "+14%",
-	clients: "58", clientsGrowth: "+9%", clientsProgress: 92,
-	satisfaction: "97.5%", satisfactionProgress: 97.5,
-	certs: "9", certsGrowth: "+2",
-});
-// Harold — Preparador Físico, Tecnólogo en Entrenamiento Deportivo.
-const HAROLD_STATS = buildStats({
-	hours: "1,900+", hoursGrowth: "+11%",
-	clients: "50", clientsGrowth: "+7%", clientsProgress: 85,
-	satisfaction: "96.2%", satisfactionProgress: 96.2,
-	certs: "7", certsGrowth: "+1",
-});
-// Brayan — 7 años de trayectoria, 5+ diplomados.
-const BRAYAN_STATS = buildStats({
-	hours: "1,200+", hoursGrowth: "+12%",
-	clients: "45", clientsGrowth: "+8%", clientsProgress: 90,
-	satisfaction: "96.8%", satisfactionProgress: 96.8,
-	certs: "8", certsGrowth: "+2",
-});
+// HAROLD_RESULTS — DERIVED ESTIMATE, pending real survey numbers.
+const HAROLD_RESULTS: TrainerResults = {
+	sampleSize: "n = 50 clientes activos · 2026",
+	satisfaction: {
+		positive: "96.2%",
+		segments: [
+			{ label: "Muy satisfecho", value: 54 },
+			{ label: "Satisfecho", value: 42.2 },
+			{ label: "Neutral", value: 2.3 },
+			{ label: "Insatisfecho", value: 1.5 },
+		],
+		insight: "El 96.2% de los clientes reportan satisfacción positiva con su entrenamiento funcional y de musculación.",
+	},
+	factors: {
+		items: [
+			{ label: "Entrenamiento funcional", pct: 92 },
+			{ label: "Musculación y fuerza", pct: 87 },
+			{ label: "Variedad de rutinas", pct: 85 },
+			{ label: "Seguimiento semanal", pct: 79 },
+			{ label: "Precio / valor percibido", pct: 68 },
+		],
+		insight: "La variedad de rutinas funcionales y el trabajo de fuerza son los factores más valorados.",
+	},
+	correlation: {
+		categories: ["Muy satisfecho", "Satisfecho", "Neutral", "Insatisfecho"],
+		series: [
+			{ label: "Nivel de motivación", data: [9.0, 7.6, 5.0, 3.2] },
+			{ label: "Logro de resultados", data: [8.6, 6.9, 4.4, 2.7], muted: true },
+		],
+		insight: "Los clientes con mayor constancia alcanzan sus metas en un 24% menos de tiempo promedio.",
+	},
+	modality: {
+		items: [
+			{ label: "Presencial", value: 68 },
+			{ label: "Híbrido", value: 24 },
+			{ label: "Online", value: 8 },
+		],
+		insight: "La mayoría prefiere sesiones presenciales con Harold.",
+	},
+	takeaways: {
+		stats: [
+			{ num: "96", unit: "%", label: "de clientes satisfechos en total" },
+			{ num: "+24", unit: "%", label: "más rápido al objetivo" },
+		],
+		points: [
+			{ icon: "⚡", text: "Entrenamiento funcional y variedad de rutinas son los factores #1 de retención." },
+			{ icon: "🏋", text: "Clientes activos alcanzan metas sostenibles desde la 4ta semana." },
+		],
+	},
+};
+
+// BRAYAN_RESULTS — DERIVED ESTIMATE, pending real survey numbers.
+const BRAYAN_RESULTS: TrainerResults = {
+	sampleSize: "n = 45 clientes activos · 2026",
+	satisfaction: {
+		positive: "96.8%",
+		segments: [
+			{ label: "Muy satisfecho", value: 56 },
+			{ label: "Satisfecho", value: 40.8 },
+			{ label: "Neutral", value: 2.2 },
+			{ label: "Insatisfecho", value: 1 },
+		],
+		insight: "El 96.8% de los clientes reportan satisfacción positiva con su proceso de transformación corporal.",
+	},
+	factors: {
+		items: [
+			{ label: "Composición corporal", pct: 93 },
+			{ label: "Nutrición y macros", pct: 90 },
+			{ label: "Culturismo natural", pct: 86 },
+			{ label: "Plan individualizado", pct: 84 },
+			{ label: "Precio / valor percibido", pct: 67 },
+		],
+		insight: "El manejo de composición corporal y la nutrición son los factores más valorados.",
+	},
+	correlation: {
+		categories: ["Muy satisfecho", "Satisfecho", "Neutral", "Insatisfecho"],
+		series: [
+			{ label: "Nivel de motivación", data: [9.1, 7.7, 5.0, 3.3] },
+			{ label: "Logro de resultados", data: [8.7, 7.0, 4.5, 2.8], muted: true },
+		],
+		insight: "Los clientes con mayor adherencia alcanzan sus metas en un 26% menos de tiempo promedio.",
+	},
+	modality: {
+		items: [
+			{ label: "Presencial", value: 70 },
+			{ label: "Híbrido", value: 22 },
+			{ label: "Online", value: 8 },
+		],
+		insight: "La mayoría prefiere sesiones presenciales con Brayan.",
+	},
+	takeaways: {
+		stats: [
+			{ num: "97", unit: "%", label: "de clientes satisfechos en total" },
+			{ num: "+26", unit: "%", label: "más rápido al objetivo" },
+		],
+		points: [
+			{ icon: "⚡", text: "Composición corporal y nutrición son los factores #1 de retención." },
+			{ icon: "🏋", text: "Clientes activos alcanzan metas sostenibles desde la 4ta semana." },
+		],
+	},
+};
 
 /**
  * Build the 3 tiers for a slugged trainer from §B prices.
@@ -189,7 +331,7 @@ export const trainers: Trainer[] = [
 			"Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.",
 		],
 		pricing: buildPricing("Esteban Morales", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
-		stats: ESTEBAN_STATS,
+		results: ESTEBAN_RESULTS,
 		seoTitle: "Esteban Morales · Entrenador Personal",
 		seoDescription:
 			"Conoce a Esteban Morales, especialista en biomecánica y pérdida de peso en PowerHouse Gym Manizales. Más de 500 clientes transformados con técnica y resultados sostenibles.",
@@ -207,7 +349,7 @@ export const trainers: Trainer[] = [
 			"Acompaña a cada cliente desde la valoración inicial hasta el seguimiento semanal, priorizando la ejecución correcta de cada movimiento para maximizar resultados y reducir el riesgo de lesión.",
 		],
 		pricing: buildPricing("Harold Giraldo", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
-		stats: HAROLD_STATS,
+		results: HAROLD_RESULTS,
 		seoTitle: "Harold Giraldo · Preparador Físico",
 		seoDescription:
 			"Conoce a Harold Giraldo, preparador físico y tecnólogo en entrenamiento deportivo en PowerHouse Gym Manizales. Entrenamiento funcional y musculación con seguimiento personalizado.",
@@ -232,7 +374,7 @@ export const trainers: Trainer[] = [
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
 		],
 		pricing: buildPricing("Brayan Molina", { twelve: "300.000", sixteen: "380.000", twenty: "420.000" }),
-		stats: BRAYAN_STATS,
+		results: BRAYAN_RESULTS,
 		seoTitle: "Brayan Molina · Entrenador Personal",
 		seoDescription:
 			"Conoce a Brayan Molina, entrenador personal en PowerHouse Gym Manizales. Especialista en composición corporal, nutrición deportiva y culturismo natural con enfoque en salud y longevidad.",
