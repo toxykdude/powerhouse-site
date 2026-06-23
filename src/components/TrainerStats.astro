@@ -1,0 +1,241 @@
+---
+/**
+ * TrainerStats.astro — "Estadísticas y Resultados" section for trainer
+ * detail pages. Renders the 4 standard metrics from trainers.ts
+ * (STANDARD_STATS) as a responsive grid of metric cards, each with an
+ * inline monochrome SVG icon, an optional growth badge, a large display
+ * value, an optional progress indicator (bar or radial), and a mono
+ * label. Mirrors the section pattern of [slug].astro (tagline + title +
+ * __inner max-width container). Scoped CSS only — no Tailwind, no new fonts.
+ */
+import type { TrainerStat } from "../data/trainers";
+
+interface Props {
+	stats: TrainerStat[];
+}
+
+const { stats } = Astro.props;
+
+// Radial indicator geometry (radius 22 → circumference ≈ 138.23).
+const RADIUS = 22;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+/** Inline icon set — stroke-based, monochrome gold, matches index.astro style. */
+const icons: Record<TrainerStat["icon"], string> = {
+	// clock (hours)
+	hours: `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+	// people (clients)
+	clients: `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+	// medal: circle + ribbon (satisfaction)
+	satisfaction: `<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>`,
+	// badge: ribbon + checkmark (certifications)
+	certifications: `<path d="M12 15a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="m9 12-1.5 9 4.5-2 4.5 2L15 12"/><polyline points="9 7.5 11 9.5 15 5.5"/>`,
+};
+
+/** strokeDasharray for a radial arc covering `progress` percent of the circle. */
+const radialDash = (progress: number) => {
+	const pct = Math.max(0, Math.min(100, progress));
+	const filled = (pct / 100) * CIRCUMFERENCE;
+	return `${filled.toFixed(2)} ${CIRCUMFERENCE.toFixed(2)}`;
+};
+---
+
+<section class="trainer-stats">
+	<div class="trainer-stats__inner">
+		<span class="trainer-stats__tagline">Rendimiento</span>
+		<h2 class="section-title">ESTADÍSTICAS Y RESULTADOS</h2>
+
+		<div class="trainer-stats__grid">
+			{stats.map((stat) => (
+				<article class="stat-card">
+					<div class="stat-card__top">
+						<svg
+							class="stat-card__icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="var(--brand-gold)"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+							set:html={icons[stat.icon]}
+						/>
+						{stat.growth && <span class="stat-card__growth">{stat.growth}</span>}
+					</div>
+
+					<div class="stat-card__value">{stat.value}</div>
+
+					{stat.progress !== undefined && (
+						stat.progressVariant === "radial" ? (
+							<div class="stat-card__progress stat-card__progress--radial">
+								<svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
+									<circle
+										cx="26"
+										cy="26"
+										r={RADIUS}
+										fill="none"
+										stroke="rgba(255,255,255,0.1)"
+										stroke-width="4"
+									/>
+									<circle
+										cx="26"
+										cy="26"
+										r={RADIUS}
+										fill="none"
+										stroke="var(--brand-red)"
+										stroke-width="4"
+										stroke-linecap="round"
+										stroke-dasharray={radialDash(stat.progress)}
+										transform="rotate(-90 26 26)"
+									/>
+								</svg>
+							</div>
+						) : (
+							<div class="stat-card__progress stat-card__progress--bar">
+								<div class="stat-card__bar-track">
+									<div
+										class="stat-card__bar-fill"
+										style={`width:${Math.max(0, Math.min(100, stat.progress))}%`}
+									/>
+								</div>
+							</div>
+						)
+					)}
+
+					<div class="stat-card__label">{stat.label}</div>
+				</article>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Section wrapper — mirrors the specialties/pricing sections in [slug].astro. */
+	.trainer-stats {
+		padding: 5rem 1.5rem;
+		background: #0a0a0a;
+		border-top: 1px solid rgba(232, 200, 50, 0.1);
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	.trainer-stats__inner {
+		max-width: 48rem;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.trainer-stats__tagline {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+	}
+
+	/* Grid — 4 cols desktop, 2 cols tablet, 1 col mobile. */
+	.trainer-stats__grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.25rem;
+		margin-top: 1rem;
+	}
+
+	@media (max-width: 1024px) {
+		.trainer-stats__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.trainer-stats__grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Metric card. */
+	.stat-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.12);
+		border-radius: 12px;
+		padding: 1.5rem 1.25rem;
+		transition: all 0.3s ease;
+	}
+
+	.stat-card:hover {
+		transform: scale(1.05);
+		border-color: rgba(232, 200, 50, 0.4);
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+	}
+
+	/* Top row — icon + growth badge. */
+	.stat-card__top {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+
+	.stat-card__icon {
+		width: 24px;
+		height: 24px;
+		flex-shrink: 0;
+	}
+
+	.stat-card__growth {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--brand-red);
+		border: 1px solid rgba(192, 57, 43, 0.3);
+		padding: 2px 8px;
+		border-radius: 999px;
+	}
+
+	/* Value — Bebas Neue oversized number. */
+	.stat-card__value {
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 5vw, 3.5rem);
+		color: #fff;
+		line-height: 1;
+	}
+
+	/* Progress indicators — rendered below value, above label. */
+	.stat-card__progress {
+		margin-top: 1rem;
+	}
+
+	.stat-card__progress--radial {
+		display: flex;
+		justify-content: center;
+	}
+
+	.stat-card__bar-track {
+		width: 100%;
+		height: 6px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 3px;
+		overflow: hidden;
+	}
+
+	.stat-card__bar-fill {
+		height: 100%;
+		background: var(--brand-red);
+		border-radius: 3px;
+		transition: width 0.6s ease;
+	}
+
+	/* Label — mono, uppercase, tracked. */
+	.stat-card__label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: rgba(240, 237, 232, 0.5);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-top: 0.75rem;
+	}
+</style>

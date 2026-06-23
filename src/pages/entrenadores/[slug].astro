@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import PlanCard from "../../components/PlanCard.astro";
+import TrainerStats from "../../components/TrainerStats.astro";
 import { trainers, WHATSAPP_NUMBER, type Trainer, type PricingTier } from "../../data/trainers";
 
 /**
@@ -66,6 +67,8 @@ const initials = trainer.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
 			</div>
 		</div>
 	</section>
+
+	{trainer.stats && <TrainerStats stats={trainer.stats} />}
 
 	<section class="trainer-profile__pricing">
 		<div class="trainer-profile__pricing-inner">

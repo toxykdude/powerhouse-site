@@ -30,6 +30,25 @@ export interface PricingTier {
 	whatsappText: string;
 }
 
+/**
+ * A single metric rendered in the "Estadísticas y Resultados" section
+ * of a trainer detail page (see TrainerStats.astro).
+ */
+export interface TrainerStat {
+	/** Which inline SVG icon to render. */
+	icon: "hours" | "clients" | "satisfaction" | "certifications";
+	/** Display value, e.g. "1,200+" or "96.8%". */
+	value: string;
+	/** Uppercase Spanish label, e.g. "HORAS ENTRENADAS". */
+	label: string;
+	/** Optional growth badge text, e.g. "+12%". */
+	growth?: string;
+	/** Optional 0–100 progress value; renders an indicator when present. */
+	progress?: number;
+	/** Indicator style when progress is set. Default "bar". */
+	progressVariant?: "bar" | "radial";
+}
+
 /** A trainer record. Optional fields gate detail-page generation. */
 export interface Trainer {
 	name: string;
@@ -46,6 +65,8 @@ export interface Trainer {
 	extendedBio?: string[];
 	/** Exactly 3 tiers. Required when slug is present. */
 	pricing?: PricingTier[];
+	/** The 4 standard metrics. Required when slug is present (detail page renders it). */
+	stats?: TrainerStat[];
 	/** Per-trainer <title> for the detail page (Base.astro). */
 	seoTitle?: string;
 	/** Per-trainer meta description for the detail page (Base.astro). */
@@ -61,6 +82,31 @@ export const SHARED_FEATURES: string[] = [
 	"Estructura de plan de entrenamiento individual",
 	"Valoración antropométrica y acompañamiento",
 	"Resultados desde la 4ta semana",
+];
+
+/**
+ * The owner-provided standard metrics shared by every slugged trainer.
+ * NOTE: values are identical across trainers for now — the owner will
+ * customize per trainer once real per-trainer numbers are available.
+ */
+const STANDARD_STATS: TrainerStat[] = [
+	{ icon: "hours", value: "1,200+", label: "HORAS ENTRENADAS", growth: "+12%" },
+	{
+		icon: "clients",
+		value: "45",
+		label: "MIEMBROS ACTIVOS",
+		growth: "+8%",
+		progress: 90,
+		progressVariant: "bar",
+	},
+	{
+		icon: "satisfaction",
+		value: "96.8%",
+		label: "ÍNDICE DE SATISFACCIÓN",
+		progress: 96.8,
+		progressVariant: "radial",
+	},
+	{ icon: "certifications", value: "8", label: "CERTIFICACIONES AVANZADAS", growth: "+2" },
 ];
 
 /**
@@ -109,6 +155,7 @@ export const trainers: Trainer[] = [
 			"Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.",
 		],
 		pricing: buildPricing("Esteban Morales", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
+		stats: STANDARD_STATS,
 		seoTitle: "Esteban Morales · Entrenador Personal",
 		seoDescription:
 			"Conoce a Esteban Morales, especialista en biomecánica y pérdida de peso en PowerHouse Gym Manizales. Más de 500 clientes transformados con técnica y resultados sostenibles.",
@@ -126,6 +173,7 @@ export const trainers: Trainer[] = [
 			"Acompaña a cada cliente desde la valoración inicial hasta el seguimiento semanal, priorizando la ejecución correcta de cada movimiento para maximizar resultados y reducir el riesgo de lesión.",
 		],
 		pricing: buildPricing("Harold Giraldo", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
+		stats: STANDARD_STATS,
 		seoTitle: "Harold Giraldo · Preparador Físico",
 		seoDescription:
 			"Conoce a Harold Giraldo, preparador físico y tecnólogo en entrenamiento deportivo en PowerHouse Gym Manizales. Entrenamiento funcional y musculación con seguimiento personalizado.",
@@ -150,6 +198,7 @@ export const trainers: Trainer[] = [
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
 		],
 		pricing: buildPricing("Brayan Molina", { twelve: "300.000", sixteen: "380.000", twenty: "420.000" }),
+		stats: STANDARD_STATS,
 		seoTitle: "Brayan Molina · Entrenador Personal",
 		seoDescription:
 			"Conoce a Brayan Molina, entrenador personal en PowerHouse Gym Manizales. Especialista en composición corporal, nutrición deportiva y culturismo natural con enfoque en salud y longevidad.",
