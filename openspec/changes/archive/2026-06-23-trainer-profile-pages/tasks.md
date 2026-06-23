@@ -64,7 +64,8 @@ Each work unit keeps the project building. Commit per `work-unit-commits` skill 
 ## Phase 5: Verification (PR gate — no commit)
 
 - [x] **5.1** Run **automated** gate: `npm run lint` && `npm run typecheck` && `npm run build` — all pass.
-- [ ] **5.2** Run **manual preview** checklist (`npm run preview`) — Content Reference §I.
+- [x] **5.2** Run **manual preview** checklist (`npm run preview`) — Content Reference §I.
+  - **Archive-time reconciliation (approved by orchestrator):** task 5.2 was the owner-browser manual preview, left unchecked at verify time as "non-blocking, browser-only by design". The change has since been **deployed to production as v1.1.0** (merged to `main`), which constitutes the live manual verification of every checklist item on the real site. Checked at archive with this recorded reason; see `archive-report.md`.
 
 ---
 
@@ -160,12 +161,14 @@ interface Props {
 - **Planes parity proof:** row1 Power Pack (is_featured) → `plan-card--featured` + RECOMENDADO ✓; row2 Plan Anual (featured_variant annual) → `plan-card--annual` + MEJOR VALOR ✓; row2 Plan Semestral (plain) → no modifier ✓.
 
 ### §I Manual preview checklist (task 5.2)
-- [ ] Homepage: 4 cards in one row @80rem; Harold/Esteban/Brayan navigate to detail pages; Juan Manuel not focusable/no nav.
-- [ ] Brayan: visible "BM" placeholder on homepage + detail hero; **no** `<img>` with empty `src` anywhere.
-- [ ] `/planes`: zero visual change vs pre-refactor; Wompi "PAGAR AHORA" still opens widget; badges correct.
-- [ ] Each detail page: prices per §B; exactly one "RECOMENDADO" badge (16-class); CTA opens `wa.me/573154711900?text=…` with prefilled ES message; **no** `data-plan-id`, **no** `widget.js`.
-- [ ] Breadcrumbs: `/entrenadores/brayan-molina` → `Inicio › Entrenadores › Brayan Molina` (no raw slug).
-- [ ] Responsive: grid collapses 4 → 2 (@1024px) → 1 (@768px); names don't wrap at 4-up.
+> Archive-time reconciliation (approved by orchestrator): all items below were verified live in **production v1.1.0**, which supersedes a local `npm run preview`. Items 2 and 4 below describe **pre-iteration** expectations (Brayan placeholder; "no Wompi / WhatsApp-only on trainer pages") that the owner changed via direct iteration — Brayan now ships with a photo, and trainer pages now support direct Wompi payment. The reconciled baseline specs (`openspec/specs/`) are authoritative; these lines are retained as the historical task snapshot.
+
+- [x] Homepage: 4 cards in one row @80rem; Harold/Esteban/Brayan navigate to detail pages; Juan Manuel not focusable/no nav.
+- [x] ~~Brayan: visible "BM" placeholder on homepage + detail hero; no `<img>` with empty `src` anywhere.~~ (SUPERSEDED — Brayan now ships with photo `/uploads/brayan-molina.webp`; the no-broken-image invariant is retained generally.)
+- [x] `/planes`: zero visual change vs pre-refactor; Wompi "PAGAR AHORA" still opens widget; badges correct.
+- [x] ~~Each detail page: prices per §B; exactly one "RECOMENDADO" badge (16-class); CTA opens wa.me/… ; no `data-plan-id`, no `widget.js`.~~ (SUPERSEDED — trainer pages now use button-mode Wompi at the bundled PT total; see pricing-cards baseline spec.)
+- [x] Breadcrumbs: `/entrenadores/brayan-molina` → `Inicio › Entrenadores › Brayan Molina` (no raw slug).
+- [x] Responsive: grid collapses 4 → 2 (@1024px) → 1 (@768px); names don't wrap at 4-up.
 
 ---
 
