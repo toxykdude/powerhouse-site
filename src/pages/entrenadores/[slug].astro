@@ -30,7 +30,7 @@ const waHref = (tier: PricingTier) =>
 const initials = trainer.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
 ---
 
-<Base title={trainer.seoTitle} description={trainer.seoDescription}>
+<Base seoTitle={trainer.seoTitle} description={trainer.seoDescription}>
 	<section class="trainer-profile__hero">
 		<div class="trainer-profile__hero-inner">
 			<span class="trainer-profile__tagline">Entrenadores</span>
