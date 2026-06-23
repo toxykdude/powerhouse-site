@@ -118,8 +118,9 @@ export interface Trainer {
 /** WhatsApp number shared by every trainer pricing CTA (matches site footer). */
 export const WHATSAPP_NUMBER = "573154711900";
 
-/** The four identical included features, exact wording (spec pricing-cards R4). */
+/** Included features, exact wording. The membership line is first — it is bundled into every tier's total price (PT + monthly membership). */
 export const SHARED_FEATURES: string[] = [
+	"Incluida Membresía Mensual PowerHouse",
 	"Esquema de alimentación con conteo de macros",
 	"Estructura de plan de entrenamiento individual",
 	"Valoración antropométrica y acompañamiento",
@@ -290,14 +291,20 @@ const BRAYAN_RESULTS: TrainerResults = {
  * Only name/price/isFeatured/whatsappText vary per tier; currency and
  * the 4 shared features are identical across every trainer and tier.
  */
+/** Monthly gym membership (COP) bundled into every personal-training total. */
+const MEMBERSHIP = 69900;
+
+/** Format an integer COP amount with "." thousands separators, e.g. 339900 -> "339.900". */
+const formatCOP = (n: number): string => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 function buildPricing(
 	trainerName: string,
-	prices: { twelve: string; sixteen: string; twenty: string },
+	base: { twelve: number; sixteen: number; twenty: number },
 ): PricingTier[] {
 	const tiers = [
-		{ name: "12 clases/mes", price: prices.twelve, isFeatured: false },
-		{ name: "16 clases/mes", price: prices.sixteen, isFeatured: true },
-		{ name: "20 clases/mes", price: prices.twenty, isFeatured: false },
+		{ name: "12 clases/mes", price: formatCOP(base.twelve + MEMBERSHIP), isFeatured: false },
+		{ name: "16 clases/mes", price: formatCOP(base.sixteen + MEMBERSHIP), isFeatured: true },
+		{ name: "20 clases/mes", price: formatCOP(base.twenty + MEMBERSHIP), isFeatured: false },
 	];
 	return tiers.map((tier) => ({
 		name: tier.name,
@@ -330,7 +337,7 @@ export const trainers: Trainer[] = [
 			"Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. Analiza la postura y los patrones de movimiento de cada cliente para diseñar rutinas seguras, eficientes y orientadas a resultados sostenibles.",
 			"Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.",
 		],
-		pricing: buildPricing("Esteban Morales", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
+		pricing: buildPricing("Esteban Morales", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
 		results: ESTEBAN_RESULTS,
 		seoTitle: "Esteban Morales · Entrenador Personal",
 		seoDescription:
@@ -348,7 +355,7 @@ export const trainers: Trainer[] = [
 			"Preparador Físico y Tecnólogo en Entrenamiento Deportivo. Su enfoque combina entrenamiento funcional y musculación con control técnico riguroso, diseñando programas que se ajustan al nivel y al objetivo de cada persona.",
 			"Acompaña a cada cliente desde la valoración inicial hasta el seguimiento semanal, priorizando la ejecución correcta de cada movimiento para maximizar resultados y reducir el riesgo de lesión.",
 		],
-		pricing: buildPricing("Harold Giraldo", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
+		pricing: buildPricing("Harold Giraldo", { twelve: 270000, sixteen: 350000, twenty: 400000 }),
 		results: HAROLD_RESULTS,
 		seoTitle: "Harold Giraldo · Preparador Físico",
 		seoDescription:
@@ -373,7 +380,7 @@ export const trainers: Trainer[] = [
 			"Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria como entrenador de planta y personalizado, además de contar con más de 5 diplomados en nutrición, alimentación y métodos de periodización y dosificación de la carga.",
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
 		],
-		pricing: buildPricing("Brayan Molina", { twelve: "300.000", sixteen: "380.000", twenty: "420.000" }),
+		pricing: buildPricing("Brayan Molina", { twelve: 300000, sixteen: 380000, twenty: 420000 }),
 		results: BRAYAN_RESULTS,
 		seoTitle: "Brayan Molina · Entrenador Personal",
 		seoDescription:
