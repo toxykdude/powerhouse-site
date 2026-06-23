@@ -63,7 +63,7 @@ Each work unit keeps the project building. Commit per `work-unit-commits` skill 
 
 ## Phase 5: Verification (PR gate — no commit)
 
-- [ ] **5.1** Run **automated** gate: `npm run lint` && `npm run typecheck` && `npm run build` — all pass.
+- [x] **5.1** Run **automated** gate: `npm run lint` && `npm run typecheck` && `npm run build` — all pass.
 - [ ] **5.2** Run **manual preview** checklist (`npm run preview`) — Content Reference §I.
 
 ---
