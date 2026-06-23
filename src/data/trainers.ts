@@ -143,6 +143,8 @@ export const trainers: Trainer[] = [
 			"Adulto Mayor",
 		],
 		slug: "brayan-molina",
+		photo: "/uploads/brayan-molina.webp",
+		alt: "Brayan Molina, entrenador personal en PowerHouse Gym Manizales, especialista en composición corporal y culturismo natural",
 		extendedBio: [
 			"Técnico Laboral en Preparación Física y Entrenamiento Deportivo con 7 años de trayectoria como entrenador de planta y personalizado, además de contar con más de 5 diplomados en nutrición, alimentación y métodos de periodización y dosificación de la carga.",
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
