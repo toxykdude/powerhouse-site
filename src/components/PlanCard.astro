@@ -1,0 +1,258 @@
+---
+/**
+ * PlanCard.astro — reusable pricing card.
+ *
+ * Extracted from planes.astro so both the membership page (Wompi button)
+ * and trainer detail pages (WhatsApp link) render the exact same card.
+ *
+ * Class contract (must match the original planes.astro markup — §H):
+ *  - Root: `plan-card` + `plan-card--annual` | `plan-card--featured` | (none)
+ *  - Badge: MEJOR VALOR (annual) | RECOMENDADO (featured) | none
+ *  - CTA: button (Wompi, emits data-plan-id) | link (WhatsApp)
+ *
+ * Trainers NEVER pass featuredVariant="annual", so plan-card--annual and
+ * data-plan-id are unreachable on trainer pages (spec: no Wompi leak).
+ */
+type PlanCardCta =
+	| { type: "button"; planId: string; label: string }
+	| { type: "link"; href: string; label: string };
+
+interface Props {
+	name: string;
+	price: string;
+	currency: string;
+	period?: string;
+	features: string[];
+	/** Featured card (gold background, RECOMENDADO badge). Default false. */
+	isFeatured?: boolean;
+	/** Card variant. Default "featured"; planes row2 passes "annual". */
+	featuredVariant?: "featured" | "annual";
+	cta: PlanCardCta;
+}
+
+const {
+	name,
+	price,
+	currency,
+	period,
+	features,
+	isFeatured = false,
+	featuredVariant = "featured",
+	cta,
+} = Astro.props;
+
+// Variant precedence: annual > featured > plain (matches original planes.astro).
+const variant = featuredVariant === "annual" ? "annual" : isFeatured ? "featured" : "plain";
+
+const rootClass = `plan-card ${variant === "annual" ? "plan-card--annual" : variant === "featured" ? "plan-card--featured" : ""}`;
+
+// featured → dark CTA; annual & plain → gold CTA (matches original markup).
+const ctaClass = `plan-card__cta ${variant === "featured" ? "plan-card__cta--dark" : "plan-card__cta--gold"}`;
+---
+
+<div class={rootClass}>
+	{variant === "annual" && <div class="plan-card__badge plan-card__badge--gold">MEJOR VALOR</div>}
+	{variant === "featured" && <div class="plan-card__badge">RECOMENDADO</div>}
+	<div class="plan-card__header">
+		<h3>{name}</h3>
+		<div class="plan-card__price">
+			<span class="plan-card__currency">{currency}</span>
+			<span class="plan-card__amount">${price}</span>
+			{period && <span class="plan-card__period">{period}</span>}
+		</div>
+	</div>
+	<ul class="plan-card__features">
+		{features.map((feature) => (
+			<li>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				{feature}
+			</li>
+		))}
+	</ul>
+	{cta.type === "button" ? (
+		<button type="button" data-plan-id={cta.planId} class={ctaClass}>
+			{cta.label}
+		</button>
+	) : (
+		<a href={cta.href} target="_blank" rel="noopener noreferrer" class={ctaClass}>
+			{cta.label}
+		</a>
+	)}
+</div>
+
+<style>
+	/* Moved verbatim from planes.astro. Scoped to PlanCard's CID; applies
+	   to this component's own tree. Layout rules stayed in planes.astro. */
+	.plan-card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 1.5rem;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		background: #0a0a0a;
+		color: var(--brand-white);
+		transition: all 0.5s ease;
+	}
+
+	.plan-card:hover {
+		border-color: rgba(232, 200, 50, 0.5);
+	}
+
+	.plan-card--featured {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		border-color: var(--brand-gold);
+		transform: scale(1.05);
+		z-index: 1;
+		box-shadow: 0 0 50px rgba(232, 200, 50, 0.2);
+	}
+
+	.plan-card--featured:hover {
+		border-color: var(--brand-gold);
+	}
+
+	.plan-card--annual {
+		background: transparent;
+		color: var(--brand-white);
+		border: 2px solid var(--brand-gold);
+		transform: scale(1.05);
+		z-index: 1;
+		box-shadow: 0 0 60px rgba(232, 200, 50, 0.15), inset 0 0 30px rgba(232, 200, 50, 0.05);
+	}
+
+	.plan-card--annual:hover {
+		border-color: white;
+		box-shadow: 0 0 80px rgba(232, 200, 50, 0.25), inset 0 0 30px rgba(232, 200, 50, 0.1);
+	}
+
+	.plan-card__badge--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+		font-weight: bold;
+	}
+
+	.plan-card__badge {
+		position: absolute;
+		top: -1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--brand-red);
+		color: white;
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		padding: 0.25rem 1rem;
+	}
+
+	.plan-card__header {
+		margin-bottom: 1.5rem;
+	}
+
+	.plan-card__header h3 {
+		font-family: var(--font-display);
+		font-size: 1.75rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		margin-bottom: 0.5rem;
+	}
+
+	.plan-card__price {
+		display: flex;
+		align-items: baseline;
+		gap: 0.25rem;
+	}
+
+	.plan-card__currency {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		opacity: 0.6;
+	}
+
+	.plan-card__amount {
+		font-family: var(--font-display);
+		font-size: 3rem;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+
+	.plan-card__period {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		opacity: 0.6;
+	}
+
+	.plan-card__features {
+		list-style: none;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-bottom: 2rem;
+	}
+
+	.plan-card__features li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.plan-card__features svg {
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+
+	.plan-card--featured .plan-card__features svg {
+		color: var(--brand-black);
+	}
+
+	.plan-card:not(.plan-card--featured) .plan-card__features svg {
+		color: var(--brand-gold);
+	}
+
+	.plan-card__cta {
+		display: block;
+		width: 100%;
+		padding: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+	}
+
+	.plan-card__cta--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.plan-card__cta--gold:hover {
+		background: white;
+	}
+
+	.plan-card__cta--dark {
+		background: var(--brand-black);
+		color: var(--brand-gold);
+	}
+
+	.plan-card__cta--dark:hover {
+		background: var(--brand-red);
+		color: white;
+	}
+
+	@media (max-width: 768px) {
+		.plan-card--featured,
+		.plan-card--annual {
+			transform: none;
+			order: -1;
+		}
+	}
+</style>
