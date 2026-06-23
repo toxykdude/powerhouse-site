@@ -49,9 +49,9 @@ Each work unit keeps the project building. Commit per `work-unit-commits` skill 
 
 ## Phase 3: Homepage Wiring
 
-- [ ] **3.1** Modify `src/pages/index.astro`: `import { trainers } from "../data/trainers"`; delete inline `trainers` array (L4–29). Wrap each card conditionally — `trainer.slug ? <a class="trainer-card-link" href={`/entrenadores/${trainer.slug}`}>{card}</a> : {card}`. Add Brayan placeholder branch (no `<img>` when `!trainer.photo` — see §D). Add `.trainer-card-link{display:block;color:inherit;text-decoration:none;height:100%}`.
+- [x] **3.1** Modify `src/pages/index.astro`: `import { trainers } from "../data/trainers"`; delete inline `trainers` array (L4–29). Wrap each card conditionally — `trainer.slug ? <a class="trainer-card-link" href={`/entrenadores/${trainer.slug}`}>{card}</a> : {card}`. Add Brayan placeholder branch (no `<img>` when `!trainer.photo` — see §D). Add `.trainer-card-link{display:block;color:inherit;text-decoration:none;height:100%}`.
   - **Acceptance (automated: build; manual):** 4 cards render; 3 are anchors to detail pages; Juan Manuel is a bare `<article>` (not focusable, no nav); Brayan shows placeholder, no empty `src`. Refs: D2, D8, spec trainer-profiles R2/R3.
-- [ ] **3.2** Homepage CSS tweaks (D9): `.trainers__grid` → `grid-template-columns: repeat(4,1fr); gap:1.5rem;` (was `repeat(3,1fr)`/`2rem`); keep `@media(max-width:1024px)`→`repeat(2,1fr)` and `768px`→`1fr`. `.trainer-card__name` → `font-size: clamp(1.375rem,1.6vw,1.875rem);` (was fixed `1.875rem`). Add placeholder styles §D.
+- [x] **3.2** Homepage CSS tweaks (D9): `.trainers__grid` → `grid-template-columns: repeat(4,1fr); gap:1.5rem;` (was `repeat(3,1fr)`/`2rem`); keep `@media(max-width:1024px)`→`repeat(2,1fr)` and `768px`→`1fr`. `.trainer-card__name` → `font-size: clamp(1.375rem,1.6vw,1.875rem);` (was fixed `1.875rem`). Add placeholder styles §D.
   - **Acceptance (visual):** 4 cards fit @80rem without name wrap; responsive collapses 4→2→1.
 
 ## Phase 4: Detail Route + Layout
