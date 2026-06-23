@@ -1,0 +1,331 @@
+---
+import Base from "../../layouts/Base.astro";
+import PlanCard from "../../components/PlanCard.astro";
+import TrainerStats from "../../components/TrainerStats.astro";
+import { trainers, type Trainer } from "../../data/trainers";
+
+/**
+ * Static paths = exactly the slugged trainers (Harold, Esteban, Brayan).
+ * Juan Manuel has no slug, so he is never generated (spec trainer-profiles R1).
+ */
+export async function getStaticPaths() {
+	return trainers
+		.filter((t): t is Trainer & { slug: string } => Boolean(t.slug))
+		.map((t) => ({
+			params: { slug: t.slug },
+			props: { trainer: t },
+		}));
+}
+
+interface Props {
+	trainer: Trainer & { slug: string };
+}
+
+const { trainer } = Astro.props;
+
+/** Monogram initials for the Brayan placeholder (no <img> — spec R3). */
+const initials = trainer.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
+---
+
+<Base seoTitle={trainer.seoTitle} description={trainer.seoDescription}>
+	<Fragment slot="head">
+		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
+	</Fragment>
+
+	<section class="trainer-profile__hero">
+		<div class="trainer-profile__hero-inner">
+			<span class="trainer-profile__tagline">Entrenadores</span>
+			<h1 class="trainer-profile__name">{trainer.name}</h1>
+			<span class="trainer-profile__role">{trainer.role}</span>
+			<div class="trainer-profile__photo">
+				{trainer.photo ? (
+					<img src={trainer.photo} alt={trainer.alt || trainer.name} loading="eager" />
+				) : (
+					<div class="trainer-profile__photo--placeholder" aria-label={`Foto de ${trainer.name} próximamente`}>
+						<span>{initials}</span>
+					</div>
+				)}
+			</div>
+		</div>
+	</section>
+
+	<section class="trainer-profile__bio">
+		<div class="trainer-profile__bio-inner">
+			{trainer.extendedBio?.map((paragraph) => (
+				<p>{paragraph}</p>
+			))}
+		</div>
+	</section>
+
+	<section class="trainer-profile__specialties">
+		<div class="trainer-profile__specialties-inner">
+			<h2 class="section-title">ESPECIALIDADES</h2>
+			<div class="trainer-profile__tags">
+				{trainer.specialties.map((s) => (
+					<span class="trainer-card__tag">{s}</span>
+				))}
+			</div>
+		</div>
+	</section>
+
+	{trainer.results && <TrainerStats results={trainer.results} />}
+
+	<section class="trainer-profile__pricing">
+		<div class="trainer-profile__pricing-inner">
+			<h2 class="section-title">PLANES DE ENTRENAMIENTO PERSONAL</h2>
+			<div class="trainer-profile__plans">
+				{trainer.pricing?.map((tier) => (
+					<PlanCard
+						name={tier.name}
+						price={tier.price}
+						currency={tier.currency}
+						features={tier.features}
+						isFeatured={tier.isFeatured}
+						cta={{ type: "button", planId: tier.planId, label: "PAGAR AHORA" }}
+					/>
+				))}
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	/* Hero — mirrors the tagline/h1 pattern from planes.astro / nosotros.astro. */
+	.trainer-profile__hero {
+		padding: 10rem 1.5rem 5rem;
+		background: var(--brand-black);
+	}
+
+	.trainer-profile__hero-inner {
+		max-width: 48rem;
+		margin: 0 auto;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.trainer-profile__tagline {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+	}
+
+	.trainer-profile__name {
+		font-family: var(--font-display);
+		font-size: clamp(3.5rem, 8vw, 6rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.02em;
+		line-height: 1;
+	}
+
+	.trainer-profile__role {
+		font-family: var(--font-display);
+		font-size: clamp(1.125rem, 2vw, 1.5rem);
+		color: var(--brand-red);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+	}
+
+	.trainer-profile__photo {
+		width: 100%;
+		max-width: 24rem;
+		aspect-ratio: 3/4;
+		margin-top: 1.5rem;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		overflow: hidden;
+		background: rgba(232, 200, 50, 0.05);
+	}
+
+	.trainer-profile__photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1);
+		opacity: 0.9;
+	}
+
+	/* Brayan placeholder — larger monogram than the card (§D). */
+	.trainer-profile__photo--placeholder {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.trainer-profile__photo--placeholder span {
+		font-family: var(--font-display);
+		font-size: 8rem;
+		color: var(--brand-gold);
+		opacity: 0.4;
+	}
+
+	/* Extended bio — prose column mirroring nosotros story-section. */
+	.trainer-profile__bio {
+		padding: 5rem 1.5rem;
+		background: var(--brand-black);
+		border-top: 1px solid rgba(232, 200, 50, 0.1);
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	.trainer-profile__bio-inner {
+		max-width: 42rem;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.trainer-profile__bio-inner p {
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: rgba(240, 237, 232, 0.75);
+		line-height: 1.8;
+	}
+
+	/* Specialties — reuse the homepage tag pill style (locally scoped). */
+	.trainer-profile__specialties {
+		padding: 5rem 1.5rem;
+		background: #0a0a0a;
+	}
+
+	.trainer-profile__specialties-inner {
+		max-width: 48rem;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.trainer-profile__tags {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.trainer-card__tag {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		border: 1px solid rgba(240, 237, 232, 0.2);
+		padding: 0.35rem 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		color: rgba(240, 237, 232, 0.6);
+	}
+
+	/* Pricing — 3-col grid like planes row1; PlanCard owns all card CSS. */
+	.trainer-profile__pricing {
+		padding: 5rem 1.5rem 8rem;
+		background: var(--brand-black);
+	}
+
+	.trainer-profile__pricing-inner {
+		max-width: 80rem;
+		margin: 0 auto;
+	}
+
+	.trainer-profile__plans {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+	}
+
+	@media (max-width: 1024px) {
+		.trainer-profile__plans {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.trainer-profile__plans {
+			grid-template-columns: 1fr;
+			max-width: 28rem;
+			margin: 0 auto;
+		}
+	}
+</style>
+
+<script>
+	// Wompi Widget payment handler — mirrors planes.astro.
+	// NOTE: duplicated across planes.astro + trainer detail pages; future DRY cleanup
+	// should extract this into a shared module/client script.
+	declare global {
+		interface Window {
+			WidgetCheckout: new (config: {
+				currency: string;
+				amountInCents: number;
+				reference: string;
+				publicKey: string;
+				signature: { integrity: string };
+				redirectUrl?: string;
+			}) => {
+				open: (callback: (result: { transaction: { id: string } }) => void) => void;
+			};
+		}
+	}
+
+	interface SignatureResponse {
+		reference: string;
+		signature: string;
+		amountInCents: number;
+		currency: string;
+		publicKey: string;
+		planName: string;
+	}
+
+	document.querySelectorAll<HTMLButtonElement>('[data-plan-id]').forEach((button) => {
+		button.addEventListener('click', async () => {
+			const planId = button.dataset.planId;
+			if (!planId) return;
+
+			const originalLabel = button.textContent || 'PAGAR AHORA';
+			button.disabled = true;
+			button.textContent = 'PROCESANDO...';
+
+			try {
+				const response = await fetch('/api/payment/signature', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ plan: planId }),
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.error || 'Error al procesar el pago');
+				}
+
+				const data: SignatureResponse = await response.json();
+
+				const WidgetCheckout = window.WidgetCheckout;
+				if (!WidgetCheckout) {
+					throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
+				}
+
+				const checkout = new WidgetCheckout({
+					currency: data.currency,
+					amountInCents: data.amountInCents,
+					reference: data.reference,
+					publicKey: data.publicKey,
+					signature: { integrity: data.signature },
+					redirectUrl: 'https://powerhousegym.co/pago/confirmacion',
+				});
+
+				checkout.open((result) => {
+					const tx = result.transaction;
+					if (tx?.id) {
+						window.location.href = '/pago/confirmacion?id=' + tx.id;
+					}
+				});
+			} catch (err) {
+				const message = err instanceof Error ? err.message : 'Error desconocido';
+				alert(message);
+				button.disabled = false;
+				button.textContent = originalLabel;
+			}
+		});
+	});
+</script>

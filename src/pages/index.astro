@@ -1,32 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-
-const trainers = [
-	{
-		name: "Juan Manuel Cano",
-		role: "Founder & CEO de PowerHouse",
-		bio: "Fisiculturista con 16 años de experiencia en el gremio. Fundador de PowerHouse Gym Manizales.",
-		specialties: ["Fisiculturismo", "Hipertrofia", "Nutrición Deportiva", "Transformación Corporal"],
-		photo: "/uploads/juan-manoel-cano.png",
-		alt: "Juan Manuel Cano, fundador y entrenador personal de PowerHouse Gym Manizales, especialista en fisiculturismo e hipertrofia",
-	},
-	{
-		name: "Esteban Morales Sánchez",
-		role: "Entrenador Personal PowerHouse",
-		bio: "Especialista en Biomecánica Aplicada al Entrenamiento Personal y Pérdida de Peso. 500+ clientes transformados.",
-		specialties: ["Biomecánica", "Pérdida de Peso", "Fuerza", "Prevención de Lesiones"],
-		photo: "/uploads/esteban-morales.png",
-		alt: "Esteban Morales Sánchez, entrenador personal certificado en PowerHouse Gym Manizales, especialista en biomecánica y pérdida de peso",
-	},
-	{
-		name: "Harold Giraldo",
-		role: "Preparador Físico",
-		bio: "Preparador Físico y Tecnólogo en Entrenamiento Deportivo con amplio conocimiento en funcional y musculación.",
-		specialties: ["Funcional", "Musculación", "Wellness", "Core"],
-		photo: "/uploads/harold-giraldo.png",
-		alt: "Harold Giraldo, preparador físico en PowerHouse Gym Manizales, especialista en entrenamiento funcional y musculación",
-	},
-];
+import { trainers } from "../data/trainers";
 
 const features = [
 	{ text: "Máquinas de Tráfico Pesado", icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11"/><rect x="2" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="5" height="16" rx="1"/><line x1="7" y1="12" x2="17" y2="12"/></svg>' },
@@ -131,24 +105,35 @@ const features = [
 				<p class="trainers__aside">Profesionales certificados con años de experiencia en transformación física y rendimiento deportivo.</p>
 			</div>
 			<div class="trainers__grid">
-				{trainers.map((trainer, idx) => (
-					<article class="trainer-card" style={`animation-delay: ${idx * 0.15}s`}>
-						<div class="trainer-card__photo">
-							<img src={trainer.photo} alt={trainer.alt || trainer.name} loading="lazy" />
-							<div class="trainer-card__photo-gradient"></div>
-						</div>
-						<div class="trainer-card__info">
-							<h3 class="trainer-card__name">{trainer.name}</h3>
-							<span class="trainer-card__role">{trainer.role}</span>
-							<p class="trainer-card__bio">{trainer.bio}</p>
-							<div class="trainer-card__specialties">
-								{trainer.specialties.map((s) => (
-									<span class="trainer-card__tag">{s}</span>
-								))}
+				{trainers.map((trainer, idx) => {
+					const inner = (
+						<article class="trainer-card" style={`animation-delay: ${idx * 0.15}s`}>
+							<div class="trainer-card__photo">
+								{trainer.photo ? (
+									<img src={trainer.photo} alt={trainer.alt || trainer.name} loading="lazy" />
+								) : (
+									<div class="trainer-card__photo--placeholder" aria-label={`Foto de ${trainer.name} próximamente`}>
+										<span>{trainer.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}</span>
+									</div>
+								)}
+								<div class="trainer-card__photo-gradient"></div>
 							</div>
-						</div>
-					</article>
-				))}
+							<div class="trainer-card__info">
+								<h3 class="trainer-card__name">{trainer.name}</h3>
+								<span class="trainer-card__role">{trainer.role}</span>
+								<p class="trainer-card__bio">{trainer.bio}</p>
+								<div class="trainer-card__specialties">
+									{trainer.specialties.map((s) => (
+										<span class="trainer-card__tag">{s}</span>
+									))}
+								</div>
+							</div>
+						</article>
+					);
+					return trainer.slug ? (
+						<a href={`/entrenadores/${trainer.slug}`} class="trainer-card-link">{inner}</a>
+					) : inner;
+				})}
 			</div>
 		</div>
 	</section>
@@ -478,8 +463,15 @@ const features = [
 
 	.trainers__grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 2rem;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.5rem;
+	}
+
+	.trainer-card-link {
+		display: block;
+		color: inherit;
+		text-decoration: none;
+		height: 100%;
 	}
 
 	.trainer-card {
@@ -513,6 +505,20 @@ const features = [
 		transform: scale(1.1);
 	}
 
+	.trainer-card__photo--placeholder {
+		aspect-ratio: 3/4;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.trainer-card__photo--placeholder span {
+		font-family: var(--font-display);
+		font-size: 4rem;
+		color: var(--brand-gold);
+		opacity: 0.4;
+	}
+
 	.trainer-card__photo-gradient {
 		position: absolute;
 		inset: 0;
@@ -531,7 +537,7 @@ const features = [
 
 	.trainer-card__name {
 		font-family: var(--font-display);
-		font-size: 1.875rem;
+		font-size: clamp(1.375rem, 1.6vw, 1.875rem);
 		color: var(--brand-gold);
 		text-transform: uppercase;
 		letter-spacing: -0.01em;

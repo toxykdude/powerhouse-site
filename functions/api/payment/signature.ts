@@ -35,6 +35,18 @@ const PLANS: Record<string, PlanConfig> = {
     currency: "COP",
   },
   anual: { name: "Plan Anual", amountInCents: 62000000, currency: "COP" },
+
+  // Trainer personal-training plans — amounts MUST match trainers.ts buildPricing totals exactly.
+  // Each amountInCents is the displayed total (PT + $69.900 membership) × 100.
+  "pt-esteban-morales-12": { name: "PT Esteban Morales · 12 clases/mes", amountInCents: 33990000, currency: "COP" },
+  "pt-esteban-morales-16": { name: "PT Esteban Morales · 16 clases/mes", amountInCents: 41990000, currency: "COP" },
+  "pt-esteban-morales-20": { name: "PT Esteban Morales · 20 clases/mes", amountInCents: 46990000, currency: "COP" },
+  "pt-harold-giraldo-12": { name: "PT Harold Giraldo · 12 clases/mes", amountInCents: 33990000, currency: "COP" },
+  "pt-harold-giraldo-16": { name: "PT Harold Giraldo · 16 clases/mes", amountInCents: 41990000, currency: "COP" },
+  "pt-harold-giraldo-20": { name: "PT Harold Giraldo · 20 clases/mes", amountInCents: 46990000, currency: "COP" },
+  "pt-brayan-molina-12": { name: "PT Brayan Molina · 12 clases/mes", amountInCents: 36990000, currency: "COP" },
+  "pt-brayan-molina-16": { name: "PT Brayan Molina · 16 clases/mes", amountInCents: 44990000, currency: "COP" },
+  "pt-brayan-molina-20": { name: "PT Brayan Molina · 20 clases/mes", amountInCents: 48990000, currency: "COP" },
 };
 
 function generateReference(): string {

@@ -1,0 +1,629 @@
+---
+/**
+ * TrainerStats.astro — "Resultados de clientes" infographic for trainer
+ * detail pages. Renders a vertical stack of rich cards (Chart.js donut,
+ * CSS horizontal bars, Chart.js grouped bar, Chart.js pie, key takeaways)
+ * adapted from an owner-provided infographic template.
+ *
+ * Font mapping (NO new fonts):
+ *   Barlow Condensed → var(--font-display)  (Bebas Neue)
+ *   DM Sans           → var(--font-mono)     (Space Mono)
+ *   template gold     → var(--brand-gold)    (#E8C832)
+ *
+ * Chart.js 4.4.1 is loaded via CDN (is:inline, defer) — acceptable per
+ * existing CDN precedent (Wompi widget.js). Custom infographic tokens
+ * are scoped to .trainer-results to avoid leaking globally.
+ */
+import type { TrainerResults } from "../data/trainers";
+
+interface Props {
+	results: TrainerResults;
+}
+
+const { results } = Astro.props;
+
+/** Gold shade palette for donut/pie segments + legend dots. */
+const GOLD_SHADES = ["#E8C832", "#b89f1f", "#3d3820", "#1e1d0f"];
+---
+
+<section class="trainer-results">
+	<div class="trainer-results__head">
+		<span class="trainer-results__tagline">Resultados</span>
+		<h2 class="section-title">RESULTADOS DE CLIENTES</h2>
+	</div>
+
+	<div class="trainer-results__cards">
+		<!-- ── Card 1: Donut — satisfaction breakdown ─────────────────── -->
+		<article class="tr-card">
+			<h3 class="tr-card__title">SATISFACCIÓN GENERAL DE CLIENTES</h3>
+			<div class="tr-donut-row">
+				<div class="tr-chart-wrap tr-chart-wrap--donut">
+					<canvas
+						id="trDonut"
+						role="img"
+						aria-label="Distribución de satisfacción de clientes"
+					></canvas>
+					<div class="tr-donut-center">
+						<span class="tr-donut-center__num">{results.satisfaction.positive}</span>
+						<span class="tr-donut-center__label">Positivo</span>
+					</div>
+				</div>
+				<ul class="tr-legend">
+					{results.satisfaction.segments.map((seg, i) => (
+						<li class="tr-legend__item">
+							<span class="tr-legend__dot" style={`background:${GOLD_SHADES[i]}`} />
+							<span class="tr-legend__label">{seg.label}</span>
+							<span class="tr-legend__val">{seg.value}%</span>
+						</li>
+					))}
+				</ul>
+			</div>
+			<p class="tr-insight">{results.satisfaction.insight}</p>
+			<div class="tr-footer-bar">{results.sampleSize}</div>
+		</article>
+
+		<!-- ── Card 2: Horizontal bars — key factors (pure HTML/CSS) ──── -->
+		<article class="tr-card">
+			<h3 class="tr-card__title">FACTORES CLAVE DE SATISFACCIÓN</h3>
+			<div class="tr-hbars">
+				{results.factors.items.map((f) => (
+					<div class="tr-hbar-item">
+						<div class="tr-hbar-head">
+							<span class="tr-hbar-label">{f.label}</span>
+							<span class="tr-hbar-pct">{f.pct}%</span>
+						</div>
+						<div class="tr-hbar-track">
+							<div class="tr-hbar-fill" style={`width:${f.pct}%`} />
+						</div>
+					</div>
+				))}
+			</div>
+			<p class="tr-insight">{results.factors.insight}</p>
+		</article>
+
+		<!-- ── Card 3: Grouped bar — satisfaction vs results ──────────── -->
+		<article class="tr-card">
+			<h3 class="tr-card__title">CORRELACIÓN SATISFACCIÓN · RESULTADOS</h3>
+			<div class="tr-chart-wrap tr-chart-wrap--bar">
+				<canvas
+					id="trBar"
+					role="img"
+					aria-label="Correlación entre satisfacción y logro de resultados"
+				></canvas>
+			</div>
+			<p class="tr-insight">{results.correlation.insight}</p>
+		</article>
+
+		<!-- ── Two-column: Pie + Takeaways ────────────────────────────── -->
+		<div class="tr-duo">
+			<!-- 4a: Pie — preferred modality -->
+			<article class="tr-card">
+				<h3 class="tr-card__title">MODALIDAD PREFERIDA</h3>
+				<div class="tr-chart-wrap tr-chart-wrap--pie">
+					<canvas
+						id="trPie"
+						role="img"
+						aria-label="Distribución de modalidades preferidas"
+					></canvas>
+				</div>
+				<ul class="tr-legend tr-legend--stacked">
+					{results.modality.items.map((seg, i) => (
+						<li class="tr-legend__item">
+							<span class="tr-legend__dot" style={`background:${GOLD_SHADES[i]}`} />
+							<span class="tr-legend__label">{seg.label}</span>
+							<span class="tr-legend__val">{seg.value}%</span>
+						</li>
+					))}
+				</ul>
+				<p class="tr-insight">{results.modality.insight}</p>
+			</article>
+
+			<!-- 4b: Takeaways — big stats + key points -->
+			<article class="tr-card">
+				<h3 class="tr-card__title">RESULTADOS CLAVE</h3>
+				<div class="tr-bignums">
+					{results.takeaways.stats.map((st) => (
+						<div class="tr-bignum">
+							<div class="tr-bignum__figure">
+								<span class="tr-bignum__num">{st.num}</span>
+								<span class="tr-bignum__unit">{st.unit}</span>
+							</div>
+							<span class="tr-bignum__label">{st.label}</span>
+						</div>
+					))}
+				</div>
+				<div class="tr-divider" />
+				<ul class="tr-points">
+					{results.takeaways.points.map((p) => (
+						<li class="tr-point">
+							<span class="tr-point__icon">{p.icon}</span>
+							<span class="tr-point__text">{p.text}</span>
+						</li>
+					))}
+				</ul>
+			</article>
+		</div>
+	</div>
+</section>
+
+<!-- Chart.js 4.4.1 via CDN — defer so it loads without blocking render. -->
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script
+	is:inline
+	define:vars={{
+		SAT: results.satisfaction,
+		COR: results.correlation,
+		MOD: results.modality,
+	}}
+>
+	const GOLD = "#E8C832",
+		GOLD_DIM = "#b89f1f",
+		GOLD_DIM2 = "#3d3820",
+		GOLD_DIM3 = "#1e1d0f",
+		CARD = "#161610",
+		MUTED = "#8a8672",
+		TEXT = "#e8e4d0";
+
+	function boot() {
+		if (typeof Chart === "undefined") {
+			setTimeout(boot, 60);
+			return;
+		}
+
+		Chart.defaults.color = MUTED;
+		Chart.defaults.font.family = "'Space Mono', monospace";
+		Chart.defaults.font.size = 12;
+
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const animDur = reduceMotion ? 0 : 800;
+
+		const tip = {
+			backgroundColor: "#1c1c12",
+			borderColor: "rgba(232,200,50,0.25)",
+			borderWidth: 1,
+			titleColor: GOLD,
+			bodyColor: TEXT,
+		};
+
+		// ── Donut: satisfaction segments ──────────────────────────
+		new Chart(document.getElementById("trDonut"), {
+			type: "doughnut",
+			data: {
+				labels: SAT.segments.map((s) => s.label),
+				datasets: [
+					{
+						data: SAT.segments.map((s) => s.value),
+						backgroundColor: [GOLD, GOLD_DIM, GOLD_DIM2, GOLD_DIM3],
+						borderColor: CARD,
+						borderWidth: 3,
+						hoverOffset: 6,
+					},
+				],
+			},
+			options: {
+				cutout: "68%",
+				animation: { duration: animDur },
+				plugins: {
+					legend: { display: false },
+					tooltip: {
+						...tip,
+						callbacks: { label: (c) => ` ${c.label}: ${c.raw}%` },
+					},
+				},
+			},
+		});
+
+		// ── Grouped bar: satisfaction vs results ──────────────────
+		new Chart(document.getElementById("trBar"), {
+			type: "bar",
+			data: {
+				labels: COR.categories,
+				datasets: COR.series.map((s) => ({
+					label: s.label,
+					data: s.data,
+					backgroundColor: s.muted ? "rgba(232,200,50,0.28)" : GOLD,
+					borderRadius: 2,
+					borderSkipped: false,
+				})),
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				animation: { duration: animDur },
+				scales: {
+					x: {
+						grid: { color: "rgba(255,255,255,0.04)" },
+						ticks: { color: MUTED, font: { size: 11 } },
+						border: { color: "rgba(255,255,255,0.08)" },
+					},
+					y: {
+						min: 0,
+						max: 10,
+						grid: { color: "rgba(255,255,255,0.05)" },
+						ticks: {
+							color: MUTED,
+							font: { size: 10 },
+							callback: (v) => v + "/10",
+							stepSize: 2,
+						},
+						border: { display: false },
+					},
+				},
+				plugins: {
+					legend: {
+						position: "top",
+						align: "start",
+						labels: {
+							color: MUTED,
+							boxWidth: 10,
+							boxHeight: 10,
+							padding: 16,
+							font: { size: 11 },
+							usePointStyle: true,
+							pointStyle: "rect",
+						},
+					},
+					tooltip: tip,
+				},
+			},
+		});
+
+		// ── Pie: modality preference ──────────────────────────────
+		new Chart(document.getElementById("trPie"), {
+			type: "pie",
+			data: {
+				labels: MOD.items.map((s) => s.label),
+				datasets: [
+					{
+						data: MOD.items.map((s) => s.value),
+						backgroundColor: [GOLD, GOLD_DIM, GOLD_DIM2],
+						borderColor: CARD,
+						borderWidth: 3,
+						hoverOffset: 6,
+					},
+				],
+			},
+			options: {
+				animation: { duration: animDur },
+				plugins: {
+					legend: { display: false },
+					tooltip: {
+						...tip,
+						callbacks: { label: (c) => ` ${c.label}: ${c.raw}%` },
+					},
+				},
+			},
+		});
+	}
+
+	document.addEventListener("DOMContentLoaded", boot);
+</script>
+
+<style>
+	/* ── Infographic tokens (scoped — do not leak) ────────────────── */
+	.trainer-results {
+		--gold-dim: #b89f1f;
+		--gold-dim2: #3d3820;
+		--gold-dim3: #1e1d0f;
+		--tr-card-bg: #161610;
+		--text-muted: #8a8672;
+		--text: #e8e4d0;
+
+		padding: 5rem 1.5rem;
+		background: var(--brand-black);
+		border-top: 1px solid rgba(232, 200, 50, 0.1);
+		border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+	}
+
+	.trainer-results__head {
+		max-width: 46rem;
+		margin: 0 auto 2.5rem;
+		text-align: center;
+	}
+
+	.trainer-results__tagline {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.5em;
+	}
+
+	.trainer-results__cards {
+		max-width: 46rem;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	/* ── Card base ─────────────────────────────────────────────────── */
+	.tr-card {
+		position: relative;
+		background: var(--tr-card-bg);
+		border: 1px solid rgba(232, 200, 50, 0.14);
+		border-radius: 0;
+		padding: 28px 24px;
+		overflow: hidden;
+	}
+
+	.tr-card::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+		opacity: 0.4;
+	}
+
+	.tr-card__title {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		font-family: var(--font-display);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		font-size: 1.15rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.tr-card__title::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: rgba(232, 200, 50, 0.18);
+	}
+
+	/* ── Chart containers ──────────────────────────────────────────── */
+	.tr-chart-wrap {
+		position: relative;
+		margin: 0 auto;
+	}
+
+	.tr-chart-wrap--donut {
+		width: 200px;
+		height: 200px;
+		flex-shrink: 0;
+	}
+
+	.tr-chart-wrap--bar {
+		width: 100%;
+		height: 200px;
+	}
+
+	.tr-chart-wrap--pie {
+		width: 180px;
+		height: 180px;
+	}
+
+	/* ── Donut center overlay ──────────────────────────────────────── */
+	.tr-donut-row {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.tr-donut-center {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		pointer-events: none;
+	}
+
+	.tr-donut-center__num {
+		font-family: var(--font-display);
+		font-size: 2.5rem;
+		color: var(--brand-gold);
+		line-height: 1;
+	}
+
+	.tr-donut-center__label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-top: 0.25rem;
+	}
+
+	/* ── Legend ────────────────────────────────────────────────────── */
+	.tr-legend {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+	}
+
+	.tr-legend--stacked {
+		margin-top: 1rem;
+	}
+
+	.tr-legend__item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--text);
+	}
+
+	.tr-legend__dot {
+		width: 10px;
+		height: 10px;
+		flex-shrink: 0;
+	}
+
+	.tr-legend__label {
+		flex: 1;
+	}
+
+	.tr-legend__val {
+		color: var(--text-muted);
+	}
+
+	/* ── Insight box ───────────────────────────────────────────────── */
+	.tr-insight {
+		background: rgba(232, 200, 50, 0.06);
+		border-left: 3px solid var(--brand-gold);
+		padding: 0.75rem 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--text);
+		line-height: 1.6;
+		margin-top: 1.25rem;
+	}
+
+	/* ── Footer bar (sample size) ──────────────────────────────────── */
+	.tr-footer-bar {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-top: 1rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	/* ── Horizontal bars (pure CSS) ────────────────────────────────── */
+	.tr-hbars {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.tr-hbar-head {
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--text);
+		margin-bottom: 0.375rem;
+	}
+
+	.tr-hbar-pct {
+		color: var(--brand-gold);
+	}
+
+	.tr-hbar-track {
+		height: 6px;
+		background: rgba(255, 255, 255, 0.06);
+		overflow: hidden;
+	}
+
+	.tr-hbar-fill {
+		height: 100%;
+		background: linear-gradient(90deg, var(--gold-dim), var(--brand-gold));
+		transition: width 0.8s ease;
+	}
+
+	/* ── Two-column layout (pie + takeaways) ───────────────────────── */
+	.tr-duo {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.25rem;
+	}
+
+	/* ── Big stat numbers ──────────────────────────────────────────── */
+	.tr-bignums {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+	}
+
+	.tr-bignum {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.tr-bignum__figure {
+		display: flex;
+		align-items: baseline;
+	}
+
+	.tr-bignum__num {
+		font-family: var(--font-display);
+		font-size: 3rem;
+		color: var(--brand-gold);
+		line-height: 1;
+	}
+
+	.tr-bignum__unit {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--brand-gold);
+	}
+
+	.tr-bignum__label {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		margin-top: 0.375rem;
+	}
+
+	.tr-divider {
+		height: 1px;
+		background: rgba(255, 255, 255, 0.06);
+		margin: 1.25rem 0;
+	}
+
+	/* ── Takeaway points ───────────────────────────────────────────── */
+	.tr-points {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+	}
+
+	.tr-point {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+	}
+
+	.tr-point__icon {
+		width: 32px;
+		height: 32px;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: rgba(232, 200, 50, 0.1);
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		font-size: 0.9rem;
+	}
+
+	.tr-point__text {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--text);
+		line-height: 1.6;
+	}
+
+	/* ── Responsive ────────────────────────────────────────────────── */
+	@media (max-width: 520px) {
+		.tr-duo {
+			grid-template-columns: 1fr;
+		}
+
+		.tr-bignums {
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+		}
+	}
+</style>
