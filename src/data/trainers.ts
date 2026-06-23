@@ -85,29 +85,63 @@ export const SHARED_FEATURES: string[] = [
 ];
 
 /**
- * The owner-provided standard metrics shared by every slugged trainer.
- * NOTE: values are identical across trainers for now — the owner will
- * customize per trainer once real per-trainer numbers are available.
+ * Per-trainer stats. Values below are ESTIMATES derived from each trainer's
+ * profile (years of experience, bio claims) — replace with real per-trainer
+ * numbers when available. Structure is identical; only the numbers differ.
  */
-const STANDARD_STATS: TrainerStat[] = [
-	{ icon: "hours", value: "1,200+", label: "HORAS ENTRENADAS", growth: "+12%" },
-	{
-		icon: "clients",
-		value: "45",
-		label: "MIEMBROS ACTIVOS",
-		growth: "+8%",
-		progress: 90,
-		progressVariant: "bar",
-	},
-	{
-		icon: "satisfaction",
-		value: "96.8%",
-		label: "ÍNDICE DE SATISFACCIÓN",
-		progress: 96.8,
-		progressVariant: "radial",
-	},
-	{ icon: "certifications", value: "8", label: "CERTIFICACIONES AVANZADAS", growth: "+2" },
-];
+function buildStats(o: {
+	hours: string;
+	hoursGrowth: string;
+	clients: string;
+	clientsGrowth: string;
+	clientsProgress: number;
+	satisfaction: string;
+	satisfactionProgress: number;
+	certs: string;
+	certsGrowth: string;
+}): TrainerStat[] {
+	return [
+		{ icon: "hours", value: o.hours, label: "HORAS ENTRENADAS", growth: o.hoursGrowth },
+		{
+			icon: "clients",
+			value: o.clients,
+			label: "MIEMBROS ACTIVOS",
+			growth: o.clientsGrowth,
+			progress: o.clientsProgress,
+			progressVariant: "bar",
+		},
+		{
+			icon: "satisfaction",
+			value: o.satisfaction,
+			label: "ÍNDICE DE SATISFACCIÓN",
+			progress: o.satisfactionProgress,
+			progressVariant: "radial",
+		},
+		{ icon: "certifications", value: o.certs, label: "CERTIFICACIONES AVANZADAS", growth: o.certsGrowth },
+	];
+}
+
+// Esteban — most senior (500+ clientes transformados, biomecánica).
+const ESTEBAN_STATS = buildStats({
+	hours: "2,500+", hoursGrowth: "+14%",
+	clients: "58", clientsGrowth: "+9%", clientsProgress: 92,
+	satisfaction: "97.5%", satisfactionProgress: 97.5,
+	certs: "9", certsGrowth: "+2",
+});
+// Harold — Preparador Físico, Tecnólogo en Entrenamiento Deportivo.
+const HAROLD_STATS = buildStats({
+	hours: "1,900+", hoursGrowth: "+11%",
+	clients: "50", clientsGrowth: "+7%", clientsProgress: 85,
+	satisfaction: "96.2%", satisfactionProgress: 96.2,
+	certs: "7", certsGrowth: "+1",
+});
+// Brayan — 7 años de trayectoria, 5+ diplomados.
+const BRAYAN_STATS = buildStats({
+	hours: "1,200+", hoursGrowth: "+12%",
+	clients: "45", clientsGrowth: "+8%", clientsProgress: 90,
+	satisfaction: "96.8%", satisfactionProgress: 96.8,
+	certs: "8", certsGrowth: "+2",
+});
 
 /**
  * Build the 3 tiers for a slugged trainer from §B prices.
@@ -155,7 +189,7 @@ export const trainers: Trainer[] = [
 			"Con más de 500 clientes transformados, su método integra fuerza, técnica y hábitos para que cada persona alcance su mejor versión y mantenga sus resultados en el tiempo.",
 		],
 		pricing: buildPricing("Esteban Morales", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
-		stats: STANDARD_STATS,
+		stats: ESTEBAN_STATS,
 		seoTitle: "Esteban Morales · Entrenador Personal",
 		seoDescription:
 			"Conoce a Esteban Morales, especialista en biomecánica y pérdida de peso en PowerHouse Gym Manizales. Más de 500 clientes transformados con técnica y resultados sostenibles.",
@@ -173,7 +207,7 @@ export const trainers: Trainer[] = [
 			"Acompaña a cada cliente desde la valoración inicial hasta el seguimiento semanal, priorizando la ejecución correcta de cada movimiento para maximizar resultados y reducir el riesgo de lesión.",
 		],
 		pricing: buildPricing("Harold Giraldo", { twelve: "270.000", sixteen: "350.000", twenty: "400.000" }),
-		stats: STANDARD_STATS,
+		stats: HAROLD_STATS,
 		seoTitle: "Harold Giraldo · Preparador Físico",
 		seoDescription:
 			"Conoce a Harold Giraldo, preparador físico y tecnólogo en entrenamiento deportivo en PowerHouse Gym Manizales. Entrenamiento funcional y musculación con seguimiento personalizado.",
@@ -198,7 +232,7 @@ export const trainers: Trainer[] = [
 			"Impulsado por la filosofía del culturismo natural, se especializa con amplia experiencia en la modificación de la composición corporal (bajar grasa y ganar músculo) con un enfoque estricto en la salud, el bienestar y la longevidad. Su formación científica y versatilidad le permiten diseñar programas de alta precisión adaptados al entrenamiento de la mujer, el adulto mayor y el alto rendimiento deportivo, logrando resultados reales y sostenibles sin atajos perjudiciales.",
 		],
 		pricing: buildPricing("Brayan Molina", { twelve: "300.000", sixteen: "380.000", twenty: "420.000" }),
-		stats: STANDARD_STATS,
+		stats: BRAYAN_STATS,
 		seoTitle: "Brayan Molina · Entrenador Personal",
 		seoDescription:
 			"Conoce a Brayan Molina, entrenador personal en PowerHouse Gym Manizales. Especialista en composición corporal, nutrición deportiva y culturismo natural con enfoque en salud y longevidad.",
