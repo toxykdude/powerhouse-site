@@ -1,0 +1,64 @@
+name: Deploy Staging (dev)
+
+# Deploys every push to the `dev` branch to a STABLE Cloudflare Pages alias:
+#   https://dev.powerhouse-site-dev.pages.dev
+# This URL never changes — it always reflects the latest commit on `dev`.
+# (Cloudflare Pages maps the `--branch dev` deploy to the stable branch alias.)
+
+on:
+  push:
+    branches: [dev]
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: ./.github/actions/ci-validate
+
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy to stable dev alias
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy dist --project-name powerhouse-site-dev --branch dev
+          echo "::notice::Stable dev URL → https://dev.powerhouse-site-dev.pages.dev"
+
+      - name: Summary
+        run: |
+          echo "### 🟡 Stable Dev Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Stable URL (never changes):** https://dev.powerhouse-site-dev.pages.dev" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Trainer pages: /entrenadores/harold-giraldo · /entrenadores/esteban-morales · /entrenadores/brayan-molina" >> $GITHUB_STEP_SUMMARY
