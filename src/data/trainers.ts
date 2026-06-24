@@ -15,7 +15,7 @@ export type Currency = "COP";
 
 /** A personal-training pricing tier rendered via PlanCard.astro. */
 export interface PricingTier {
-	/** Tier identity, e.g. "16 clases/mes" (rendered as the card <h3>). */
+	/** Tier identity, e.g. "4 clases semanales · 16 al mes" (rendered as the card <h3>). */
 	name: string;
 	/** Digits only, no "$" / "COP" — e.g. "350.000" (PlanCard adds them). */
 	price: string;
@@ -305,9 +305,9 @@ function buildPricing(
 	base: { twelve: number; sixteen: number; twenty: number },
 ): PricingTier[] {
 	const tiers = [
-		{ name: "12 clases/mes", price: formatCOP(base.twelve + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-12` },
-		{ name: "16 clases/mes", price: formatCOP(base.sixteen + MEMBERSHIP), isFeatured: true, planId: `pt-${slug}-16` },
-		{ name: "20 clases/mes", price: formatCOP(base.twenty + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-20` },
+		{ name: "3 clases semanales · 12 al mes", price: formatCOP(base.twelve + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-12` },
+		{ name: "4 clases semanales · 16 al mes", price: formatCOP(base.sixteen + MEMBERSHIP), isFeatured: true, planId: `pt-${slug}-16` },
+		{ name: "5 clases semanales · 20 al mes", price: formatCOP(base.twenty + MEMBERSHIP), isFeatured: false, planId: `pt-${slug}-20` },
 	];
 	return tiers.map((tier) => ({
 		name: tier.name,
