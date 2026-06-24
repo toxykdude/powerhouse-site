@@ -49,12 +49,12 @@ const PLANS: Record<string, PlanConfig> = {
   "pt-brayan-molina-20": { name: "PT Brayan Molina · 20 clases/mes", amountInCents: 48990000, currency: "COP" },
 };
 
-function generateReference(): string {
+function generateReference(planId: string): string {
   const timestamp = Math.floor(Date.now() / 1000);
   const random = Array.from(crypto.getRandomValues(new Uint8Array(3)))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  return `PH-${timestamp}-${random}`;
+  return `PH-${planId}-${timestamp}-${random}`;
 }
 
 async function sha256(message: string): Promise<string> {
@@ -97,7 +97,7 @@ export async function onRequestPost({
     }
 
     const plan = PLANS[planId];
-    const reference = generateReference();
+    const reference = generateReference(planId);
     const signature = await generateSignature(
       reference,
       plan.amountInCents,

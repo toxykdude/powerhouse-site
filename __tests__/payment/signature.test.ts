@@ -92,7 +92,7 @@ describe("generateSignature (via onRequestPost)", () => {
 // ---------------------------------------------------------------------------
 
 describe("generateReference (via onRequestPost)", () => {
-  it("returns a reference matching PH-{timestamp}-{hex6} format", async () => {
+  it("returns a reference matching PH-{planId}-{timestamp}-{hex6} format", async () => {
     const response = await onRequestPost({
       request: createRequest({ plan: "mensual" }),
       env: MOCK_ENV,
@@ -100,7 +100,7 @@ describe("generateReference (via onRequestPost)", () => {
 
     const body = (await response.json()) as { reference: string };
 
-    expect(body.reference).toMatch(/^PH-\d{10}-[0-9a-f]{6}$/);
+    expect(body.reference).toMatch(/^PH-mensual-\d{10}-[0-9a-f]{6}$/);
   });
 
   it("returns a unique reference on each call", async () => {
