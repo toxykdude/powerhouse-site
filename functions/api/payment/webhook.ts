@@ -33,6 +33,73 @@ async function sha256(message: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** Parse the planId from a reference like PH-pt-brayan-molina-16-1719000000-abc123 */
+function parsePlanId(reference: string): string | null {
+  const match = reference.match(/^PH-(.+)-\d{10}-[a-f0-9]{6}$/);
+  return match ? match[1] : null;
+}
+
+/** Convert a planId into a human-readable description for the notification email */
+function formatPlanDescription(planId: string | null): string {
+  if (!planId) return "Plan desconocido (referencia sin planId)";
+  if (planId.startsWith("pt-")) {
+    const parts = planId.split("-");
+    const classes = parts[parts.length - 1];
+    const slug = parts.slice(1, -1).join(" ").replace(/-/g, " ");
+    const name = slug.replace(/\b\w/g, (c) => c.toUpperCase());
+    return `Entrenamiento personal — ${classes} clases con ${name}`;
+  }
+  const gymPlans: Record<string, string> = {
+    mensual: "Membresía Mensual",
+    "power-pack": "Power Pack",
+    trimestral: "Plan Trimestral",
+    semestral: "Plan Semestral",
+    anual: "Plan Anual",
+  };
+  return gymPlans[planId] || `Plan ${planId}`;
+}
+
+/** Send a payment notification email to gym staff via MailChannels */
+async function sendPaymentNotification(
+  tx: WompiTransaction,
+  planDescription: string,
+): Promise<void> {
+  const amountFormatted = (tx.amount_in_cents / 100).toLocaleString("es-CO");
+  const body = `
+Pago confirmado en PowerHouse Gym (sin activación automática)
+
+Plan: ${planDescription}
+Referencia: ${tx.reference}
+Monto: $${amountFormatted} COP
+Transacción Wompi: ${tx.id}
+
+⚠ Este pago no tiene registro de "pago pendiente" en FaceGYM.
+Posible plan nuevo o de entrenamiento personal — gestionar manualmente.
+
+---
+Notificación automática desde el webhook de Wompi
+  `.trim();
+
+  try {
+    await fetch("https://api.mailchannels.net/tx/v1/send", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: "gerencia@powerhousegym.co" }] }],
+        from: { email: "noreply@powerhousegym.co", name: "PowerHouse Gym Pagos" },
+        subject: `Pago confirmado: ${planDescription} — $${amountFormatted} COP`,
+        content: [{ type: "text/plain", value: body }],
+      }),
+    });
+    console.log("Payment notification email sent", {
+      reference: tx.reference,
+      plan: planDescription,
+    });
+  } catch (err) {
+    console.error("Failed to send payment notification email:", err);
+  }
+}
+
 export async function onRequestPost({
   request,
   env,
@@ -100,11 +167,14 @@ export async function onRequestPost({
           !pendingData.plan_id ||
           !pendingData.member_id
         ) {
-          console.error("Pending payment not found or incomplete", {
+          // No pending payment in FaceGYM → likely a new membership or PT plan.
+          // Send staff notification so they can handle it manually.
+          console.log("Payment without pending record — sending notification", {
             reference: tx.reference,
-            data: pendingData,
           });
-          // This might be a non-portal payment (e.g., from planes.astro for new members)
+          const planId = parsePlanId(tx.reference);
+          const planDescription = formatPlanDescription(planId);
+          await sendPaymentNotification(tx, planDescription);
           return new Response("OK", { status: 200 });
         }
 
