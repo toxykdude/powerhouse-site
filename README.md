@@ -108,7 +108,7 @@ El flujo de pago funciona completamente in-site sin redirigir al usuario:
 
 ```
 Usuario clickea "PAGAR AHORA"
-  → POST /api/payment/signature { plan: "power-pack" }
+  → POST /api/payment/signature { plan: "trimestral" }
     → Backend genera referencia + firma SHA256
       → WidgetCheckout se abre como modal in-site
         → Usuario paga (tarjeta/PSE/Nequi/Daviplata/Efecty)
@@ -122,9 +122,8 @@ Usuario clickea "PAGAR AHORA"
 | Plan ID      | Nombre            | Precio (COP) |
 | ------------ | ----------------- | ------------ |
 | `mensual`    | Membresía Mensual | $69.900      |
-| `power-pack` | Power Pack        | $140.000     |
-| `trimestral` | Plan Trimestral   | $186.000     |
-| `semestral`  | Plan Semestral    | $360.000     |
+| `trimestral` | Plan Trimestral   | $195.000     |
+| `semestral`  | Plan Semestral    | $375.000     |
 | `anual`      | Plan Anual        | $620.000     |
 
 ### Variables de entorno (Cloudflare Pages)

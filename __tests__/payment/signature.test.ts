@@ -54,7 +54,6 @@ describe("sha256 hashing (indirect)", () => {
 describe("generateSignature (via onRequestPost)", () => {
   const validPlans = [
     "mensual",
-    "power-pack",
     "trimestral",
     "semestral",
     "anual",
@@ -197,9 +196,8 @@ describe("onRequestPost — handler integration", () => {
   it("returns correct amounts for all valid plans", async () => {
     const planAmounts: Record<string, number> = {
       mensual: 6990000,
-      "power-pack": 14000000,
-      trimestral: 18600000,
-      semestral: 36000000,
+      trimestral: 19500000,
+      semestral: 37500000,
       anual: 62000000,
     };
 

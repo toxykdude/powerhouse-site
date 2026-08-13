@@ -19,19 +19,14 @@ const PLANS: Record<string, PlanConfig> = {
     amountInCents: 6990000,
     currency: "COP",
   },
-  "power-pack": {
-    name: "Power Pack",
-    amountInCents: 14000000,
-    currency: "COP",
-  },
   trimestral: {
     name: "Plan Trimestral",
-    amountInCents: 18600000,
+    amountInCents: 19500000,
     currency: "COP",
   },
   semestral: {
     name: "Plan Semestral",
-    amountInCents: 36000000,
+    amountInCents: 37500000,
     currency: "COP",
   },
   anual: { name: "Plan Anual", amountInCents: 62000000, currency: "COP" },

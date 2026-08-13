@@ -2,7 +2,21 @@
 import Base from "../layouts/Base.astro";
 import PlanCard from "../components/PlanCard.astro";
 
-const row1 = [
+interface PlanRow {
+	name: string;
+	planId: string;
+	price: string;
+	currency: string;
+	period: string;
+	features: string[];
+	is_featured: boolean;
+	cta_label: string;
+	/** When set, card shows a muted "Total $X" line under the hero (per-month) price. */
+	total_price?: string;
+}
+
+// Order is intentional: Anual sits in position 2 as the highlighted RECOMENDADO card.
+const plans: PlanRow[] = [
 	{
 		name: "Membresía Mensual",
 		planId: "mensual",
@@ -14,55 +28,42 @@ const row1 = [
 		cta_label: "PAGAR AHORA",
 	},
 	{
-		name: "Power Pack",
-		planId: "power-pack",
-		price: "140.000",
+		name: "Plan Anual",
+		planId: "anual",
+		price: "51.000",
 		currency: "COP",
 		period: "/mes",
-		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual", "Asesoría en alimentación", "Servicio de proteína por entreno"],
+		total_price: "620.000",
+		features: ["Mejor relación precio-beneficio", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: true,
 		cta_label: "PAGAR AHORA",
 	},
 	{
 		name: "Plan Trimestral",
 		planId: "trimestral",
-		price: "186.000",
+		price: "65.000",
 		currency: "COP",
-		period: "/trimestre",
+		period: "/mes",
+		total_price: "195.000",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
 	},
-];
-
-const row2 = [
 	{
 		name: "Plan Semestral",
 		planId: "semestral",
-		price: "360.000",
+		price: "62.500",
 		currency: "COP",
-		period: "/semestre",
+		period: "/mes",
+		total_price: "375.000",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
 	},
-	{
-		name: "Plan Anual",
-		planId: "anual",
-		price: "620.000",
-		currency: "COP",
-		period: "/año",
-		features: ["Mejor precio beneficio, mes a $51mil!", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
-		is_featured: true,
-		featured_variant: "annual",
-		cta_label: "PAGAR AHORA",
-	},
 ];
-
-const plans = [...row1, ...row2];
 ---
 
-<Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $9.900 COP sin contrato ni permanencia. Mensual, quincenal y diario. Entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
+<Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $51.000/mes sin permanencia. Mensual, trimestral, semestral y anual con entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
 	<Fragment slot="head">
 		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
 	</Fragment>
@@ -75,30 +76,16 @@ const plans = [...row1, ...row2];
 		</div>
 
 		<div class="plans-sections">
-			<div class="plans-grid plans-grid--3">
-				{row1.map((plan) => (
+			<div class="plans-grid plans-grid--4">
+				{plans.map((plan) => (
 					<PlanCard
 						name={plan.name}
 						price={plan.price}
 						currency={plan.currency}
 						period={plan.period}
+						totalPrice={plan.total_price}
 						features={plan.features}
 						isFeatured={plan.is_featured}
-						cta={{ type: "button", planId: plan.planId, label: plan.cta_label }}
-					/>
-				))}
-			</div>
-
-			<div class="plans-grid plans-grid--2">
-				{row2.map((plan) => (
-					<PlanCard
-						name={plan.name}
-						price={plan.price}
-						currency={plan.currency}
-						period={plan.period}
-						features={plan.features}
-						isFeatured={plan.is_featured}
-						featuredVariant={plan.featured_variant === "annual" ? "annual" : "featured"}
 						cta={{ type: "button", planId: plan.planId, label: plan.cta_label }}
 					/>
 				))}
@@ -129,7 +116,7 @@ const plans = [...row1, ...row2];
 							<select id="signup-plan" name="plan" required>
 								<option value="" disabled>Selecciona un plan</option>
 								{plans.map(p => (
-									<option value={p.name}>{p.name} - ${p.price}</option>
+									<option value={p.name}>{p.name} — ${p.total_price ?? p.price}</option>
 								))}
 							</select>
 						</div>
@@ -215,6 +202,12 @@ const plans = [...row1, ...row2];
 	.plans-grid--2 {
 		grid-template-columns: repeat(2, 1fr);
 		max-width: 52rem;
+		margin: 0 auto;
+	}
+
+	.plans-grid--4 {
+		grid-template-columns: repeat(4, 1fr);
+		max-width: 80rem;
 		margin: 0 auto;
 	}
 
@@ -332,7 +325,8 @@ const plans = [...row1, ...row2];
 
 	@media (max-width: 768px) {
 		.plans-grid--3,
-		.plans-grid--2 {
+		.plans-grid--2,
+		.plans-grid--4 {
 			grid-template-columns: 1fr;
 			max-width: 28rem;
 		}
