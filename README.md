@@ -123,8 +123,8 @@ Usuario clickea "PAGAR AHORA"
 | ------------ | ----------------- | ------------ |
 | `mensual`    | Membresía Mensual | $69.900      |
 | `power-pack` | Power Pack        | $140.000     |
-| `trimestral` | Plan Trimestral   | $186.000     |
-| `semestral`  | Plan Semestral    | $360.000     |
+| `trimestral` | Plan Trimestral   | $195.000     |
+| `semestral`  | Plan Semestral    | $375.000     |
 | `anual`      | Plan Anual        | $620.000     |
 
 ### Variables de entorno (Cloudflare Pages)

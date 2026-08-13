@@ -198,8 +198,8 @@ describe("onRequestPost — handler integration", () => {
     const planAmounts: Record<string, number> = {
       mensual: 6990000,
       "power-pack": 14000000,
-      trimestral: 18600000,
-      semestral: 36000000,
+      trimestral: 19500000,
+      semestral: 37500000,
       anual: 62000000,
     };
 

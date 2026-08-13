@@ -22,6 +22,8 @@ interface Props {
 	price: string;
 	currency: string;
 	period?: string;
+	/** Optional secondary line rendered under the price (e.g. multi-month plans that surface a /mes hero price). */
+	totalPrice?: string;
 	features: string[];
 	/** Featured card (gold background, RECOMENDADO badge). Default false. */
 	isFeatured?: boolean;
@@ -35,6 +37,7 @@ const {
 	price,
 	currency,
 	period,
+	totalPrice,
 	features,
 	isFeatured = false,
 	featuredVariant = "featured",
@@ -60,6 +63,7 @@ const ctaClass = `plan-card__cta ${variant === "featured" ? "plan-card__cta--dar
 			<span class="plan-card__amount">${price}</span>
 			{period && <span class="plan-card__period">{period}</span>}
 		</div>
+		{totalPrice && <div class="plan-card__total">Total ${totalPrice}</div>}
 	</div>
 	<ul class="plan-card__features">
 		{features.map((feature) => (
@@ -180,6 +184,13 @@ const ctaClass = `plan-card__cta ${variant === "featured" ? "plan-card__cta--dar
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		opacity: 0.6;
+	}
+
+	.plan-card__total {
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		opacity: 0.55;
+		margin-top: 0.4rem;
 	}
 
 	.plan-card__features {

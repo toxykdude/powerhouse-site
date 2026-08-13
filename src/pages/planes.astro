@@ -2,7 +2,21 @@
 import Base from "../layouts/Base.astro";
 import PlanCard from "../components/PlanCard.astro";
 
-const row1 = [
+interface PlanRow {
+	name: string;
+	planId: string;
+	price: string;
+	currency: string;
+	period: string;
+	features: string[];
+	is_featured: boolean;
+	cta_label: string;
+	/** When set, card shows a muted "Total $X" line under the hero (per-month) price. */
+	total_price?: string;
+	featured_variant?: string;
+}
+
+const row1: PlanRow[] = [
 	{
 		name: "Membresía Mensual",
 		planId: "mensual",
@@ -26,22 +40,24 @@ const row1 = [
 	{
 		name: "Plan Trimestral",
 		planId: "trimestral",
-		price: "186.000",
+		price: "65.000",
 		currency: "COP",
-		period: "/trimestre",
+		period: "/mes",
+		total_price: "195.000",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
 	},
 ];
 
-const row2 = [
+const row2: PlanRow[] = [
 	{
 		name: "Plan Semestral",
 		planId: "semestral",
-		price: "360.000",
+		price: "62.500",
 		currency: "COP",
-		period: "/semestre",
+		period: "/mes",
+		total_price: "375.000",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
@@ -82,6 +98,7 @@ const plans = [...row1, ...row2];
 						price={plan.price}
 						currency={plan.currency}
 						period={plan.period}
+						totalPrice={plan.total_price}
 						features={plan.features}
 						isFeatured={plan.is_featured}
 						cta={{ type: "button", planId: plan.planId, label: plan.cta_label }}
@@ -96,6 +113,7 @@ const plans = [...row1, ...row2];
 						price={plan.price}
 						currency={plan.currency}
 						period={plan.period}
+						totalPrice={plan.total_price}
 						features={plan.features}
 						isFeatured={plan.is_featured}
 						featuredVariant={plan.featured_variant === "annual" ? "annual" : "featured"}
