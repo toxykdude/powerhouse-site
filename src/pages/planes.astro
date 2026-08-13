@@ -13,10 +13,10 @@ interface PlanRow {
 	cta_label: string;
 	/** When set, card shows a muted "Total $X" line under the hero (per-month) price. */
 	total_price?: string;
-	featured_variant?: string;
 }
 
-const row1: PlanRow[] = [
+// Order is intentional: Anual sits in position 2 as the highlighted RECOMENDADO card.
+const plans: PlanRow[] = [
 	{
 		name: "Membresía Mensual",
 		planId: "mensual",
@@ -25,6 +25,17 @@ const row1: PlanRow[] = [
 		period: "/mes",
 		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: false,
+		cta_label: "PAGAR AHORA",
+	},
+	{
+		name: "Plan Anual",
+		planId: "anual",
+		price: "51.000",
+		currency: "COP",
+		period: "/mes",
+		total_price: "620.000",
+		features: ["Mejor relación precio-beneficio", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
+		is_featured: true,
 		cta_label: "PAGAR AHORA",
 	},
 	{
@@ -50,23 +61,6 @@ const row1: PlanRow[] = [
 		cta_label: "PAGAR AHORA",
 	},
 ];
-
-const row2: PlanRow[] = [
-	{
-		name: "Plan Anual",
-		planId: "anual",
-		price: "51.000",
-		currency: "COP",
-		period: "/mes",
-		total_price: "620.000",
-		features: ["Mejor relación precio-beneficio", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
-		is_featured: true,
-		featured_variant: "annual",
-		cta_label: "PAGAR AHORA",
-	},
-];
-
-const plans = [...row1, ...row2];
 ---
 
 <Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $51.000/mes sin permanencia. Mensual, trimestral, semestral y anual con entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
@@ -82,8 +76,8 @@ const plans = [...row1, ...row2];
 		</div>
 
 		<div class="plans-sections">
-			<div class="plans-grid plans-grid--3">
-				{row1.map((plan) => (
+			<div class="plans-grid plans-grid--4">
+				{plans.map((plan) => (
 					<PlanCard
 						name={plan.name}
 						price={plan.price}
@@ -92,22 +86,6 @@ const plans = [...row1, ...row2];
 						totalPrice={plan.total_price}
 						features={plan.features}
 						isFeatured={plan.is_featured}
-						cta={{ type: "button", planId: plan.planId, label: plan.cta_label }}
-					/>
-				))}
-			</div>
-
-			<div class="plans-grid plans-grid--1">
-				{row2.map((plan) => (
-					<PlanCard
-						name={plan.name}
-						price={plan.price}
-						currency={plan.currency}
-						period={plan.period}
-						totalPrice={plan.total_price}
-						features={plan.features}
-						isFeatured={plan.is_featured}
-						featuredVariant={plan.featured_variant === "annual" ? "annual" : "featured"}
 						cta={{ type: "button", planId: plan.planId, label: plan.cta_label }}
 					/>
 				))}
@@ -227,9 +205,9 @@ const plans = [...row1, ...row2];
 		margin: 0 auto;
 	}
 
-	.plans-grid--1 {
-		grid-template-columns: 1fr;
-		max-width: 30rem;
+	.plans-grid--4 {
+		grid-template-columns: repeat(4, 1fr);
+		max-width: 80rem;
 		margin: 0 auto;
 	}
 
@@ -348,7 +326,7 @@ const plans = [...row1, ...row2];
 	@media (max-width: 768px) {
 		.plans-grid--3,
 		.plans-grid--2,
-		.plans-grid--1 {
+		.plans-grid--4 {
 			grid-template-columns: 1fr;
 			max-width: 28rem;
 		}
