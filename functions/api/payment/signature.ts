@@ -19,11 +19,6 @@ const PLANS: Record<string, PlanConfig> = {
     amountInCents: 6990000,
     currency: "COP",
   },
-  "power-pack": {
-    name: "Power Pack",
-    amountInCents: 14000000,
-    currency: "COP",
-  },
   trimestral: {
     name: "Plan Trimestral",
     amountInCents: 19500000,

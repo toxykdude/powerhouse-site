@@ -28,16 +28,6 @@ const row1: PlanRow[] = [
 		cta_label: "PAGAR AHORA",
 	},
 	{
-		name: "Power Pack",
-		planId: "power-pack",
-		price: "140.000",
-		currency: "COP",
-		period: "/mes",
-		features: ["Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual", "Asesoría en alimentación", "Servicio de proteína por entreno"],
-		is_featured: true,
-		cta_label: "PAGAR AHORA",
-	},
-	{
 		name: "Plan Trimestral",
 		planId: "trimestral",
 		price: "65.000",
@@ -48,9 +38,6 @@ const row1: PlanRow[] = [
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
 	},
-];
-
-const row2: PlanRow[] = [
 	{
 		name: "Plan Semestral",
 		planId: "semestral",
@@ -62,13 +49,17 @@ const row2: PlanRow[] = [
 		is_featured: false,
 		cta_label: "PAGAR AHORA",
 	},
+];
+
+const row2: PlanRow[] = [
 	{
 		name: "Plan Anual",
 		planId: "anual",
-		price: "620.000",
+		price: "51.000",
 		currency: "COP",
-		period: "/año",
-		features: ["Mejor precio beneficio, mes a $51mil!", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
+		period: "/mes",
+		total_price: "620.000",
+		features: ["Mejor relación precio-beneficio", "Asiste todos los días", "Entrenamiento semipersonalizado", "Valoración mensual"],
 		is_featured: true,
 		featured_variant: "annual",
 		cta_label: "PAGAR AHORA",
@@ -78,7 +69,7 @@ const row2: PlanRow[] = [
 const plans = [...row1, ...row2];
 ---
 
-<Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $9.900 COP sin contrato ni permanencia. Mensual, quincenal y diario. Entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
+<Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $51.000/mes sin permanencia. Mensual, trimestral, semestral y anual con entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
 	<Fragment slot="head">
 		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
 	</Fragment>
@@ -106,7 +97,7 @@ const plans = [...row1, ...row2];
 				))}
 			</div>
 
-			<div class="plans-grid plans-grid--2">
+			<div class="plans-grid plans-grid--1">
 				{row2.map((plan) => (
 					<PlanCard
 						name={plan.name}
@@ -147,7 +138,7 @@ const plans = [...row1, ...row2];
 							<select id="signup-plan" name="plan" required>
 								<option value="" disabled>Selecciona un plan</option>
 								{plans.map(p => (
-									<option value={p.name}>{p.name} - ${p.price}</option>
+									<option value={p.name}>{p.name} — ${p.total_price ?? p.price}</option>
 								))}
 							</select>
 						</div>
@@ -233,6 +224,12 @@ const plans = [...row1, ...row2];
 	.plans-grid--2 {
 		grid-template-columns: repeat(2, 1fr);
 		max-width: 52rem;
+		margin: 0 auto;
+	}
+
+	.plans-grid--1 {
+		grid-template-columns: 1fr;
+		max-width: 30rem;
 		margin: 0 auto;
 	}
 
@@ -350,7 +347,8 @@ const plans = [...row1, ...row2];
 
 	@media (max-width: 768px) {
 		.plans-grid--3,
-		.plans-grid--2 {
+		.plans-grid--2,
+		.plans-grid--1 {
 			grid-template-columns: 1fr;
 			max-width: 28rem;
 		}
