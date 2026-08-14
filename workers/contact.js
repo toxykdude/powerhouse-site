@@ -16,7 +16,13 @@ export default {
 
     try {
       const data = await request.json();
-      const { name, phone, email, message, plan } = data;
+      const str = (v, max) =>
+        typeof v === "string" ? v.trim().slice(0, max) : "";
+      const name = str(data.name, 100);
+      const phone = str(data.phone, 30);
+      const email = str(data.email, 150);
+      const message = str(data.message, 2000);
+      const plan = str(data.plan, 50);
 
       // Validate required fields
       if (!name || !phone || !message) {

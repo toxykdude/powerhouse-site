@@ -134,7 +134,11 @@ WOMPI_INTEGRITY_SECRET=prod_integrity_...
 WOMPI_PRIVATE_KEY=prv_prod_...
 WOMPI_EVENTS_SECRET=prod_events_...
 WOMPI_API_URL=https://production.wompi.co/v1
+FACEGYM_API_URL=https://faceapp.powerhousegym.co
+FACEGYM_INTERNAL_API_KEY=<SECRET_KEY del backend FaceGYM>
 ```
+
+> `FACEGYM_INTERNAL_API_KEY` debe ser igual al `SECRET_KEY` del backend FaceGYM. El webhook la usa como header `X-API-Key` al consultar `pending-payment/{reference}`, y firma el body con HMAC-SHA256 (`X-Signature`) usando `WOMPI_INTEGRITY_SECRET` — ambos requeridos por FaceGYM desde el fix de free-membership.
 
 ---
 
