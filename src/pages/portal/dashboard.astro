@@ -451,7 +451,16 @@ function _daysUntil(dateString: string): number {
 	return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
-function showState(stateId: string): void {
+	function escapeHtml(value: unknown): string {
+		return String(value ?? '')
+			.replaceAll('&', '&amp;')
+			.replaceAll('<', '&lt;')
+			.replaceAll('>', '&gt;')
+			.replaceAll('"', '&quot;')
+			.replaceAll("'", '&#39;');
+	}
+
+	function showState(stateId: string): void {
 	['stateLoading', 'stateDashboard', 'stateError'].forEach((id) => {
 		const el = document.getElementById(id);
 		if (el) {
@@ -526,15 +535,15 @@ function renderDashboard(data: PortalMeResponse): void {
 		statusDetails.innerHTML = `
 			<div class="status-row">
 				<span class="status-row__label">Plan</span>
-				<span class="status-row__value">${data.active_membership.plan_name || '—'}</span>
+				<span class="status-row__value">${escapeHtml(data.active_membership.plan_name || '—')}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Vencimiento</span>
-				<span class="status-row__value">${formatDate(data.active_membership.end_date)}</span>
+				<span class="status-row__value">${escapeHtml(formatDate(data.active_membership.end_date))}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Días restantes</span>
-				<span class="status-row__value status-row__value--countdown">${remaining} días</span>
+				<span class="status-row__value status-row__value--countdown">${escapeHtml(remaining)} días</span>
 			</div>
 		`;
 	} else {
@@ -543,11 +552,11 @@ function renderDashboard(data: PortalMeResponse): void {
 		statusDetails.innerHTML = `
 			<div class="status-row">
 				<span class="status-row__label">Plan anterior</span>
-				<span class="status-row__value">${data.active_membership.plan_name || '—'}</span>
+				<span class="status-row__value">${escapeHtml(data.active_membership.plan_name || '—')}</span>
 			</div>
 			<div class="status-row">
 				<span class="status-row__label">Venció el</span>
-				<span class="status-row__value">${formatDate(data.active_membership.end_date)}</span>
+				<span class="status-row__value">${escapeHtml(formatDate(data.active_membership.end_date))}</span>
 			</div>
 		`;
 	}
@@ -557,19 +566,19 @@ function renderDashboard(data: PortalMeResponse): void {
 		membershipInfo.innerHTML = `
 			<div class="membership-row">
 				<span class="membership-row__label">Plan</span>
-				<span class="membership-row__value">${data.active_membership.plan_name || '—'}</span>
+				<span class="membership-row__value">${escapeHtml(data.active_membership.plan_name || '—')}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Inicio</span>
-				<span class="membership-row__value">${formatDate(data.active_membership.start_date)}</span>
+				<span class="membership-row__value">${escapeHtml(formatDate(data.active_membership.start_date))}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Fin</span>
-				<span class="membership-row__value">${formatDate(data.active_membership.end_date)}</span>
+				<span class="membership-row__value">${escapeHtml(formatDate(data.active_membership.end_date))}</span>
 			</div>
 			<div class="membership-row">
 				<span class="membership-row__label">Precio pagado</span>
-				<span class="membership-row__value membership-row__value--price">${formatCOP(data.active_membership.price)}</span>
+				<span class="membership-row__value membership-row__value--price">${escapeHtml(formatCOP(data.active_membership.price))}</span>
 			</div>
 		`;
 	} else {
@@ -583,10 +592,10 @@ function renderDashboard(data: PortalMeResponse): void {
 		const rows = data.recent_payments
 			.map((p) => `
 				<tr>
-					<td>${formatDate(p.transaction_date)}</td>
-					<td>${p.invoice_number || '—'}</td>
-					<td>${p.payment_method || '—'}</td>
-					<td>${formatCOP(p.amount)}</td>
+					<td>${escapeHtml(formatDate(p.transaction_date))}</td>
+					<td>${escapeHtml(p.invoice_number || '—')}</td>
+					<td>${escapeHtml(p.payment_method || '—')}</td>
+					<td>${escapeHtml(formatCOP(p.amount))}</td>
 				</tr>
 			`)
 			.join('');
