@@ -4,7 +4,7 @@
 
 interface Env {
   WOMPI_PRIVATE_KEY: string;
-  WOMPI_API_URL: string;
+  WOMPI_API_URL?: string;
 }
 
 export async function onRequestGet({
@@ -35,19 +35,31 @@ export async function onRequestGet({
       );
     }
 
-    const wompiApiUrl = (
-      env.WOMPI_API_URL || "https://production.wompi.co/v1"
-    ).replace(/\/$/, "");
+    // A malformed WOMPI_API_URL (typo'd host, bad scheme) makes the edge
+    // subrequest fail outside JS error handling — Cloudflare kills the
+    // invocation and serves its own 502 error page. Validate the value and
+    // fall back to the production Wompi API so a dashboard typo can't take
+    // the endpoint down.
+    let wompiApiUrl = "https://production.wompi.co/v1";
+    if (env.WOMPI_API_URL) {
+      try {
+        const parsed = new URL(env.WOMPI_API_URL);
+        if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+          wompiApiUrl = parsed.toString().replace(/\/+$/, "");
+        } else {
+          console.error(`Invalid WOMPI_API_URL protocol: ${parsed.protocol}`);
+        }
+      } catch {
+        console.error(`Invalid WOMPI_API_URL: ${env.WOMPI_API_URL}`);
+      }
+    }
 
-    const response = await fetch(
-      `${wompiApiUrl}/transactions/${transactionId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${env.WOMPI_PRIVATE_KEY}`,
-          "Content-Type": "application/json",
-        },
+    const response = await fetch(`${wompiApiUrl}/transactions/${transactionId}`, {
+      headers: {
+        Authorization: `Bearer ${env.WOMPI_PRIVATE_KEY}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
 
     if (!response.ok) {
       console.error(
