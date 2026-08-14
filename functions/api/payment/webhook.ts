@@ -3,7 +3,11 @@
 
 interface Env {
   WOMPI_EVENTS_SECRET: string;
+  // Same merchant integrity secret FaceGYM uses to verify X-Signature
+  WOMPI_INTEGRITY_SECRET?: string;
   FACEGYM_API_URL?: string;
+  // Backend SECRET_KEY — required by FaceGYM's internal endpoints
+  FACEGYM_INTERNAL_API_KEY?: string;
 }
 
 interface WompiTransaction {
@@ -31,6 +35,28 @@ async function sha256(message: string): Promise<string> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** HMAC-SHA256 of `message` keyed with `secret`, hex-encoded.
+ *  FaceGYM's /api/portal/webhook-renew requires this as the X-Signature
+ *  header, computed over the exact raw request body sent. */
+async function hmacSha256Hex(secret: string, message: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    encoder.encode(message),
+  );
+  return Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /** Parse the planId from a reference like PH-pt-brayan-molina-16-1719000000-abc123 */
@@ -86,7 +112,10 @@ Notificación automática desde el webhook de Wompi
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         personalizations: [{ to: [{ email: "gerencia@powerhousegym.co" }] }],
-        from: { email: "noreply@powerhousegym.co", name: "PowerHouse Gym Pagos" },
+        from: {
+          email: "noreply@powerhousegym.co",
+          name: "PowerHouse Gym Pagos",
+        },
         subject: `Pago confirmado: ${planDescription} — $${amountFormatted} COP`,
         content: [{ type: "text/plain", value: body }],
       }),
@@ -142,8 +171,18 @@ export async function onRequestPost({
 
       // Look up the pending payment by reference
       try {
+        const internalHeaders: Record<string, string> = {};
+        if (env.FACEGYM_INTERNAL_API_KEY) {
+          internalHeaders["X-API-Key"] = env.FACEGYM_INTERNAL_API_KEY;
+        } else {
+          console.error(
+            "FACEGYM_INTERNAL_API_KEY not set — pending-payment lookup will be rejected by FaceGYM",
+          );
+        }
+
         const lookupResponse = await fetch(
           `${facegymBase}/api/portal/pending-payment/${tx.reference}`,
+          { headers: internalHeaders },
         );
 
         if (!lookupResponse.ok) {
@@ -179,18 +218,35 @@ export async function onRequestPost({
         }
 
         // Activate membership in FaceGYM
+        // FaceGYM verifies X-Signature = HMAC-SHA256(integrity_secret, raw body)
+        const renewBody = JSON.stringify({
+          plan_id: pendingData.plan_id,
+          member_id: pendingData.member_id,
+          wompi_reference: tx.reference,
+          wompi_transaction_id: tx.id,
+          amount: pendingData.amount,
+        });
+
+        const renewHeaders: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (env.WOMPI_INTEGRITY_SECRET) {
+          renewHeaders["X-Signature"] = await hmacSha256Hex(
+            env.WOMPI_INTEGRITY_SECRET,
+            renewBody,
+          );
+        } else {
+          console.error(
+            "WOMPI_INTEGRITY_SECRET not set — webhook-renew will be rejected by FaceGYM",
+          );
+        }
+
         const renewResponse = await fetch(
           `${facegymBase}/api/portal/webhook-renew`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              plan_id: pendingData.plan_id,
-              member_id: pendingData.member_id,
-              wompi_reference: tx.reference,
-              wompi_transaction_id: tx.id,
-              amount: pendingData.amount,
-            }),
+            headers: renewHeaders,
+            body: renewBody,
           },
         );
 

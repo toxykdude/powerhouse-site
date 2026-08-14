@@ -12,6 +12,12 @@ const MOCK_ENV = {
   FACEGYM_API_URL: "https://test-api.example.com",
 };
 
+const MOCK_ENV_AUTH = {
+  ...MOCK_ENV,
+  WOMPI_INTEGRITY_SECRET: "test_integrity_secret_67890",
+  FACEGYM_INTERNAL_API_KEY: "test_internal_key",
+};
+
 function createWebhookRequest(event: unknown): Request {
   return new Request("https://powerhousegym.co/api/payment/webhook", {
     method: "POST",
@@ -222,7 +228,10 @@ describe("Wompi webhook handler", () => {
 
       // First call: lookup pending payment
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining("/api/portal/pending-payment/PH-1234567890-abc123"),
+        expect.stringContaining(
+          "/api/portal/pending-payment/PH-1234567890-abc123",
+        ),
+        expect.anything(),
       );
 
       // Second call: webhook-renew
@@ -248,6 +257,61 @@ describe("Wompi webhook handler", () => {
 
       // Still returns 200 to Wompi
       expect(response.status).toBe(200);
+    });
+
+    it("authenticates FaceGYM calls with X-API-Key and X-Signature", async () => {
+      const event = await buildValidEvent({ txId: "tx_auth" });
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            status: "found",
+            plan_id: "mensual",
+            member_id: "member_123",
+            amount: "69900",
+            wompi_reference: "PH-1234567890-abc123",
+          }),
+          { status: 200 },
+        ),
+      );
+      fetchSpy.mockResolvedValueOnce(
+        new Response(JSON.stringify({ status: "success" }), { status: 200 }),
+      );
+
+      await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(fetchSpy.mock.calls).toHaveLength(2);
+
+      type FetchInit = { headers: Record<string, string>; body: string };
+      const lookupInit = fetchSpy.mock.calls[0][1] as FetchInit;
+      const renewUrl = fetchSpy.mock.calls[1][0];
+      const renewInit = fetchSpy.mock.calls[1][1] as FetchInit;
+
+      // Lookup carries the internal API key FaceGYM requires
+      expect(lookupInit.headers["X-API-Key"]).toBe("test_internal_key");
+
+      // webhook-renew carries HMAC-SHA256(integrity_secret, body) as X-Signature
+      expect(String(renewUrl)).toContain("/api/portal/webhook-renew");
+      const enc = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(MOCK_ENV_AUTH.WOMPI_INTEGRITY_SECRET),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign"],
+      );
+      const expected = Array.from(
+        new Uint8Array(
+          await crypto.subtle.sign("HMAC", key, enc.encode(renewInit.body)),
+        ),
+      )
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      expect(renewInit.headers["X-Signature"]).toBe(expected);
     });
   });
 

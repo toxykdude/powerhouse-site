@@ -17,7 +17,9 @@ function createStatusRequest(id: string): Request {
   );
 }
 
-function createWompiTransactionResponse(overrides: Record<string, unknown> = {}) {
+function createWompiTransactionResponse(
+  overrides: Record<string, unknown> = {},
+) {
   return {
     data: {
       id: "tx_12345",
@@ -111,9 +113,11 @@ describe("Wompi transaction status endpoint", () => {
       expect(body.status).toBe("APPROVED");
       expect(body.amount_in_cents).toBe(6990000);
       expect(body.currency).toBe("COP");
-      expect(body.customer_email).toBe("test@example.com");
-      expect(body.customer_name).toBe("John Doe");
       expect(body.payment_method_type).toBe("CARD");
+      // PII must never be exposed on this unauthenticated endpoint
+      expect(body.customer_email).toBeUndefined();
+      expect(body.customer_name).toBeUndefined();
+      expect(body.payment_method_detail).toBeUndefined();
     });
 
     it("sends Bearer token to Wompi API", async () => {
@@ -154,7 +158,6 @@ describe("Wompi transaction status endpoint", () => {
       });
 
       const body = await response.json();
-      expect(body.customer_name).toBeNull();
       expect(body.payment_method_type).toBeNull();
     });
   });

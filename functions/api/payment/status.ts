@@ -69,6 +69,9 @@ export async function onRequestGet({
       );
     }
 
+    // Deliberately excludes customer PII (email, name, payment method
+    // details): this endpoint is unauthenticated and transaction IDs can
+    // leak via URLs, logs and referrers.
     return new Response(
       JSON.stringify({
         id: data.id,
@@ -76,10 +79,7 @@ export async function onRequestGet({
         amount_in_cents: data.amount_in_cents,
         currency: data.currency,
         reference: data.reference,
-        customer_email: data.customer_email,
-        customer_name: data.customer_data?.full_name || null,
         payment_method_type: data.payment_method?.type || null,
-        payment_method_detail: data.payment_method?.detail || null,
         created_at: data.created_at,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } },
