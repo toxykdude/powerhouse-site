@@ -59,6 +59,19 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler pages deploy dist --project-name powerhouse-site
 
+      - name: Ping IndexNow (Bing/Yandex instant indexing)
+        run: |
+          # Fetch every URL from the freshly deployed sitemap and submit to IndexNow.
+          # The key file public/<key>.txt is deployed with the site (keys are public by design).
+          KEY=$(basename dist/*.txt | grep -E '^[0-9a-f]{32}\.txt$' | sed 's/\.txt$//')
+          if [ -z "$KEY" ]; then echo "No IndexNow key found; skipping"; exit 0; fi
+          URLS=$(grep -o '<loc>[^<]*</loc>' dist/sitemap-0.xml | sed -e 's/<loc>//' -e 's/<\/loc>//')
+          JSON=$(node -e "const u=process.argv[1].split('\n').filter(Boolean);console.log(JSON.stringify({host:'powerhousegym.co',key:process.argv[2],keyLocation:'https://powerhousegym.co/'+process.argv[2]+'.txt',urlList:u}))" "$URLS" "$KEY")
+          CODE=$(curl -sS -o /dev/null -w "%{http_code}" -X POST https://api.indexnow.org/indexnow -H "Content-Type: application/json; charset=utf-8" --data-binary "$JSON")
+          echo "IndexNow response: $CODE"
+          # 200 = OK, 202 = accepted (queued); anything else is an error worth noticing but not failing the deploy
+          if [ "$CODE" != "200" ] && [ "$CODE" != "202" ]; then echo "::warning::IndexNow returned $CODE"; fi
+
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
