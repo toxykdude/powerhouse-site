@@ -28,4 +28,4 @@ Allow: /
 User-agent: meta-externalagent
 Allow: /
 
-Sitemap: https://powerhousegym.co/sitemap.xml
+Sitemap: https://powerhousegym.co/sitemap-index.xml
