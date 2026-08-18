@@ -64,9 +64,6 @@ const plans: PlanRow[] = [
 ---
 
 <Base title="Planes y Membresías" description="Planes de gimnasio en Manizales desde $51.000/mes sin permanencia. Mensual, trimestral, semestral y anual con entrenamiento semipersonalizado incluido. ¡Inscríbete hoy!">
-	<Fragment slot="head">
-		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
-	</Fragment>
 
 	<div class="planes-page">
 		<div class="planes-page__hero">
@@ -354,80 +351,14 @@ const plans: PlanRow[] = [
 </script>
 
 <script>
-	// Wompi Widget payment handler
-	declare global {
-		interface Window {
-			WidgetCheckout: new (config: {
-				currency: string;
-				amountInCents: number;
-				reference: string;
-				publicKey: string;
-				signature: { integrity: string };
-				redirectUrl?: string;
-			}) => {
-				open: (callback: (result: { transaction: { id: string } }) => void) => void;
-			};
-		}
-	}
-
-	interface SignatureResponse {
-		reference: string;
-		signature: string;
-		amountInCents: number;
-		currency: string;
-		publicKey: string;
-		planName: string;
-	}
-
+	// Guest checkout CTA — gym plans route to /comprar where identity is
+	// captured and the pending record is stored before the Wompi widget
+	// opens. No amounts are authored here.
 	document.querySelectorAll<HTMLButtonElement>('[data-plan-id]').forEach((button) => {
-		button.addEventListener('click', async () => {
+		button.addEventListener('click', () => {
 			const planId = button.dataset.planId;
 			if (!planId) return;
-
-			const originalLabel = button.textContent || 'PAGAR AHORA';
-			button.disabled = true;
-			button.textContent = 'PROCESANDO...';
-
-			try {
-				const response = await fetch('/api/payment/signature', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ plan: planId }),
-				});
-
-				if (!response.ok) {
-					const errorData = await response.json();
-					throw new Error(errorData.error || 'Error al procesar el pago');
-				}
-
-				const data: SignatureResponse = await response.json();
-
-				const WidgetCheckout = window.WidgetCheckout;
-				if (!WidgetCheckout) {
-					throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
-				}
-
-				const checkout = new WidgetCheckout({
-					currency: data.currency,
-					amountInCents: data.amountInCents,
-					reference: data.reference,
-					publicKey: data.publicKey,
-					signature: { integrity: data.signature },
-					redirectUrl: 'https://powerhousegym.co/pago/confirmacion',
-				});
-
-				checkout.open((result) => {
-					const tx = result.transaction;
-					if (tx?.id) {
-						window.location.href = '/pago/confirmacion?id=' + tx.id;
-					}
-				});
-			} catch (err) {
-				const message = err instanceof Error ? err.message : 'Error desconocido';
-				alert(message);
-				button.disabled = false;
-				button.textContent = originalLabel;
-			}
+			window.location.href = '/comprar?plan=' + encodeURIComponent(planId);
 		});
 	});
 </script>

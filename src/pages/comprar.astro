@@ -1,0 +1,443 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+	title="Comprar Membresía"
+	description="Compra tu membresía de PowerHouse Gym Manizales en línea con Wompi. Mensual, trimestral, semestral y anual."
+>
+	<Fragment slot="head">
+		<script is:inline src="https://checkout.wompi.co/widget.js" defer></script>
+	</Fragment>
+
+	<div class="guest-page">
+		<div class="guest-card">
+			<!-- Refusal state: plan not guest-purchasable (PT / unknown) -->
+			<div class="guest-state guest-state--hidden" id="stateRefusal">
+				<div class="guest-state__icon">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="10"/>
+						<line x1="12" y1="8" x2="12" y2="12"/>
+						<line x1="12" y1="16" x2="12.01" y2="16"/>
+					</svg>
+				</div>
+				<h2>COMPRA EN LÍNEA NO DISPONIBLE</h2>
+				<p>
+					Este plan no está disponible para compra en línea.
+					Las membresías con entrenador personal se gestionan directamente con nuestro equipo.
+				</p>
+				<a href="https://wa.me/573154711900?text=Hola%20PowerHouse!%20Quiero%20informaci%C3%B3n%20de%20los%20planes%20con%20entrenador." target="_blank" rel="noopener noreferrer" class="guest-btn guest-btn--gold">
+					CONTACTAR POR WHATSAPP
+				</a>
+				<a href="/planes" class="guest-btn guest-btn--outline">VER PLANES DEL GYM</a>
+			</div>
+
+			<!-- Checkout state: identity form -->
+			<div class="guest-state" id="stateCheckout">
+				<h1 id="planTitle" class="guest-title">COMPLETA TUS DATOS</h1>
+				<p class="guest-subtitle">
+					Plan seleccionado: <strong id="planName"></strong> — <span id="planPrice"></span>
+				</p>
+				<p class="guest-note">
+					Al aprobarse tu pago queda registrado. Activa tu membresía en el gimnasio completando tu registro facial.
+				</p>
+
+				<form id="guestForm" class="guest-form" novalidate>
+					<label class="guest-field">
+						<span class="guest-field__label">Nombre completo</span>
+						<input type="text" id="guestName" name="guest_name" autocomplete="name" maxlength="200" required />
+					</label>
+					<label class="guest-field">
+						<span class="guest-field__label">Celular</span>
+						<input type="tel" id="guestPhone" name="guest_phone" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="30" required />
+					</label>
+					<label class="guest-field">
+						<span class="guest-field__label">Email</span>
+						<input type="email" id="guestEmail" name="guest_email" autocomplete="email" maxlength="200" required />
+					</label>
+					<p class="guest-error guest-error--hidden" id="formError" role="alert"></p>
+					<button type="submit" class="guest-btn guest-btn--gold" id="payButton">
+						PAGAR AHORA
+					</button>
+				</form>
+
+				<p class="guest-fineprint">
+					Tu celular y email se usan para vincular tu membresía. El reconocimiento facial se registra en el gimnasio.
+				</p>
+			</div>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.guest-page {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 8rem 1.5rem 4rem;
+		background: var(--brand-black);
+	}
+
+	.guest-card {
+		max-width: 30rem;
+		width: 100%;
+		background: #0a0a0a;
+		border: 1px solid rgba(232, 200, 50, 0.2);
+		padding: 3rem;
+	}
+
+	.guest-state {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.guest-state--hidden {
+		display: none !important;
+	}
+
+	.guest-state__icon {
+		color: var(--brand-gold);
+		display: flex;
+		justify-content: center;
+	}
+
+	.guest-state h2,
+	.guest-title {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 4vw, 2.25rem);
+		color: var(--brand-gold);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		text-align: center;
+	}
+
+	.guest-state p,
+	.guest-subtitle,
+	.guest-note,
+	.guest-fineprint {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		color: rgba(240, 237, 232, 0.6);
+		line-height: 1.6;
+		text-align: center;
+	}
+
+	.guest-note {
+		color: var(--brand-gold);
+	}
+
+	.guest-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin-top: 0.5rem;
+	}
+
+	.guest-field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		text-align: left;
+	}
+
+	.guest-field__label {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: rgba(240, 237, 232, 0.5);
+	}
+
+	.guest-field input {
+		background: var(--brand-black);
+		border: 1px solid rgba(232, 200, 50, 0.25);
+		color: var(--brand-white);
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		padding: 0.85rem 1rem;
+		outline: none;
+	}
+
+	.guest-field input:focus {
+		border-color: var(--brand-gold);
+	}
+
+	.guest-error {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--brand-red);
+		text-align: center;
+	}
+
+	.guest-error--hidden {
+		display: none;
+	}
+
+	.guest-btn {
+		display: block;
+		width: 100%;
+		padding: 1rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		text-align: center;
+		margin-top: 0.5rem;
+	}
+
+	.guest-btn--gold {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.guest-btn--gold:hover {
+		background: var(--brand-white);
+	}
+
+	.guest-btn--outline {
+		background: transparent;
+		color: var(--brand-gold);
+		border: 2px solid var(--brand-gold);
+	}
+
+	.guest-btn--outline:hover {
+		background: var(--brand-gold);
+		color: var(--brand-black);
+	}
+
+	.guest-btn:disabled {
+		opacity: 0.6;
+		cursor: wait;
+	}
+
+	.guest-fineprint {
+		font-size: 0.72rem;
+		color: rgba(240, 237, 232, 0.35);
+	}
+
+	@media (max-width: 768px) {
+		.guest-page {
+			padding: 7rem 1rem 3rem;
+		}
+
+		.guest-card {
+			padding: 2rem;
+		}
+	}
+</style>
+
+<script>
+	declare global {
+		interface Window {
+			WidgetCheckout: new (config: {
+				currency: string;
+				amountInCents: number;
+				reference: string;
+				publicKey: string;
+				signature: { integrity: string };
+				redirectUrl?: string;
+			}) => {
+				open: (callback: (result: { transaction: { id: string } }) => void) => void;
+			};
+		}
+	}
+
+	interface SignatureResponse {
+		reference: string;
+		signature: string;
+		amountInCents: number;
+		currency: string;
+		publicKey: string;
+		planName: string;
+		/** FaceGYM plan id — present only for the 4 gym plans (design D7). */
+		facegymPlanId?: string;
+	}
+
+	// Display-only catalogue. Amounts are display text: the authoritative
+	// amount always comes from the signature endpoint (server-authored).
+	const GUEST_PLANS: Record<string, { name: string; price: string }> = {
+		mensual: { name: 'Membresía Mensual', price: '$69.900 /mes' },
+		trimestral: { name: 'Plan Trimestral', price: '$195.000 /trimestre' },
+		semestral: { name: 'Plan Semestral', price: '$375.000 /semestre' },
+		anual: { name: 'Plan Anual', price: '$620.000 /año' },
+	};
+
+	function escapeHtml(value: unknown): string {
+		return String(value ?? '')
+			.replaceAll('&', '&amp;')
+			.replaceAll('<', '&lt;')
+			.replaceAll('>', '&gt;')
+			.replaceAll('"', '&quot;')
+			.replaceAll("'", '&#39;');
+	}
+
+	function showState(stateId: string): void {
+		['stateCheckout', 'stateRefusal'].forEach((id) => {
+			const el = document.getElementById(id);
+			if (el) el.classList.toggle('guest-state--hidden', id !== stateId);
+		});
+	}
+
+	function showError(message: string): void {
+		const errEl = document.getElementById('formError');
+		if (errEl) {
+			errEl.textContent = message;
+			errEl.classList.remove('guest-error--hidden');
+		}
+	}
+
+	function hideError(): void {
+		const errEl = document.getElementById('formError');
+		if (errEl) errEl.classList.add('guest-error--hidden');
+	}
+
+	/** Normalize a Colombian mobile for submission: 10 digits, or 57 + 10.
+	 *  Returns the digit string or null when it cannot be a valid mobile. */
+	function normalizePhone(raw: string): string | null {
+		const digits = raw.replace(/\D/g, '');
+		if (/^\d{10}$/.test(digits)) return digits;
+		if (/^57\d{10}$/.test(digits)) return digits;
+		return null;
+	}
+
+	function validateEmail(raw: string): boolean {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw);
+	}
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const planSlug = (urlParams.get('plan') ?? '').trim();
+
+	// PT plans and anything unknown are not guest-purchasable: manual staff
+	// path only (guest-purchase spec: "PT plan is not guest-purchasable").
+	if (planSlug.startsWith('pt-') || !GUEST_PLANS[planSlug]) {
+		showState('stateRefusal');
+	} else {
+		const plan = GUEST_PLANS[planSlug];
+		const nameEl = document.getElementById('planName');
+		const priceEl = document.getElementById('planPrice');
+		if (nameEl) nameEl.textContent = plan.name;
+		if (priceEl) priceEl.textContent = plan.price;
+		document.title = `Comprar — ${plan.name} | PowerHouse Gym`;
+	}
+
+	document.getElementById('guestForm')?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		hideError();
+
+		if (planSlug.startsWith('pt-') || !GUEST_PLANS[planSlug]) {
+			showState('stateRefusal');
+			return;
+		}
+
+		const form = e.currentTarget as HTMLFormElement;
+		const name = (form.querySelector('#guestName') as HTMLInputElement).value.trim();
+		const phoneRaw = (form.querySelector('#guestPhone') as HTMLInputElement).value.trim();
+		const email = (form.querySelector('#guestEmail') as HTMLInputElement).value.trim();
+
+		if (name.length < 2) {
+			showError('Escribe tu nombre completo.');
+			return;
+		}
+		const phone = normalizePhone(phoneRaw);
+		if (!phone) {
+			showError('El celular debe ser un móvil colombiano (10 dígitos, o 57 + 10).');
+			return;
+		}
+		if (!validateEmail(email)) {
+			showError('Escribe un email válido.');
+			return;
+		}
+
+		const button = document.getElementById('payButton') as HTMLButtonElement | null;
+		const originalLabel = button?.textContent ?? 'PAGAR AHORA';
+		if (button) {
+			button.disabled = true;
+			button.textContent = 'PROCESANDO...';
+		}
+
+		try {
+			// 1. Server-authored amount + reference (no client amounts anywhere).
+			const sigResponse = await fetch('/api/payment/signature', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ plan: planSlug }),
+			});
+
+			if (!sigResponse.ok) {
+				const errData = await sigResponse.json().catch(() => ({}));
+				throw new Error(errData.error || 'Error al procesar el pago');
+			}
+
+			const sigData: SignatureResponse = await sigResponse.json();
+
+			// 2. Gym plans only: without the FaceGYM plan id there is nothing
+			//    to bind the purchase to — refuse instead of paying blind.
+			if (!sigData.facegymPlanId) {
+				showState('stateRefusal');
+				return;
+			}
+
+			// 3. Store the guest pending record BEFORE opening Wompi, so the
+			//    webhook can provision Member+Membership+Sale even if this
+			//    tab never comes back. Must succeed — without the pending
+			//    record an approved payment would fall to the manual path.
+			const pendingResponse = await fetch('/api/portal/pending-payment-guest', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					wompi_reference: sigData.reference,
+					guest_name: name,
+					guest_phone: phone,
+					guest_email: email,
+					plan_id: sigData.facegymPlanId,
+				}),
+			});
+
+			if (!pendingResponse.ok) {
+				const errData = await pendingResponse.json().catch(() => ({}));
+				const detail = Array.isArray(errData.detail)
+					? errData.detail[0]?.msg
+					: errData.detail;
+				throw new Error(detail || 'No pudimos registrar tus datos. Verifícalos e intenta de nuevo.');
+			}
+
+			// 4. Open the Wompi widget with the server-signed reference.
+			const WidgetCheckout = window.WidgetCheckout;
+			if (!WidgetCheckout) {
+				throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
+			}
+
+			const checkout = new WidgetCheckout({
+				currency: sigData.currency,
+				amountInCents: sigData.amountInCents,
+				reference: sigData.reference,
+				publicKey: sigData.publicKey,
+				signature: { integrity: sigData.signature },
+				redirectUrl: 'https://powerhousegym.co/pago/confirmacion',
+			});
+
+			checkout.open((result) => {
+				const tx = result.transaction;
+				if (tx?.id) {
+					window.location.href = '/pago/confirmacion?id=' + encodeURIComponent(tx.id);
+				} else if (button) {
+					button.disabled = false;
+					button.textContent = originalLabel;
+				}
+			});
+		} catch (err) {
+			const message = err instanceof Error ? err.message : 'Error desconocido';
+			showError(message);
+			if (button) {
+				button.disabled = false;
+				button.textContent = originalLabel;
+			}
+		}
+	});
+</script>
