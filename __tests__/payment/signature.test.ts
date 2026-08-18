@@ -163,6 +163,85 @@ describe("plan validation", () => {
 });
 
 // ---------------------------------------------------------------------------
+// facegymPlanId — D7 single-source plan encoding (gym plans only)
+// ---------------------------------------------------------------------------
+
+const EXPECTED_FACEGYM_PLAN_IDS: Record<string, string> = {
+  mensual: "45d96de3-a086-427a-9a8a-44351abb6423",
+  trimestral: "dab31efd-aff9-4554-99d5-40f255af7734",
+  semestral: "6ec2b4c7-1d89-4625-9402-d78cc22ff4b5",
+  anual: "dbf0f5a4-cabb-4c73-991e-3e8b694282bf",
+};
+
+describe("facegymPlanId (D7)", () => {
+  it.each(Object.entries(EXPECTED_FACEGYM_PLAN_IDS))(
+    'gym plan "%s" responds with its FaceGYM plan id',
+    async (planId, expectedFacegymId) => {
+      const response = await onRequestPost({
+        request: createRequest({ plan: planId }),
+        env: MOCK_ENV,
+      });
+
+      expect(response.status).toBe(200);
+
+      const body = (await response.json()) as { facegymPlanId?: string };
+      expect(body.facegymPlanId).toBe(expectedFacegymId);
+    },
+  );
+
+  it.each([
+    "pt-esteban-morales-12",
+    "pt-harold-giraldo-16",
+    "pt-brayan-molina-20",
+  ])('PT plan "%s" responds WITHOUT facegymPlanId (not guest-provisionable)', async (planId) => {
+    const response = await onRequestPost({
+      request: createRequest({ plan: planId }),
+      env: MOCK_ENV,
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = (await response.json()) as { facegymPlanId?: string };
+    expect(body.facegymPlanId).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Server-originated amounts — client-sent amount is discarded (payment-integrity)
+// ---------------------------------------------------------------------------
+
+describe("server-originated amounts", () => {
+  it("client-sent amount is ignored", async () => {
+    const response = await onRequestPost({
+      request: createRequest({
+        plan: "mensual",
+        amountInCents: 100,
+        amount: 1,
+        amount_in_cents: 100,
+      }),
+      env: MOCK_ENV,
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = (await response.json()) as { amountInCents: number };
+    // The plan table is the only authoritative source — the smuggled
+    // client values (100 cents / $1) must not leak into the response.
+    expect(body.amountInCents).toBe(6990000);
+  });
+
+  it("never leaks the integrity secret into the response", async () => {
+    const response = await onRequestPost({
+      request: createRequest({ plan: "mensual" }),
+      env: MOCK_ENV,
+    });
+
+    const raw = await response.text();
+    expect(raw).not.toContain(MOCK_ENV.WOMPI_INTEGRITY_SECRET);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onRequestPost — full handler integration
 // ---------------------------------------------------------------------------
 
