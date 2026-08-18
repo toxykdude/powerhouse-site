@@ -6,30 +6,43 @@ interface Env {
   WOMPI_INTEGRITY_SECRET: string;
 }
 
-interface PlanConfig {
+export interface PlanConfig {
   name: string;
   amountInCents: number;
   currency: string;
+  /** FaceGYM membership_plans.id for the 4 gym plans (design D7).
+   *  Single Pages-side source of truth — renovar/comprar consume it from
+   *  this endpoint's response instead of hardcoding UUIDs. PT plans have
+   *  no facegymId: they are staff-managed, never guest-provisioned. */
+  facegymId?: string;
 }
 
 // Plan data — must match planes.astro exactly
-const PLANS: Record<string, PlanConfig> = {
+export const PLANS: Record<string, PlanConfig> = {
   mensual: {
     name: "Membresía Mensual",
     amountInCents: 6990000,
     currency: "COP",
+    facegymId: "45d96de3-a086-427a-9a8a-44351abb6423",
   },
   trimestral: {
     name: "Plan Trimestral",
     amountInCents: 19500000,
     currency: "COP",
+    facegymId: "dab31efd-aff9-4554-99d5-40f255af7734",
   },
   semestral: {
     name: "Plan Semestral",
     amountInCents: 37500000,
     currency: "COP",
+    facegymId: "6ec2b4c7-1d89-4625-9402-d78cc22ff4b5",
   },
-  anual: { name: "Plan Anual", amountInCents: 62000000, currency: "COP" },
+  anual: {
+    name: "Plan Anual",
+    amountInCents: 62000000,
+    currency: "COP",
+    facegymId: "dbf0f5a4-cabb-4c73-991e-3e8b694282bf",
+  },
 
   // Trainer personal-training plans — amounts MUST match trainers.ts buildPricing totals exactly.
   // Each amountInCents is the displayed total (PT + $69.900 membership) × 100.
@@ -108,6 +121,7 @@ export async function onRequestPost({
         currency: plan.currency,
         publicKey: env.WOMPI_PUBLIC_KEY,
         planName: plan.name,
+        facegymPlanId: plan.facegymId,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
