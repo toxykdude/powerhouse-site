@@ -135,10 +135,12 @@ WOMPI_PRIVATE_KEY=prv_prod_...
 WOMPI_EVENTS_SECRET=prod_events_...
 WOMPI_API_URL=https://production.wompi.co/v1
 FACEGYM_API_URL=https://faceapp.powerhousegym.co
-FACEGYM_INTERNAL_API_KEY=<SECRET_KEY del backend FaceGYM>
+FACEGYM_PORTAL_INTERNAL_KEY=<PORTAL_INTERNAL_API_KEY del backend FaceGYM>
 ```
 
-> `FACEGYM_INTERNAL_API_KEY` debe ser igual al `SECRET_KEY` del backend FaceGYM. El webhook la usa como header `X-API-Key` al consultar `pending-payment/{reference}`, y firma el body con HMAC-SHA256 (`X-Signature`) usando `WOMPI_INTEGRITY_SECRET` — ambos requeridos por FaceGYM desde el fix de free-membership.
+> `FACEGYM_PORTAL_INTERNAL_KEY` debe ser igual al `PORTAL_INTERNAL_API_KEY` del backend FaceGYM (clave dedicada de solo-lectura de pagos pendientes, diseño WS-1/D2). El webhook la usa como header `X-API-Key` al consultar `pending-payment/{reference}`. Si falta, el relay falla cerrado: no consulta ni reenvía nada (Wompi sigue recibiendo 200). La firma del body usa HMAC-SHA256 (`X-Signature`) con `WOMPI_INTEGRITY_SECRET`.
+>
+> `FACEGYM_INTERNAL_API_KEY` (el `SECRET_KEY` global del backend) quedó **deprecado y eliminado**: FaceGYM ya no lo acepta para lecturas de pagos pendientes — una fuga del SECRET_KEY no debe exponer referencias de pago. Elimínalo del dashboard de Cloudflare al provisionar la clave nueva.
 
 ---
 
