@@ -40,3 +40,8 @@
 /david_vanegas                  /entrenadores/  301
 /author/n8nagent/               /               301
 /search/*                       /               301
+
+# Catch-alls for remaining WordPress-era paths (categories, plan variants)
+# Specific rules above win; these only catch yet-unknown legacy subpaths.
+/General/*                      /blog/          301
+/planes/*                       /planes/        301
