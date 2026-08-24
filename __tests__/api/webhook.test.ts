@@ -12,10 +12,35 @@ const MOCK_ENV = {
   FACEGYM_API_URL: "https://test-api.example.com",
 };
 
+// Env with everything the relay needs after the D2/D8 rework: the
+// dedicated pending-read key (FACEGYM_PORTAL_INTERNAL_KEY, must equal the
+// backend PORTAL_INTERNAL_API_KEY) and the HMAC secret for webhook-renew.
 const MOCK_ENV_AUTH = {
   ...MOCK_ENV,
   WOMPI_INTEGRITY_SECRET: "test_integrity_secret_67890",
-  FACEGYM_INTERNAL_API_KEY: "test_internal_key",
+  FACEGYM_PORTAL_INTERNAL_KEY: "test_portal_internal_key",
+};
+
+const GYM_REF = "PH-mensual-1719000000-abc123";
+const PT_REF = "PH-pt-brayan-molina-16-1719000000-abc123";
+
+const MEMBER_PENDING = {
+  status: "found",
+  plan_id: "45d96de3-a086-427a-9a8a-44351abb6423",
+  member_id: "member_123",
+  amount: "69900.00",
+  wompi_reference: GYM_REF,
+};
+
+const GUEST_PENDING = {
+  status: "found",
+  plan_id: "45d96de3-a086-427a-9a8a-44351abb6423",
+  member_id: null,
+  guest_name: "Maria Perez",
+  guest_phone: "573001234567",
+  guest_email: "maria@example.com",
+  amount: "69900.00",
+  wompi_reference: GYM_REF,
 };
 
 function createWebhookRequest(event: unknown): Request {
@@ -39,11 +64,15 @@ async function buildValidEvent(overrides?: {
   txStatus?: string;
   amountInCents?: number;
   eventType?: string;
+  reference?: string;
+  currency?: string;
 }) {
   const txId = overrides?.txId ?? "12345";
   const txStatus = overrides?.txStatus ?? "APPROVED";
   const amountInCents = overrides?.amountInCents ?? 6990000;
   const eventType = overrides?.eventType ?? "transaction.updated";
+  const reference = overrides?.reference ?? GYM_REF;
+  const currency = overrides?.currency ?? "COP";
 
   const integrityString = `${txId}${txStatus}${amountInCents}${MOCK_EVENTS_SECRET}`;
   const checksum = await sha256(integrityString);
@@ -57,11 +86,40 @@ async function buildValidEvent(overrides?: {
         id: txId,
         status: txStatus,
         amount_in_cents: amountInCents,
-        reference: "PH-1234567890-abc123",
+        reference,
+        currency,
       },
     },
     signature: { checksum },
   };
+}
+
+/** Mock fetch for: [pending lookup, webhook-renew] — both OK. */
+function mockHappyBackendPath(pending: unknown = MEMBER_PENDING) {
+  const fetchSpy = vi.spyOn(globalThis, "fetch");
+  fetchSpy.mockResolvedValueOnce(
+    new Response(JSON.stringify(pending), { status: 200 }),
+  );
+  fetchSpy.mockResolvedValueOnce(
+    new Response(JSON.stringify({ status: "success" }), { status: 200 }),
+  );
+  return fetchSpy;
+}
+
+/** Structural view of a vi fetch spy — just what the helpers need. */
+type FetchSpy = { mock: { calls: unknown[][] } };
+
+function callsTo(spy: FetchSpy, urlSubstring: string): unknown[][] {
+  return spy.mock.calls.filter((call) =>
+    String(call[0]).includes(urlSubstring),
+  );
+}
+
+function renewBodies(spy: FetchSpy): Record<string, unknown>[] {
+  return callsTo(spy, "/api/portal/webhook-renew").map(
+    (call) =>
+      JSON.parse((call[1] as { body: string }).body) as Record<string, unknown>,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -186,63 +244,208 @@ describe("Wompi webhook handler", () => {
     });
   });
 
-  // --- Approved transaction processing ---
+  // --- Relay amount and currency verification (payment-integrity, D8) ---
 
-  describe("approved transaction processing", () => {
-    it("calls FaceGYM to activate membership on APPROVED", async () => {
+  describe("relay amount and currency gate (gym plans)", () => {
+    it("matching amount is forwarded with amount_in_cents", async () => {
       const event = await buildValidEvent({
-        txId: "tx_999",
-        txStatus: "APPROVED",
+        txId: "tx_match",
         amountInCents: 6990000,
-        eventType: "transaction.updated",
+      });
+      const fetchSpy = mockHappyBackendPath();
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
       });
 
-      // Mock: pending payment lookup
-      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            status: "found",
-            plan_id: "mensual",
-            member_id: "member_123",
-            amount: "6990000",
-            wompi_reference: "PH-1234567890-abc123",
-          }),
-          { status: 200 },
-        ),
-      );
+      expect(response.status).toBe(200);
+      expect(callsTo(fetchSpy, "/api/portal/webhook-renew")).toHaveLength(1);
 
-      // Mock: webhook-renew call
-      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      const body = renewBodies(fetchSpy)[0];
+      expect(body.amount_in_cents).toBe(6990000);
+      expect(body.wompi_reference).toBe(GYM_REF);
+      expect(body.wompi_transaction_id).toBe("tx_match");
+      expect(body.member_id).toBe("member_123");
+    });
+
+    it("overpayment is forwarded", async () => {
+      const event = await buildValidEvent({
+        txId: "tx_over",
+        amountInCents: 7990000,
+      });
+      const fetchSpy = mockHappyBackendPath();
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(response.status).toBe(200);
+      const bodies = renewBodies(fetchSpy);
+      expect(bodies).toHaveLength(1);
+      expect(bodies[0].amount_in_cents).toBe(7990000);
+    });
+
+    it("underpayment is blocked before forwarding", async () => {
+      const event = await buildValidEvent({
+        amountInCents: 6989999, // 1 cent below the mensual plan price
+      });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      // Wompi still gets its 200 — no retries
+      expect(response.status).toBe(200);
+      // But nothing reaches FaceGYM: no pending lookup, no renewal
+      expect(callsTo(fetchSpy, "/api/portal/")).toHaveLength(0);
+      // A staff alert IS emitted
+      expect(callsTo(fetchSpy, "api.mailchannels.net")).toHaveLength(1);
+    });
+
+    it("currency mismatch is blocked", async () => {
+      const event = await buildValidEvent({
+        amountInCents: 6990000,
+        currency: "USD",
+      });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(response.status).toBe(200);
+      expect(callsTo(fetchSpy, "/api/portal/")).toHaveLength(0);
+      expect(callsTo(fetchSpy, "api.mailchannels.net")).toHaveLength(1);
+    });
+
+    it("missing currency is treated as a mismatch and blocked", async () => {
+      const event = await buildValidEvent({ amountInCents: 6990000 });
+      delete (event.data.transaction as { currency?: string }).currency;
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(response.status).toBe(200);
+      expect(callsTo(fetchSpy, "/api/portal/")).toHaveLength(0);
+      expect(callsTo(fetchSpy, "api.mailchannels.net")).toHaveLength(1);
+    });
+  });
+
+  // --- Guest pending records (D8: identity never travels in the body) ---
+
+  describe("guest pending payment", () => {
+    it("forwards a guest pending without member_id or identity fields", async () => {
+      const event = await buildValidEvent({ txId: "tx_guest" });
+      const fetchSpy = mockHappyBackendPath(GUEST_PENDING);
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(response.status).toBe(200);
+      const bodies = renewBodies(fetchSpy);
+      expect(bodies).toHaveLength(1);
+
+      const body = bodies[0];
+      // The renewal carries the payment facts…
+      expect(body.amount_in_cents).toBe(6990000);
+      expect(body.wompi_reference).toBe(GYM_REF);
+      expect(body.wompi_transaction_id).toBe("tx_guest");
+      expect(body.plan_id).toBe(GUEST_PENDING.plan_id);
+      // …but guest identity NEVER travels in the body (backend reads Redis)
+      expect("member_id" in body).toBe(false);
+      expect("guest_name" in body).toBe(false);
+      expect("guest_phone" in body).toBe(false);
+      expect("guest_email" in body).toBe(false);
+      // Raw body must not leak identity either
+      const rawBody = String(
+        callsTo(fetchSpy, "/api/portal/webhook-renew")[0][1],
+      );
+      expect(rawBody).not.toContain("Maria");
+      expect(rawBody).not.toContain("573001234567");
+      expect(rawBody).not.toContain("maria@example.com");
+    });
+  });
+
+  // --- Internal pending key (D2) ---
+
+  describe("internal pending key", () => {
+    it("authenticates the pending lookup with FACEGYM_PORTAL_INTERNAL_KEY", async () => {
+      const event = await buildValidEvent({ txId: "tx_key" });
+      const fetchSpy = mockHappyBackendPath();
+
+      await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV_AUTH,
+      });
+
+      expect(fetchSpy.mock.calls).toHaveLength(2);
+
+      type FetchInit = { headers: Record<string, string> };
+      const lookupInit = fetchSpy.mock.calls[0][1] as FetchInit;
+      expect(String(fetchSpy.mock.calls[0][0])).toContain(
+        "/api/portal/pending-payment/",
+      );
+      expect(lookupInit.headers["X-API-Key"]).toBe("test_portal_internal_key");
+    });
+
+    it("fails closed (200, no forward) when the key is not configured", async () => {
+      const event = await buildValidEvent();
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: MOCK_ENV, // no FACEGYM_PORTAL_INTERNAL_KEY
+      });
+
+      expect(response.status).toBe(200);
+      // Fail-closed: no lookup, no renewal, no alert email — nothing
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  // --- PT plans stay on the manual staff path ---
+
+  describe("PT plans (manual staff path)", () => {
+    it("sends the staff notification and does not forward", async () => {
+      const event = await buildValidEvent({
+        txId: "tx_pt",
+        reference: PT_REF,
+        amountInCents: 44990000,
+      });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      // Backend has no pending record for PT purchases → 200 not_found
+      fetchSpy.mockResolvedValueOnce(
         new Response(
-          JSON.stringify({ success: true, member_id: "member_123" }),
+          JSON.stringify({ status: "not_found", reference: PT_REF }),
           { status: 200 },
         ),
       );
 
       const response = await onRequestPost({
         request: createWebhookRequest(event),
-        env: MOCK_ENV,
+        env: MOCK_ENV_AUTH,
       });
 
       expect(response.status).toBe(200);
-
-      // First call: lookup pending payment
-      expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          "/api/portal/pending-payment/PH-1234567890-abc123",
-        ),
-        expect.anything(),
-      );
-
-      // Second call: webhook-renew
-      expect(globalThis.fetch).toHaveBeenCalledWith(
-        expect.stringContaining("/api/portal/webhook-renew"),
-        expect.objectContaining({
-          method: "POST",
-        }),
-      );
+      expect(callsTo(fetchSpy, "/api/portal/pending-payment/")).toHaveLength(1);
+      expect(callsTo(fetchSpy, "/api/portal/webhook-renew")).toHaveLength(0);
+      expect(callsTo(fetchSpy, "api.mailchannels.net")).toHaveLength(1);
     });
+  });
 
+  // --- Approved transaction processing ---
+
+  describe("approved transaction processing", () => {
     it("handles pending payment not found gracefully", async () => {
       const event = await buildValidEvent();
 
@@ -257,61 +460,6 @@ describe("Wompi webhook handler", () => {
 
       // Still returns 200 to Wompi
       expect(response.status).toBe(200);
-    });
-
-    it("authenticates FaceGYM calls with X-API-Key and X-Signature", async () => {
-      const event = await buildValidEvent({ txId: "tx_auth" });
-
-      const fetchSpy = vi.spyOn(globalThis, "fetch");
-      fetchSpy.mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            status: "found",
-            plan_id: "mensual",
-            member_id: "member_123",
-            amount: "69900",
-            wompi_reference: "PH-1234567890-abc123",
-          }),
-          { status: 200 },
-        ),
-      );
-      fetchSpy.mockResolvedValueOnce(
-        new Response(JSON.stringify({ status: "success" }), { status: 200 }),
-      );
-
-      await onRequestPost({
-        request: createWebhookRequest(event),
-        env: MOCK_ENV_AUTH,
-      });
-
-      expect(fetchSpy.mock.calls).toHaveLength(2);
-
-      type FetchInit = { headers: Record<string, string>; body: string };
-      const lookupInit = fetchSpy.mock.calls[0][1] as FetchInit;
-      const renewUrl = fetchSpy.mock.calls[1][0];
-      const renewInit = fetchSpy.mock.calls[1][1] as FetchInit;
-
-      // Lookup carries the internal API key FaceGYM requires
-      expect(lookupInit.headers["X-API-Key"]).toBe("test_internal_key");
-
-      // webhook-renew carries HMAC-SHA256(integrity_secret, body) as X-Signature
-      expect(String(renewUrl)).toContain("/api/portal/webhook-renew");
-      const enc = new TextEncoder();
-      const key = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(MOCK_ENV_AUTH.WOMPI_INTEGRITY_SECRET),
-        { name: "HMAC", hash: "SHA-256" },
-        false,
-        ["sign"],
-      );
-      const expected = Array.from(
-        new Uint8Array(
-          await crypto.subtle.sign("HMAC", key, enc.encode(renewInit.body)),
-        ),
-      )
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-      expect(renewInit.headers["X-Signature"]).toBe(expected);
     });
   });
 

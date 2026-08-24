@@ -786,30 +786,32 @@ import Base from '../../layouts/Base.astro';
 </style>
 
 <script>
-interface Plan {
-	wompiId: string;
-	facegymId: string;
-	name: string;
-	amountInCents: number;
-	currency: string;
-	period: string;
-	price: string;
-	features: string[];
-	badge?: string;
-	variant?: 'featured' | 'annual';
-	ctaVariant: 'gold' | 'dark';
-	equivalent?: string;
-	savings?: string;
-}
+	interface Plan {
+		wompiId: string;
+		name: string;
+		amountInCents: number;
+		currency: string;
+		period: string;
+		price: string;
+		features: string[];
+		badge?: string;
+		variant?: 'featured' | 'annual';
+		ctaVariant: 'gold' | 'dark';
+		equivalent?: string;
+		savings?: string;
+	}
 
-interface SignatureResponse {
-	reference: string;
-	signature: string;
-	amountInCents: number;
-	currency: string;
-	publicKey: string;
-	planName: string;
-}
+	interface SignatureResponse {
+		reference: string;
+		signature: string;
+		amountInCents: number;
+		currency: string;
+		publicKey: string;
+		planName: string;
+		/** FaceGYM membership_plans.id — single source lives in the
+		 *  signature endpoint (design D7); this page no longer hardcodes UUIDs. */
+		facegymPlanId?: string;
+	}
 
 declare global {
 	interface Window {
@@ -829,7 +831,6 @@ declare global {
 const ROW1: Plan[] = [
 	{
 		wompiId: 'mensual',
-		facegymId: '45d96de3-a086-427a-9a8a-44351abb6423',
 		name: 'Membresía Mensual',
 		amountInCents: 6990000,
 		currency: 'COP',
@@ -840,7 +841,6 @@ const ROW1: Plan[] = [
 	},
 	{
 		wompiId: 'trimestral',
-		facegymId: 'dab31efd-aff9-4554-99d5-40f255af7734',
 		name: 'Plan Trimestral',
 		amountInCents: 19500000,
 		currency: 'COP',
@@ -856,7 +856,6 @@ const ROW1: Plan[] = [
 const ROW2: Plan[] = [
 	{
 		wompiId: 'semestral',
-		facegymId: '6ec2b4c7-1d89-4625-9402-d78cc22ff4b5',
 		name: 'Plan Semestral',
 		amountInCents: 37500000,
 		currency: 'COP',
@@ -869,7 +868,6 @@ const ROW2: Plan[] = [
 	},
 	{
 		wompiId: 'anual',
-		facegymId: 'dbf0f5a4-cabb-4c73-991e-3e8b694282bf',
 		name: 'Plan Anual',
 		amountInCents: 62000000,
 		currency: 'COP',
@@ -981,6 +979,12 @@ function wireButtons(): void {
 
 				const sigData: SignatureResponse = await sigResponse.json();
 
+				// Fail closed: without the server-resolved FaceGYM plan id we
+				// cannot store a valid pending payment (design D7).
+				if (!sigData.facegymPlanId) {
+					throw new Error('Este plan no está disponible para renovación en línea. Contáctanos por WhatsApp para completarla.');
+				}
+
 				// Store pending payment in FaceGYM Redis BEFORE opening Wompi
 				// This ensures the webhook can activate membership even if the
 				// frontend callback never fires (e.g., redirect, tab close)
@@ -992,7 +996,7 @@ function wireButtons(): void {
 							...getAuthHeaders(),
 						},
 						body: JSON.stringify({
-							plan_id: plan.facegymId,
+							plan_id: sigData.facegymPlanId,
 							member_id: '', // Server fills this from JWT
 							wompi_reference: sigData.reference,
 							wompi_transaction_id: '',
@@ -1028,11 +1032,11 @@ function wireButtons(): void {
 									'Content-Type': 'application/json',
 									...getAuthHeaders(),
 								},
-								body: JSON.stringify({
-									plan_id: plan.facegymId,
-									wompi_reference: sigData.reference,
-									amount: plan.amountInCents / 100,
-								}),
+							body: JSON.stringify({
+								plan_id: sigData.facegymPlanId,
+								wompi_reference: sigData.reference,
+								amount: plan.amountInCents / 100,
+							}),
 							});
 						} catch {
 							console.warn('Client-side renewal failed (webhook should handle it)');

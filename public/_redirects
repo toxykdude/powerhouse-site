@@ -1,0 +1,37 @@
+# Legacy URL redirects (WordPress/WooCommerce era + old static site -> current pages)
+# Deployed as Cloudflare Pages _redirects. All 301 so Google consolidates signals.
+# Sources: web.archive.org CDX history + GSC 404 report.
+
+# Old pricing/plan pages -> /planes/
+/planes/clase-stretch-grupal/    /planes/        301
+/planes/pack-semanal/            /planes/        301
+/planes/personalizado-full/      /planes/        301
+/planes/personalizado-normal/    /planes/        301
+/planes/plan-anual/              /planes/        301
+/planes/plan-mensual-stretch/    /planes/        301
+/planes/plan-semestral/          /planes/        301
+/planes/plan-trimestral/         /planes/        301
+/planes/planmensual/             /planes/        301
+/planes/power-pack/              /planes/        301
+/planes-entreno-militar/         /planes/        301
+
+# Old personal-training pages -> trainer profiles
+/personalizado-harold/           /entrenadores/harold-giraldo/   301
+/personalizado-cristian/         /entrenadores/                   301
+/personalizado-oscar/            /entrenadores/                   301
+
+# Old content sections -> blog
+/articulos/                      /blog/          301
+/rutinas/                        /blog/          301
+/rutinas-powerhouse/             /blog/          301
+
+# Old shop/booking/account flows -> current equivalents
+/shop/                           /planes/        301
+/cart/                           /planes/        301
+/checkout/                       /planes/        301
+/my-account/                     /portal/        301
+/sesiones-programadas/           /portal/        301
+/agenda-sesion/                  /contacto/      301
+/asesorias-virtuales/            /contacto/      301
+/clases-asesorias/               /planes/        301
+/pago-exitoso/                   /pago/confirmacion/     301
