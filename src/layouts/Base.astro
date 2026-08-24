@@ -7,6 +7,8 @@ interface Props {
 	seoTitle?: string;
 	/** Set og:type to "article" for blog posts */
 	articleType?: boolean;
+	/** Exclude this page from search engines (transactional/utility pages) */
+	noindex?: boolean;
 	/** Additional JSON-LD schema to inject (e.g. Article, FAQPage) */
 	jsonLd?: string;
 }
@@ -17,6 +19,7 @@ const {
 	image,
 	seoTitle,
 	articleType = false,
+	noindex = false,
 	jsonLd,
 } = Astro.props;
 
@@ -80,7 +83,7 @@ if (pathSegments.length > 0) {
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
 		<meta name="theme-color" content="#E8C832" />
 		<meta name="author" content="PowerHouse Gym Manizales" />
 		<meta property="og:locale" content="es_CO" />

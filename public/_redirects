@@ -35,3 +35,8 @@
 /asesorias-virtuales/            /contacto/      301
 /clases-asesorias/               /planes/        301
 /pago-exitoso/                   /pago/confirmacion/     301
+
+# WordPress-era URLs discovered in GSC crawled-not-indexed (Aug 2026)
+/david_vanegas                  /entrenadores/  301
+/author/n8nagent/               /               301
+/search/*                       /               301
