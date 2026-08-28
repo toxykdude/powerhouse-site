@@ -1,0 +1,90 @@
+name: D1 Evaluation Setup
+
+# One-shot operational workflow: provisions the production D1 database for
+# the trainer evaluation system, applies migrations, and configures the
+# Pages project (D1 binding `DB` + evaluation env vars).
+#
+# Safe by construction:
+#  - D1 create/migrations are additive and idempotent.
+#  - Pages config changes go through scripts/cf-pages-eval-config.mjs,
+#    which first probes PATCH semantics on the DEV project and never
+#    touches production unless existing vars are provably preserved.
+#
+# Run: gh workflow run d1-evaluation-setup.yml --ref <branch>
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Create D1 database (idempotent)
+        id: d1
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if npx wrangler d1 info powerhouse-evaluations --json > /tmp/d1-info.json 2>/dev/null; then
+            echo "exists"
+          else
+            npx wrangler d1 create powerhouse-evaluations --json > /tmp/d1-info.json
+          fi
+          UUID=$(node -e "const d=require('/tmp/d1-info.json');console.log(d.uuid)")
+          if [ -z "$UUID" ] || [ "$UUID" = "undefined" ]; then
+            echo "Could not resolve database UUID"; cat /tmp/d1-info.json; exit 1
+          fi
+          echo "uuid=$UUID" >> "$GITHUB_OUTPUT"
+
+      - name: Apply migrations (remote, idempotent)
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler d1 execute powerhouse-evaluations --remote --file=migrations/0001_evaluation_schema.sql
+          npx wrangler d1 execute powerhouse-evaluations --remote --file=migrations/0002_seed_trainers.sql
+
+      - name: Verify seed (remote)
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler d1 execute powerhouse-evaluations --remote \
+            --command "SELECT slug, name, active FROM trainers ORDER BY id"
+
+      - name: Configure Pages project (D1 binding + env vars, probe-first)
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PAGES_PROJECT: powerhouse-site
+          DEV_PAGES_PROJECT: powerhouse-site-dev
+          RATE_LIMIT_SALT: ${{ secrets.EVAL_RATE_LIMIT_SALT }}
+          ADMIN_API_KEY: ${{ secrets.EVAL_ADMIN_API_KEY }}
+          D1_DATABASE_ID: ${{ steps.d1.outputs.uuid }}
+        run: node scripts/cf-pages-eval-config.mjs
+
+      - name: Summary
+        run: |
+          {
+            echo "## D1 Evaluation Setup"
+            echo ""
+            echo "- Database: \`powerhouse-evaluations\`"
+            echo "- UUID: \`${{ steps.d1.outputs.uuid }}\`"
+            echo "- Migrations applied (idempotent)"
+            echo "- Pages project configured (binding \`DB\` + env vars)"
+          } >> "$GITHUB_STEP_SUMMARY"
