@@ -1,0 +1,24 @@
+# wrangler-pages.toml — LOCAL development config for Cloudflare Pages +
+# the evaluation system's D1 database.
+#
+# This file is ONLY used for local dev (`npm run pages:dev`) and for
+# running D1 migrations. Production deploys do NOT read it: the CI
+# workflows pin `--config wrangler.toml` (contact worker) and
+# `--config wrangler-media.toml` (media proxy), and Pages bindings for
+# production are configured in the Cloudflare dashboard.
+#
+# Production D1 setup (one-time, documented in README "Evaluación"):
+#   1. Create the database:  npx wrangler d1 create powerhouse-evaluations
+#   2. Copy the returned database_id into the block below.
+#   3. Apply migrations:     npx wrangler d1 migrations apply powerhouse-evaluations --remote --config wrangler-pages.toml
+#   4. In Cloudflare Pages → powerhouse-site → Settings → Bindings add a
+#      D1 binding named `DB` pointing at that database.
+
+name = "powerhouse-site"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "powerhouse-evaluations"
+database_id = "local-only-placeholder"
