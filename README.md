@@ -224,6 +224,139 @@ El sitio incluye SEO técnico completo:
 
 ---
 
+## Evaluación de Entrenadores (Customer Experience)
+
+Sistema de evaluación de la experiencia con entrenadores: página pública
+`/evaluacion/` + API serverless + D1 + reporte por email.
+
+**Flujo**: `/evaluacion/` (selección de entrenador) → `/evaluacion/[slug]/`
+(cuestionario de 4 pasos: Experiencia → Desempeño profesional →
+Recomendación → Comentarios) → pantalla de agradecimiento. Anónimo,
+mobile-first, ~2–4 minutos.
+
+### Arquitectura
+
+```
+src/data/evaluation.ts             ← ÚNICA fuente de verdad del cuestionario
+src/data/evaluation-trainers.ts    ← los 3 entrenadores evaluables
+src/pages/evaluacion/              ← index / [slug] / gracias (SSG)
+src/components/evaluation/EvaluationForm.astro  ← isla vanilla TS (4 pasos)
+functions/api/evaluations/index.ts ← POST /api/evaluations (valida, anti-spam,
+                                      puntúa, persiste, envía email)
+functions/api/evaluations/_*.ts    ← validate / score / email / store /
+                                      turnstile / types
+functions/api/admin/trainer-stats.ts ← GET protegido por X-API-Key (analytics)
+migrations/0001_evaluation_schema.sql ← D1: trainers + evaluations
+migrations/0002_seed_trainers.sql     ← seed Harold / Esteban / Brayan
+wrangler-pages.toml                ← config D1 (solo dev local + migraciones)
+scripts/dev-d1-setup.sh            ← aplica migraciones al D1 local de pages dev
+```
+
+El modelo de puntaje distingue **experiencia del cliente** (7 dimensiones)
+de **desempeño profesional** (conocimiento técnico + orientación
+personalizada) — requisito del negocio para detectar casos como "alta
+técnica + baja empatía". Los puntajes se calculan server-side y se
+persisten por evaluación (`overall_score`, `experience_score`,
+`professional_score`).
+
+Los entrenadores evaluables viven en `src/data/evaluation-trainers.ts`
+(Harold, Esteban y Brayan reutilizan su perfil oficial, con foto). Si un
+entrenador sale o entra al equipo: edita ese archivo + la tabla `trainers`
+(en producción desactiva con `active = 0` en vez de borrar, para conservar
+evaluaciones históricas; los slugs deben coincidir).
+
+### Variables de entorno
+
+Ver `.env.example` (local) — en producción se configuran en Cloudflare
+Pages → Settings → Environment variables:
+
+| Variable                    | Requerida  | Descripción                                                                                   |
+| --------------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `EMAIL_PROVIDER`            | sí (prod)  | `resend` para envío real; `console` registra y no envía (dev)                                 |
+| `RESEND_API_KEY`            | con resend | API key de Resend (nunca en el frontend)                                                      |
+| `EMAIL_FROM`                | con resend | Remitente, ej. `PowerHouse GYM <evaluaciones@powerhousegym.co>` (verificar dominio en Resend) |
+| `EVALUATIONS_TO_EMAIL`      | no         | Destinatario del reporte. Default: `powerhousegymmanizales@gmail.com`                         |
+| `RATE_LIMIT_SALT`           | sí (prod)  | Salt para hashear IPs (SHA-256) — no se almacena la IP real                                   |
+| `PUBLIC_TURNSTILE_SITE_KEY` | no         | Site key de Cloudflare Turnstile (se renderiza solo si existe)                                |
+| `TURNSTILE_SECRET_KEY`      | no         | Si existe, la verificación es obligatoria (fail-closed)                                       |
+| `ADMIN_API_KEY`             | no         | Protege `GET /api/admin/trainer-stats` (header `X-API-Key`)                                   |
+| `EVAL_RATE_LIMIT_PER_HOUR`  | no         | Default 5 por IP/hora                                                                         |
+| `EVAL_DUPLICATE_WINDOW_MIN` | no         | Default 15 min anti-duplicado por IP+entrenador                                               |
+
+### Base de datos (D1)
+
+```bash
+# 1) Crear la DB (una vez) y copiar el database_id en wrangler-pages.toml
+npx wrangler d1 create powerhouse-evaluations
+
+# 2) Aplicar migraciones en producción
+npx wrangler d1 migrations apply powerhouse-evaluations --remote --config wrangler-pages.toml
+
+# 3) Binding en el dashboard: Pages → powerhouse-site → Settings →
+#    Bindings → D1 → nombre `DB` → powerhouse-evaluations
+```
+
+> El proveedor de almacenamiento está aislado en
+> `functions/api/evaluations/_store.ts` (consultas SQL estándar). Migrar a
+> PostgreSQL (Neon/Supabase) en el futuro solo requiere reimplementar ese
+> módulo; el schema ANSI de `migrations/` es portable.
+
+### Desarrollo local (functions + D1)
+
+`astro dev` no sirve `functions/`. Para probar el flujo completo:
+
+```bash
+npm run build
+npx wrangler pages dev dist --d1 DB --port 8799   # boot #1 crea el sqlite local
+./scripts/dev-d1-setup.sh                          # aplica migraciones + seed
+# repetir d1-setup con --reset para empezar de cero
+```
+
+> Gotcha verificado: `wrangler pages dev --d1 DB` persiste su sqlite local
+> bajo una clave distinta a `wrangler d1 migrations apply --config`; por eso
+> existe `scripts/dev-d1-setup.sh` (usa solo python3 stdlib).
+
+Prueba rápida:
+
+```bash
+curl -X POST http://127.0.0.1:8799/api/evaluations \
+  -H "Content-Type: application/json" \
+  -d '{"trainerSlug":"harold-giraldo","ratings":{"empathy":5,"respect":5,"attention":4,"availability":5,"communication":4,"motivation":5,"technicalExpertise":5,"personalizedGuidance":4,"professionalism":5,"overallExperience":5},"recommendation":"definitely_yes","company":""}'
+# → 201 {"ok":true}; el reporte se imprime en consola (EMAIL_PROVIDER=console)
+```
+
+### Protecciones activas
+
+Server-side only (nunca confiar en el cliente): validación estricta
+tipada (10 ratings 1–5 exactos, enums, máx 2000 caracteres), CHECK
+constraints en DB, honeypot `company` (drop silencioso), Turnstile
+opcional fail-closed, rate limiting durable en D1 (por IP hash: 5/hora,
+1 por entrenador/15 min), verificación de Origin (CSRF), límite 32 KB,
+XSS-escaping de todo texto en el email, secretos solo en el backend.
+
+### Analytics (privado)
+
+```bash
+curl -H "X-API-Key: $ADMIN_API_KEY" https://powerhousegym.co/api/admin/trainer-stats
+```
+
+Devuelve por entrenador: número de evaluaciones, promedio por dimensión,
+experiencia vs profesional, tasa de recomendación, tendencia 30 días y
+últimos comentarios. No está enlazado públicamente ni expone datos
+personales — base para un dashboard futuro.
+
+### Tests
+
+```bash
+npm test   # incluye __tests__/evaluation/* y __tests__/api/evaluations*
+```
+
+Cubren: validación (tipos, rangos, sanitización), scoring exacto por
+grupo, template de email (escaping XSS), rate limits, honeypot, CSRF,
+Turnstile y el endpoint admin.
+
+---
+
 ## Licencia
 
 Privado. Todos los derechos reservados © PowerHouse Gym Manizales.

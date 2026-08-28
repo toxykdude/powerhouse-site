@@ -1,0 +1,74 @@
+---
+/**
+ * /evaluacion/gracias — thank-you screen after a successful evaluation.
+ * Also the fallback redirect target when the in-form success block is unavailable.
+ */
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+  noindex
+  seoTitle="Gracias por tu opinión | PowerHouse GYM Manizales"
+  description="Tu evaluación ha sido recibida correctamente. Gracias por ayudarnos a mejorar la experiencia PowerHouse."
+>
+  <section class="thanks" role="status">
+    <div class="thanks__inner">
+      <span class="thanks__kicker">POWERHOUSE GYM MANIZALES</span>
+      <h1 class="thanks__title">¡GRACIAS POR TU OPINIÓN!</h1>
+      <p class="thanks__text">
+        Tu evaluación ha sido recibida correctamente. Tus comentarios nos ayudan
+        a seguir mejorando la experiencia PowerHouse.
+      </p>
+      <a href="/" class="btn-gold thanks__btn">VOLVER AL INICIO</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .thanks {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10rem 1.5rem 6rem;
+    background: var(--brand-black);
+  }
+
+  .thanks__inner {
+    max-width: 40rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .thanks__kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+  }
+
+  .thanks__title {
+    font-size: clamp(3rem, 8vw, 4.5rem);
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .thanks__text {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: rgba(240, 237, 232, 0.75);
+    line-height: 1.8;
+    max-width: 34rem;
+  }
+
+  .thanks__btn {
+    margin-top: 1rem;
+    min-height: 56px;
+  }
+</style>

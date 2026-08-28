@@ -1,0 +1,1301 @@
+---
+/**
+ * EvaluationForm.astro — the reusable multi-step trainer evaluation
+ * questionnaire. Fully config-driven from src/data/evaluation.ts (questions,
+ * steps, options, limits). All step markup is server-rendered as real
+ * semantic HTML; a vanilla TS script orchestrates step navigation,
+ * validation, progress and submission to POST /api/evaluations.
+ */
+import {
+  evaluationCategories,
+  EVALUATION_STEPS,
+  RECOMMENDATION_OPTIONS,
+  MEMBERSHIP_DURATION_OPTIONS,
+  RATING_SCALE,
+  MAX_COMMENT_LENGTH,
+} from "../../data/evaluation";
+import type { EvaluationTrainer } from "../../data/evaluation-trainers";
+
+interface Props {
+  trainer: EvaluationTrainer;
+}
+
+const { trainer } = Astro.props;
+
+/** Render the Turnstile widget only when a site key is configured. */
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as
+  | string
+  | undefined;
+
+/** Static scale legend row, e.g. "1 Muy deficiente · … · 5 Excelente". */
+const scaleLegend = RATING_SCALE.map(
+  (option) => `${option.value} ${option.label}`,
+).join(" · ");
+
+/** The three open-feedback questions (names match EvaluationPayload). */
+const commentFields = [
+  {
+    name: "positiveFeedback",
+    label: "¿Qué es lo que más valoras de este entrenador?",
+  },
+  {
+    name: "improvementFeedback",
+    label:
+      "¿Qué podría mejorar este entrenador para ofrecerte mejor experiencia?",
+  },
+  {
+    name: "additionalComments",
+    label: "¿Quieres compartir algún comentario adicional?",
+  },
+] as const;
+---
+
+<div
+  class="evform"
+  id="evform"
+  data-trainer-slug={trainer.slug}
+  data-turnstile-sitekey={turnstileSiteKey ?? ""}
+>
+  <!-- Sticky step header: trainer, live progress, step chips -->
+  <header class="evform__header" id="evform-header">
+    <div class="evform__header-row">
+      <div class="evform__identity">
+        {trainer.photo && (
+          <img
+            class="evform__avatar"
+            src={trainer.photo}
+            alt={trainer.alt ?? `Foto de ${trainer.name}`}
+            width="56"
+            height="56"
+            loading="eager"
+            decoding="async"
+          />
+        )}
+        <p class="evform__trainer">{trainer.name}</p>
+      </div>
+      <p class="evform__progress-label" id="evform-progress" aria-live="polite">
+        Evaluación — 0%
+      </p>
+    </div>
+    <div class="evform__track" aria-hidden="true">
+      <div class="evform__fill" id="evform-fill"></div>
+    </div>
+    <ol class="evform__chips">
+      {
+        EVALUATION_STEPS.map((step) => (
+          <li class="evform__chip" data-chip={step.id}>
+            <span
+              class="evform__chip-check"
+              data-chip-check
+              hidden
+              aria-hidden="true"
+            >
+              ✓
+            </span>
+            <span class="sr-only" data-chip-done hidden>
+              (completado)
+            </span>
+            <span class="evform__chip-num">{step.id}</span>
+            <span class="evform__chip-short">{step.short}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </header>
+
+  <form class="evform__form" id="evaluation-form" novalidate>
+    <!-- Submit-failure banner (server-rendered, revealed by JS) -->
+    <div class="evform__banner" id="evform-banner" role="alert" hidden>
+      <span class="evform__banner-glyph" aria-hidden="true">!</span>
+      <div class="evform__banner-body">
+        <p class="evform__banner-text" id="evform-banner-text">
+          No pudimos enviar tu evaluación. Por favor intenta nuevamente.
+        </p>
+        <p class="evform__banner-detail" id="evform-banner-detail" hidden></p>
+      </div>
+    </div>
+
+    {
+      EVALUATION_STEPS.map((step) => (
+        <section
+          class="evform__step"
+          data-step={step.id}
+          hidden={step.id !== 1}
+        >
+          <h2 class="evform__step-title" tabindex="-1" data-step-heading>
+            {step.title}
+          </h2>
+          <p class="evform__step-desc">{step.description}</p>
+
+          {/* Per-step error summary (role=alert, filled by JS) */}
+          <div class="evform__summary" role="alert" data-step-summary hidden>
+            <p class="evform__summary-title">
+              <span aria-hidden="true">!</span> Revisa los siguientes puntos
+              antes de continuar:
+            </p>
+            <ul class="evform__summary-list" data-summary-list />
+          </div>
+
+          {(step.id === 1 || step.id === 2) &&
+            evaluationCategories
+              .filter((question) => question.step === step.id)
+              .map((question) => (
+                <fieldset class="evform__group" data-question={question.key}>
+                  <legend class="evform__question">{question.question}</legend>
+                  <p
+                    class="evform__selected"
+                    data-selected-label
+                    aria-hidden="true"
+                  >
+                    &mdash;
+                  </p>
+                  <div class="evform__scale">
+                    {RATING_SCALE.map((option) => (
+                      <label class="evform__opt">
+                        <input
+                          type="radio"
+                          name={question.key}
+                          value={option.value}
+                          class="evform__radio"
+                          aria-describedby={`err-${question.key}`}
+                        />
+                        <span class="evform__opt-num" aria-hidden="true">
+                          {option.value}
+                        </span>
+                        <span class="sr-only">
+                          {option.value} &mdash; {option.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <p class="evform__scale-legend" aria-hidden="true">
+                    {scaleLegend}
+                  </p>
+                  <p class="evform__error" id={`err-${question.key}`} hidden>
+                    <span aria-hidden="true">!</span> Selecciona una
+                    calificación para continuar
+                  </p>
+                </fieldset>
+              ))}
+
+          {step.id === 3 && (
+            <fieldset class="evform__group" data-question="recommendation">
+              <legend class="evform__question">
+                ¿Recomendarías este entrenador a otras personas?
+              </legend>
+              <div class="evform__cards">
+                {RECOMMENDATION_OPTIONS.map((option) => (
+                  <label class="evform__card">
+                    <input
+                      type="radio"
+                      name="recommendation"
+                      value={option.value}
+                      class="evform__radio-card"
+                      aria-describedby="err-recommendation"
+                    />
+                    <span class="evform__card-text">{option.label}</span>
+                    <span class="evform__card-dot" aria-hidden="true" />
+                  </label>
+                ))}
+              </div>
+              <p class="evform__error" id="err-recommendation" hidden>
+                <span aria-hidden="true">!</span> Selecciona una opción para
+                continuar
+              </p>
+            </fieldset>
+          )}
+
+          {step.id === 3 && (
+            <fieldset class="evform__group" data-question="membershipDuration">
+              <legend class="evform__question">
+                ¿Cuánto tiempo llevas entrenando en PowerHouse?{" "}
+                <span class="evform__optional">(opcional)</span>
+              </legend>
+              <div class="evform__cards">
+                {MEMBERSHIP_DURATION_OPTIONS.map((option) => (
+                  <label class="evform__card">
+                    <input
+                      type="radio"
+                      name="membershipDuration"
+                      value={option.value}
+                      class="evform__radio-card"
+                    />
+                    <span class="evform__card-text">{option.label}</span>
+                    <span class="evform__card-dot" aria-hidden="true" />
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
+          {step.id === 4 &&
+            commentFields.map((field) => (
+              <div class="evform__group evform__group--text">
+                <label class="evform__question" for={field.name}>
+                  {field.label} <span class="evform__optional">(opcional)</span>
+                </label>
+                <textarea
+                  class="evform__textarea"
+                  id={field.name}
+                  name={field.name}
+                  rows={5}
+                  maxlength={MAX_COMMENT_LENGTH}
+                  aria-describedby={`counter-${field.name}`}
+                />
+                <p
+                  class="evform__counter"
+                  id={`counter-${field.name}`}
+                  aria-live="polite"
+                >
+                  0/{MAX_COMMENT_LENGTH}
+                </p>
+              </div>
+            ))}
+
+          {step.id === 4 && (
+            <div class="evform__hp" aria-hidden="true">
+              <label for="company">Company</label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
+          )}
+
+          {step.id === 4 && turnstileSiteKey && (
+            <div class="evform__turnstile">
+              <div
+                class="cf-turnstile"
+                data-sitekey={turnstileSiteKey}
+                data-theme="dark"
+                data-language="es"
+              />
+            </div>
+          )}
+
+          <div class="evform__nav">
+            {step.id > 1 && (
+              <button type="button" class="btn-outline evform__btn" data-prev>
+                ANTERIOR
+              </button>
+            )}
+            {step.id < EVALUATION_STEPS.length ? (
+              <button type="button" class="btn-gold evform__btn" data-next>
+                SIGUIENTE
+              </button>
+            ) : (
+              <button
+                type="submit"
+                class="btn-gold evform__btn evform__btn-submit"
+                data-submit="ENVIAR EVALUACIÓN"
+              >
+                ENVIAR EVALUACIÓN
+              </button>
+            )}
+          </div>
+        </section>
+      ))
+    }
+  </form>
+
+  <!-- Success block: server-rendered hidden, revealed on 201 (never innerHTML-injected) -->
+  <div class="evform__success" id="evform-success" hidden>
+    <p class="evform__success-kicker">POWERHOUSE GYM MANIZALES</p>
+    <h2 class="evform__success-title" tabindex="-1" data-success-title>
+      ¡GRACIAS POR TU OPINIÓN!
+    </h2>
+    <p class="evform__success-text">
+      Tu evaluación ha sido recibida correctamente. Tus comentarios nos ayudan a
+      seguir mejorando la experiencia PowerHouse.
+    </p>
+    <a href="/" class="btn-gold evform__success-btn">VOLVER AL INICIO</a>
+  </div>
+</div>
+
+<script>
+  import {
+    evaluationCategories,
+    isRatingKey,
+    ratingValueLabel,
+    MAX_COMMENT_LENGTH,
+    TOTAL_REQUIRED_ITEMS,
+    type EvaluationPayload,
+    type MembershipDuration,
+    type Rating1to5,
+    type RatingKey,
+    type Recommendation,
+  } from "../../data/evaluation";
+
+  const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+  const GENERIC_ERROR =
+    "No pudimos enviar tu evaluación. Por favor intenta nuevamente.";
+  const FALLBACK_REDIRECT = "/evaluacion/gracias";
+
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+  }
+
+  function initEvaluationForm(): void {
+    const form = document.getElementById(
+      "evaluation-form",
+    ) as HTMLFormElement | null;
+    const wrapper = document.getElementById("evform");
+    if (!form || !wrapper || form.dataset.evInitialized === "true") return;
+    form.dataset.evInitialized = "true";
+
+    // Non-null aliases: TS narrowing above does not propagate into the
+    // closures defined below, so closures must use these instead.
+    const formEl: HTMLFormElement = form;
+    const wrapperEl: HTMLElement = wrapper;
+
+    const steps = Array.from(
+      wrapper.querySelectorAll<HTMLElement>(".evform__step"),
+    );
+    const progressLabel = document.getElementById("evform-progress");
+    const progressFill = document.getElementById("evform-fill");
+    const headerEl = document.getElementById("evform-header");
+    const chips = Array.from(
+      wrapper.querySelectorAll<HTMLElement>("[data-chip]"),
+    );
+    const banner = document.getElementById("evform-banner");
+    const bannerText = document.getElementById("evform-banner-text");
+    const bannerDetail = document.getElementById("evform-banner-detail");
+    const submitButton = form.querySelector<HTMLButtonElement>("[data-submit]");
+    const submitLabel = submitButton?.dataset.submit ?? "ENVIAR EVALUACIÓN";
+
+    let currentStep = 1;
+
+    function stepElement(stepNumber: number): HTMLElement | undefined {
+      return steps.find((el) => el.dataset.step === String(stepNumber));
+    }
+
+    function checkedRadio(name: string): HTMLInputElement | null {
+      return formEl.querySelector<HTMLInputElement>(
+        `input[name="${name}"]:checked`,
+      );
+    }
+
+    function answeredCount(): number {
+      let count = 0;
+      for (const question of evaluationCategories) {
+        if (checkedRadio(question.key)) count += 1;
+      }
+      if (checkedRadio("recommendation")) count += 1;
+      return count;
+    }
+
+    function updateHeader(): void {
+      const percent = Math.round(
+        (answeredCount() / TOTAL_REQUIRED_ITEMS) * 100,
+      );
+      if (progressLabel) progressLabel.textContent = `Evaluación — ${percent}%`;
+      if (progressFill) progressFill.style.width = `${percent}%`;
+      for (const chip of chips) {
+        const chipStep = Number(chip.dataset.chip);
+        const done = chipStep < currentStep;
+        const current = chipStep === currentStep;
+        chip.classList.toggle("is-done", done);
+        chip.classList.toggle("is-current", current);
+        if (current) chip.setAttribute("aria-current", "step");
+        else chip.removeAttribute("aria-current");
+        const check = chip.querySelector<HTMLElement>("[data-chip-check]");
+        const doneText = chip.querySelector<HTMLElement>("[data-chip-done]");
+        if (check) check.hidden = !done;
+        if (doneText) doneText.hidden = !done;
+      }
+    }
+
+    function clearErrors(stepNumber: number): void {
+      const step = stepElement(stepNumber);
+      if (!step) return;
+      step.querySelectorAll<HTMLElement>(".evform__error").forEach((el) => {
+        el.hidden = true;
+      });
+      const summary = step.querySelector<HTMLElement>("[data-step-summary]");
+      if (summary) summary.hidden = true;
+      step
+        .querySelectorAll<HTMLInputElement>("input[aria-invalid='true']")
+        .forEach((input) => {
+          input.removeAttribute("aria-invalid");
+        });
+    }
+
+    function markGroupInvalid(name: string): void {
+      formEl
+        .querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)
+        .forEach((input) => {
+          input.setAttribute("aria-invalid", "true");
+        });
+    }
+
+    function validateStep(stepNumber: number): boolean {
+      const step = stepElement(stepNumber);
+      if (!step) return true;
+      clearErrors(stepNumber);
+
+      const pending: { label: string; message: string }[] = [];
+      const invalidControls: HTMLElement[] = [];
+
+      const flag = (name: string, label: string, message: string): void => {
+        const errorEl = document.getElementById(`err-${name}`);
+        if (errorEl) errorEl.hidden = false;
+        markGroupInvalid(name);
+        pending.push({ label, message });
+        const control = formEl.querySelector<HTMLElement>(
+          `input[name="${name}"]`,
+        );
+        if (control) invalidControls.push(control);
+      };
+
+      if (stepNumber === 1 || stepNumber === 2) {
+        for (const question of evaluationCategories) {
+          if (question.step !== stepNumber) continue;
+          if (!checkedRadio(question.key)) {
+            flag(
+              question.key,
+              question.label,
+              "Selecciona una calificación para continuar",
+            );
+          }
+        }
+      }
+
+      if (stepNumber === 3 && !checkedRadio("recommendation")) {
+        flag(
+          "recommendation",
+          "Recomendación",
+          "Selecciona una opción para continuar",
+        );
+      }
+
+      if (pending.length === 0) return true;
+
+      const summary = step.querySelector<HTMLElement>("[data-step-summary]");
+      const list = step.querySelector<HTMLElement>("[data-summary-list]");
+      if (summary && list) {
+        list.replaceChildren(
+          ...pending.map((item) => {
+            const li = document.createElement("li");
+            li.textContent = `${item.label}: ${item.message}`;
+            return li;
+          }),
+        );
+        summary.hidden = false;
+      }
+      const firstInvalid = invalidControls[0];
+      if (firstInvalid) firstInvalid.focus();
+      return false;
+    }
+
+    function goToStep(stepNumber: number, focusHeading = true): void {
+      const next = stepElement(stepNumber);
+      if (!next) return;
+      const previous = stepElement(currentStep);
+      if (previous && previous !== next) previous.hidden = true;
+      next.hidden = false;
+      currentStep = stepNumber;
+      updateHeader();
+
+      // 200ms slide/fade entrance (skipped for reduced motion)
+      if (!prefersReducedMotion()) {
+        next.classList.add("is-entering");
+        window.setTimeout(() => next.classList.remove("is-entering"), 260);
+      }
+
+      if (headerEl) {
+        headerEl.scrollIntoView({
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          block: "start",
+        });
+      }
+      if (focusHeading) {
+        const heading = next.querySelector<HTMLElement>("[data-step-heading]");
+        heading?.focus({ preventScroll: true });
+      }
+    }
+
+    function findFirstIncompleteStep(): number | null {
+      for (const stepNumber of [1, 2] as const) {
+        for (const question of evaluationCategories) {
+          if (question.step === stepNumber && !checkedRadio(question.key))
+            return stepNumber;
+        }
+      }
+      if (!checkedRadio("recommendation")) return 3;
+      return null;
+    }
+
+    function textValue(name: string): string | null {
+      const textarea = formEl.querySelector<HTMLTextAreaElement>(
+        `textarea[name="${name}"]`,
+      );
+      const value = textarea?.value.trim() ?? "";
+      return value.length > 0 ? value : null;
+    }
+
+    function buildPayload(): EvaluationPayload {
+      const ratings = {} as Record<RatingKey, Rating1to5>;
+      for (const question of evaluationCategories) {
+        const checked = checkedRadio(question.key);
+        // Submit is only reachable after full validation, so the fallback never fires.
+        ratings[question.key] = Number(checked?.value ?? 1) as Rating1to5;
+      }
+      const recommendation = (checkedRadio("recommendation")?.value ??
+        "definitely_yes") as Recommendation;
+      const membershipDuration = (checkedRadio("membershipDuration")?.value ??
+        null) as MembershipDuration | null;
+
+      const payload: EvaluationPayload = {
+        trainerSlug: wrapperEl.dataset.trainerSlug ?? "",
+        ratings,
+        recommendation,
+        membershipDuration,
+        positiveFeedback: textValue("positiveFeedback"),
+        improvementFeedback: textValue("improvementFeedback"),
+        additionalComments: textValue("additionalComments"),
+        company: "", // honeypot: always sent empty
+      };
+
+      const turnstileInput = document.querySelector<HTMLInputElement>(
+        'input[name="cf-turnstile-response"]',
+      );
+      if (turnstileInput?.value) payload.turnstileToken = turnstileInput.value;
+      return payload;
+    }
+
+    function showBanner(primary: string, detail: string): void {
+      if (bannerText) bannerText.textContent = primary;
+      if (bannerDetail) {
+        bannerDetail.textContent = detail;
+        bannerDetail.hidden = detail.length === 0;
+      }
+      if (banner) {
+        banner.hidden = false;
+        banner.setAttribute("tabindex", "-1");
+        banner.focus();
+        banner.scrollIntoView({
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          block: "center",
+        });
+      }
+    }
+
+    function revealSuccess(): void {
+      formEl.hidden = true;
+      if (headerEl) headerEl.hidden = true;
+      const success = document.getElementById("evform-success");
+      if (!success) {
+        // Fallback: dedicated thank-you page
+        window.location.assign(FALLBACK_REDIRECT);
+        return;
+      }
+      success.hidden = false;
+      const title = success.querySelector<HTMLElement>("[data-success-title]");
+      title?.focus({ preventScroll: true });
+      success.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "center",
+      });
+    }
+
+    function setSubmitting(busy: boolean): void {
+      if (!submitButton) return;
+      submitButton.disabled = busy;
+      submitButton.textContent = busy ? "ENVIANDO..." : submitLabel;
+      if (busy) submitButton.setAttribute("aria-busy", "true");
+      else submitButton.removeAttribute("aria-busy");
+    }
+
+    // Step navigation
+    form
+      .querySelectorAll<HTMLButtonElement>("[data-next]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!validateStep(currentStep)) return;
+          goToStep(Math.min(currentStep + 1, steps.length));
+        });
+      });
+
+    form
+      .querySelectorAll<HTMLButtonElement>("[data-prev]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          clearErrors(currentStep);
+          goToStep(Math.max(currentStep - 1, 1), false);
+        });
+      });
+
+    // Live updates: progress, selected scale label, error clearing
+    formEl.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || target.type !== "radio")
+        return;
+      const name = target.name;
+      if (isRatingKey(name) || name === "recommendation") {
+        const errorEl = document.getElementById(`err-${name}`);
+        if (errorEl) errorEl.hidden = true;
+        form
+          .querySelectorAll<HTMLInputElement>(
+            `input[name="${name}"][aria-invalid]`,
+          )
+          .forEach((input) => {
+            input.removeAttribute("aria-invalid");
+          });
+      }
+      if (isRatingKey(name)) {
+        const group = target.closest("[data-question]");
+        const selectedLabel = group?.querySelector<HTMLElement>(
+          "[data-selected-label]",
+        );
+        if (selectedLabel)
+          selectedLabel.textContent = ratingValueLabel(Number(target.value));
+      }
+      updateHeader();
+    });
+
+    // Character counters for the open-feedback textareas
+    for (const field of [
+      "positiveFeedback",
+      "improvementFeedback",
+      "additionalComments",
+    ]) {
+      const textarea = formEl.querySelector<HTMLTextAreaElement>(
+        `textarea[name="${field}"]`,
+      );
+      const counter = document.getElementById(`counter-${field}`);
+      if (!textarea || !counter) continue;
+      const render = (): void => {
+        counter.textContent = `${textarea.value.length}/${MAX_COMMENT_LENGTH}`;
+      };
+      textarea.addEventListener("input", render);
+      render();
+    }
+
+    // Load the Turnstile widget script only when a site key is configured
+    const siteKey = wrapperEl.dataset.turnstileSitekey;
+    if (
+      siteKey &&
+      !document.querySelector(
+        'script[src*="challenges.cloudflare.com/turnstile"]',
+      )
+    ) {
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      script.async = true;
+      script.defer = true;
+      document.head.append(script);
+    }
+
+    // Submit: POST /api/evaluations
+    formEl.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const incompleteStep = findFirstIncompleteStep();
+      if (incompleteStep !== null) {
+        goToStep(incompleteStep);
+        validateStep(incompleteStep);
+        return;
+      }
+      if (banner) banner.hidden = true;
+      setSubmitting(true);
+      try {
+        const response = await fetch("/api/evaluations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildPayload()),
+        });
+        if (response.ok) {
+          revealSuccess();
+          return;
+        }
+        let apiError = "";
+        try {
+          const body: unknown = await response.json();
+          if (
+            body &&
+            typeof body === "object" &&
+            "error" in body &&
+            typeof (body as { error: unknown }).error === "string"
+          ) {
+            apiError = (body as { error: string }).error;
+          }
+        } catch {
+          // Non-JSON error body — fall through to the generic banner
+        }
+        // 429: the API message becomes the primary line
+        if (response.status === 429 && apiError) showBanner(apiError, "");
+        else showBanner(GENERIC_ERROR, apiError);
+      } catch {
+        showBanner(GENERIC_ERROR, "");
+      } finally {
+        setSubmitting(false);
+      }
+    });
+
+    updateHeader();
+  }
+
+  document.addEventListener("DOMContentLoaded", initEvaluationForm);
+  document.addEventListener("astro:page-load", initEvaluationForm);
+</script>
+
+<style>
+  /* Ensure the hidden attribute always wins over display rules */
+  [hidden] {
+    display: none !important;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .evform {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  /* --- Sticky step header --- */
+  .evform__header {
+    position: sticky;
+    top: 72px;
+    z-index: 10;
+    background: rgba(13, 13, 13, 0.97);
+    border: 1px solid #2a2a2a;
+    padding: 0.75rem 1rem 0.625rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .evform__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .evform__identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .evform__avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--brand-gold);
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .evform__trainer {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+  }
+
+  .evform__progress-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240, 237, 232, 0.7);
+  }
+
+  .evform__track {
+    height: 4px;
+    background: #2a2a2a;
+    margin: 0.625rem 0;
+  }
+
+  .evform__fill {
+    height: 100%;
+    width: 0%;
+    background: var(--brand-gold);
+    transition: width 0.25s ease;
+  }
+
+  .evform__chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .evform__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(240, 237, 232, 0.5);
+    border: 1px solid #2a2a2a;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .evform__chip.is-current {
+    color: var(--brand-gold);
+    border-color: var(--brand-gold);
+  }
+
+  .evform__chip.is-done {
+    color: rgba(240, 237, 232, 0.7);
+    border-color: rgba(232, 200, 50, 0.3);
+  }
+
+  .evform__chip-check {
+    color: var(--brand-gold);
+  }
+
+  .evform__chip-num {
+    font-weight: 700;
+  }
+
+  /* --- Steps --- */
+  .evform__step.is-entering {
+    animation: evformStepIn 0.2s ease both;
+  }
+
+  @keyframes evformStepIn {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .evform__step-title {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+  }
+
+  .evform__step-title:focus {
+    outline: none;
+  }
+
+  .evform__step-desc {
+    font-size: 0.875rem;
+    color: rgba(240, 237, 232, 0.6);
+    margin-bottom: 1.5rem;
+  }
+
+  /* --- Error summary --- */
+  .evform__summary {
+    background: rgba(192, 57, 43, 0.12);
+    border: 1px solid var(--brand-red);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .evform__summary-title {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .evform__summary-title span {
+    color: var(--brand-red);
+    margin-right: 0.375rem;
+  }
+
+  .evform__summary-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .evform__summary-list li {
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.8);
+  }
+
+  .evform__summary-list li::before {
+    content: "! ";
+    color: var(--brand-red);
+  }
+
+  /* --- Question groups --- */
+  .evform__group {
+    border: 1px solid #2a2a2a;
+    background: #141414;
+    padding: 1.25rem;
+    margin: 0 0 1.25rem;
+    min-width: 0;
+  }
+
+  .evform__question {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.55;
+    color: var(--brand-white);
+    padding: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .evform__optional {
+    color: rgba(240, 237, 232, 0.5);
+    font-weight: 400;
+  }
+
+  .evform__selected {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    min-height: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* --- 1-5 rating scale --- */
+  .evform__scale {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.375rem;
+  }
+
+  .evform__opt {
+    position: relative;
+    display: block;
+  }
+
+  .evform__radio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .evform__opt-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    min-width: 48px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: rgba(240, 237, 232, 0.8);
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .evform__opt-num:hover {
+    border-color: rgba(232, 200, 50, 0.5);
+  }
+
+  .evform__radio:checked + .evform__opt-num {
+    background: var(--brand-gold);
+    border-color: var(--brand-gold);
+    color: var(--brand-black);
+  }
+
+  .evform__radio:focus-visible + .evform__opt-num {
+    outline: 3px solid var(--brand-gold);
+    outline-offset: 3px;
+  }
+
+  .evform__scale-legend {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(240, 237, 232, 0.45);
+    margin-top: 0.625rem;
+  }
+
+  /* --- Radio cards (step 3) --- */
+  .evform__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .evform__card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-height: 56px;
+    padding: 1rem 1.25rem;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .evform__card:hover {
+    border-color: rgba(232, 200, 50, 0.5);
+  }
+
+  .evform__radio-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .evform__card-text {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgba(240, 237, 232, 0.85);
+    flex: 1;
+  }
+
+  .evform__card-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #4a4a4a;
+    flex-shrink: 0;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .evform__card:has(.evform__radio-card:checked) {
+    border-color: var(--brand-gold);
+    background: rgba(232, 200, 50, 0.08);
+  }
+
+  .evform__card:has(.evform__radio-card:checked) .evform__card-text {
+    color: var(--brand-gold);
+  }
+
+  .evform__card:has(.evform__radio-card:checked) .evform__card-dot {
+    border-color: var(--brand-gold);
+    background: var(--brand-gold);
+  }
+
+  .evform__card:has(.evform__radio-card:focus-visible) {
+    outline: 3px solid var(--brand-gold);
+    outline-offset: 3px;
+  }
+
+  /* --- Field-level errors (icon + text, never color-only) --- */
+  .evform__error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(192, 57, 43, 0.12);
+    border: 1px solid var(--brand-red);
+    font-size: 0.8rem;
+    color: var(--brand-white);
+  }
+
+  .evform__error span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--brand-red);
+    border-radius: 50%;
+    color: var(--brand-red);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* --- Textareas (step 4) --- */
+  .evform__textarea {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: var(--brand-white);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    resize: vertical;
+  }
+
+  .evform__textarea:focus {
+    outline: none;
+    border-color: var(--brand-gold);
+    box-shadow: 0 0 0 3px rgba(232, 200, 50, 0.15);
+  }
+
+  .evform__counter {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: rgba(240, 237, 232, 0.5);
+    text-align: right;
+    margin-top: 0.375rem;
+  }
+
+  /* --- Honeypot: off-screen, ignored by humans and AT --- */
+  .evform__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .evform__turnstile {
+    margin: 0 0 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  /* --- Navigation --- */
+  .evform__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .evform__btn {
+    flex: 1 1 auto;
+    min-height: 56px;
+    font-size: 1.125rem;
+  }
+
+  .evform__btn-submit {
+    flex-basis: 100%;
+  }
+
+  /* --- Failure banner --- */
+  .evform__banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    background: rgba(192, 57, 43, 0.12);
+    border: 1px solid var(--brand-red);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .evform__banner:focus {
+    outline: none;
+  }
+
+  .evform__banner-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--brand-red);
+    border-radius: 50%;
+    color: var(--brand-red);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .evform__banner-text {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--brand-white);
+  }
+
+  .evform__banner-detail {
+    font-size: 0.8rem;
+    color: rgba(240, 237, 232, 0.7);
+    margin-top: 0.25rem;
+  }
+
+  /* --- Success block --- */
+  .evform__success {
+    text-align: center;
+    border: 1px solid rgba(232, 200, 50, 0.3);
+    background: #141414;
+    padding: 3.5rem 1.5rem;
+  }
+
+  .evform__success-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(240, 237, 232, 0.5);
+    margin-bottom: 1rem;
+  }
+
+  .evform__success-title {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 1.25rem;
+  }
+
+  .evform__success-title:focus {
+    outline: none;
+  }
+
+  .evform__success-text {
+    font-size: 0.9375rem;
+    color: rgba(240, 237, 232, 0.75);
+    line-height: 1.7;
+    max-width: 34rem;
+    margin: 0 auto 2rem;
+  }
+
+  /* --- Reduced motion: no entrance animation, no width transition --- */
+  @media (prefers-reduced-motion: reduce) {
+    .evform__fill {
+      transition: none;
+    }
+
+    .evform__step.is-entering {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .evform__btn-submit {
+      flex-basis: auto;
+      flex: 2 1 auto;
+    }
+  }
+</style>
