@@ -1,0 +1,358 @@
+---
+/**
+ * /evaluacion — trainer evaluation landing: hero + trainer selection cards
+ * + privacy band. All cards link to /evaluacion/[slug].
+ */
+import Base from "../../layouts/Base.astro";
+import { evaluationTrainers } from "../../data/evaluation-trainers";
+
+/** Initials monogram for trainers without a photo (never a broken img). */
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2);
+}
+---
+
+<Base
+  seoTitle="Evaluación de Entrenadores | PowerHouse GYM Manizales"
+  description="Ayúdanos a mejorar tu experiencia en PowerHouse GYM evaluando el servicio, profesionalismo y atención de nuestros entrenadores."
+>
+  <section class="ev-hero">
+    <div class="ev-hero__inner">
+      <span class="ev-hero__kicker">POWERHOUSE GYM MANIZALES</span>
+      <h1
+        class="ev-hero__title"
+        aria-label="AYÚDANOS A MEJORAR LA EXPERIENCIA POWERHOUSE"
+      >
+        <span class="ev-hero__line" aria-hidden="true">AYÚDANOS A MEJORAR</span>
+        <span class="ev-hero__line" aria-hidden="true"
+          >LA EXPERIENCIA POWERHOUSE</span
+        >
+      </h1>
+      <h2 class="ev-hero__sub">
+        ¿Cómo ha sido tu experiencia con nuestros entrenadores?
+      </h2>
+      <p class="ev-hero__copy">
+        Tu opinión nos ayuda a mejorar continuamente la experiencia de nuestros
+        miembros y a reconocer el excelente trabajo de nuestro equipo.
+      </p>
+      <ul class="ev-hero__trust">
+        <li><span aria-hidden="true">✓</span> Anónima</li>
+        <li><span aria-hidden="true">✓</span> 2–4 minutos</li>
+        <li>
+          <span aria-hidden="true">✓</span> 10 calificaciones + comentarios
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="ev-select">
+    <div class="ev-select__inner">
+      <span class="ev-select__kicker">Evaluación</span>
+      <h2 class="section-title ev-select__title">
+        Selecciona el entrenador que deseas evaluar
+      </h2>
+      <div class="ev-grid">
+        {
+          evaluationTrainers.map((trainer, idx) => (
+            <a
+              href={`/evaluacion/${trainer.slug}`}
+              class="ev-card"
+              style={`animation-delay: ${idx * 0.12}s`}
+            >
+              <div class="ev-card__photo">
+                {trainer.photo ? (
+                  <img
+                    src={trainer.photo}
+                    alt={trainer.alt || trainer.name}
+                    loading="lazy"
+                    width="600"
+                    height="800"
+                  />
+                ) : (
+                  <div class="ev-card__monogram" aria-hidden="true">
+                    <span>{initials(trainer.name)}</span>
+                  </div>
+                )}
+              </div>
+              <div class="ev-card__body">
+                <h3 class="ev-card__name">{trainer.name}</h3>
+                <span class="ev-card__role">{trainer.role}</span>
+                <p class="ev-card__bio">{trainer.bio}</p>
+                <span class="btn-gold ev-card__cta">EVALUAR ENTRENADOR</span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="ev-privacy">
+    <p class="ev-privacy__text">
+      Tu evaluación es anónima. PowerHouse GYM la usa únicamente para mejorar el
+      servicio y acompañar a su equipo. No publicamos comentarios individuales
+      ni rankings públicos.
+    </p>
+  </section>
+</Base>
+
+<style>
+  /* --- Hero --- */
+  .ev-hero {
+    padding: 10rem 1.5rem 5rem;
+    background: var(--brand-black);
+  }
+
+  .ev-hero__inner {
+    max-width: 48rem;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .ev-hero__kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+  }
+
+  .ev-hero__title {
+    font-size: clamp(2.75rem, 8vw, 4.5rem);
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.02;
+    margin-bottom: 0.5rem;
+  }
+
+  .ev-hero__line {
+    display: block;
+  }
+
+  .ev-hero__sub {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    color: var(--brand-white);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ev-hero__copy {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: rgba(240, 237, 232, 0.7);
+    line-height: 1.7;
+    max-width: 36rem;
+  }
+
+  .ev-hero__trust {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 2rem;
+    margin-top: 0.5rem;
+  }
+
+  .ev-hero__trust li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(240, 237, 232, 0.6);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ev-hero__trust span {
+    color: var(--brand-gold);
+  }
+
+  /* --- Trainer selection --- */
+  .ev-select {
+    padding: 4rem 1.5rem 5rem;
+    background: var(--brand-black);
+    border-top: 1px solid rgba(232, 200, 50, 0.1);
+  }
+
+  .ev-select__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+  }
+
+  .ev-select__kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .ev-select__title {
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+  }
+
+  .ev-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .ev-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--brand-black);
+    border: 1px solid rgba(232, 200, 50, 0.1);
+    overflow: hidden;
+    transition:
+      transform 0.5s ease,
+      border-color 0.5s ease;
+    animation: evCardIn 0.6s ease both;
+  }
+
+  .ev-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(232, 200, 50, 0.5);
+  }
+
+  .ev-card:focus-visible {
+    outline: 3px solid var(--brand-gold);
+    outline-offset: 3px;
+  }
+
+  @keyframes evCardIn {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .ev-card__photo {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: rgba(232, 200, 50, 0.05);
+  }
+
+  .ev-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.7s ease;
+  }
+
+  .ev-card:hover .ev-card__photo img {
+    transform: scale(1.06);
+  }
+
+  .ev-card__monogram {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ev-card__monogram span {
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    color: var(--brand-gold);
+    opacity: 0.4;
+  }
+
+  .ev-card__body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .ev-card__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 1.6vw, 1.875rem);
+    color: var(--brand-gold);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .ev-card__role {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--brand-red);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .ev-card__bio {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(240, 237, 232, 0.6);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ev-card__cta {
+    margin-top: auto;
+    align-self: flex-start;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  /* --- Privacy band --- */
+  .ev-privacy {
+    padding: 3rem 1.5rem;
+    background: #0a0a0a;
+    border-top: 1px solid rgba(232, 200, 50, 0.1);
+    border-bottom: 1px solid rgba(232, 200, 50, 0.1);
+  }
+
+  .ev-privacy__text {
+    max-width: 52rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: rgba(240, 237, 232, 0.55);
+    line-height: 1.8;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ev-card {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .ev-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ev-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

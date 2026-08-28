@@ -1,0 +1,64 @@
+---
+/**
+ * /evaluacion/[slug] — per-trainer evaluation questionnaire page.
+ * Static paths = exactly the trainers in evaluation-trainers.ts.
+ */
+import Base from "../../layouts/Base.astro";
+import EvaluationForm from "../../components/evaluation/EvaluationForm.astro";
+import {
+  evaluationTrainers,
+  type EvaluationTrainer,
+} from "../../data/evaluation-trainers";
+
+export async function getStaticPaths() {
+  return evaluationTrainers.map((trainer) => ({
+    params: { slug: trainer.slug },
+    props: { trainer },
+  }));
+}
+
+interface Props {
+  trainer: EvaluationTrainer;
+}
+
+const { trainer } = Astro.props;
+---
+
+<Base
+  seoTitle={`Evalúa a ${trainer.name} | PowerHouse GYM Manizales`}
+  description={`Califica tu experiencia con ${trainer.name} en PowerHouse GYM Manizales. Tu opinión es anónima y nos ayuda a mejorar.`}
+>
+  <div class="eval-page">
+    <a class="eval-page__back" href="/evaluacion/">← Cambiar de entrenador</a>
+    <EvaluationForm trainer={trainer} />
+  </div>
+</Base>
+
+<style>
+  .eval-page {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 9rem 1.5rem 6rem;
+  }
+
+  .eval-page__back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-gold);
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .eval-page__back:hover {
+    opacity: 0.8;
+  }
+
+  .eval-page__back:focus-visible {
+    outline: 3px solid var(--brand-gold);
+    outline-offset: 3px;
+  }
+</style>
