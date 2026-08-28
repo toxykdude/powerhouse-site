@@ -37,14 +37,16 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          if npx wrangler d1 info powerhouse-evaluations --json > /tmp/d1-info.json 2>/dev/null; then
-            echo "exists"
-          else
-            npx wrangler d1 create powerhouse-evaluations --json > /tmp/d1-info.json
-          fi
-          UUID=$(node -e "const d=require('/tmp/d1-info.json');console.log(d.uuid)")
-          if [ -z "$UUID" ] || [ "$UUID" = "undefined" ]; then
-            echo "Could not resolve database UUID"; cat /tmp/d1-info.json; exit 1
+          # d1 info exits non-zero when the database does not exist yet.
+          npx wrangler d1 create powerhouse-evaluations > /tmp/d1-create.txt 2>&1 || true
+          npx wrangler d1 info powerhouse-evaluations > /tmp/d1-info.txt 2>&1
+          # Wrangler prints human-readable tables (no --json support here):
+          # extract the database UUID from either output.
+          UUID=$(cat /tmp/d1-create.txt /tmp/d1-info.txt 2>/dev/null \
+            | grep -oE "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" \
+            | head -1 || true)
+          if [ -z "$UUID" ]; then
+            echo "Could not resolve database UUID"; cat /tmp/d1-info.txt; exit 1
           fi
           echo "uuid=$UUID" >> "$GITHUB_OUTPUT"
 
