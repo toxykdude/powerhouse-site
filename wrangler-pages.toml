@@ -21,4 +21,4 @@ compatibility_date = "2026-04-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "powerhouse-evaluations"
-database_id = "local-only-placeholder"
+database_id = "0db7dc9b-76fb-4ac1-9c3f-e915019614b1"
