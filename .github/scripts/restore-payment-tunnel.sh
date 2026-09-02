@@ -72,7 +72,7 @@ echo "tunnel: $TUNNEL_ID"
 
 echo "== 4. tunnel ingress =="
 INGRESS=$(cf PUT "/accounts/$CF_ACCOUNT/cfd_tunnel/$TUNNEL_ID/configurations" \
-  "{\"ingress\":[{\"hostname\":\"$HOSTNAME\",\"service\":\"http://localhost:80\"},{\"service\":\"http_status:404\"}]}")
+  "{\"config\":{\"ingress\":[{\"hostname\":\"$HOSTNAME\",\"service\":\"http://localhost:80\"},{\"service\":\"http_status:404\"}]}}")
 [ "$(jq -r '.success' <<<"$INGRESS")" = "true" ] || fail "ingress put: $(jq -c '.errors' <<<"$INGRESS")"
 echo "ingress configured"
 
