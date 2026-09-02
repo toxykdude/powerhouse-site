@@ -1,0 +1,36 @@
+name: CF Payment Tunnel Restore
+
+# One-shot maintenance (workflow_dispatch) that restores the Cloudflare
+# pieces of the payment pipeline after the 2026-09-02 outage where the
+# cloudflared tunnel serving faceapp.powerhousegym.co was deleted on the
+# Cloudflare side (every Pages Function proxy returned 530 / error 1033).
+#
+# - Recreates the remotely-managed tunnel "faceapp-lxc114" + DNS route.
+# - Merges FACEGYM_PORTAL_INTERNAL_KEY / FACEGYM_API_URL into the Pages
+#   production environment (preserving existing vars).
+# - Prints the tunnel token (base64) for configuring the LXC 114 connector.
+#   DELETE the workflow run after retrieving the token.
+#
+# The backend side of FACEGYM_PORTAL_INTERNAL_KEY (PORTAL_INTERNAL_API_KEY)
+# lives in the LXC 114 backend .env — rotate both in the same window.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Recreate tunnel + DNS + Pages env
+        env:
+          CF_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CF_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PORTAL_KEY: ${{ secrets.PORTAL_INTERNAL_KEY_VALUE }}
+        run: bash .github/scripts/restore-payment-tunnel.sh

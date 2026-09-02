@@ -183,6 +183,33 @@ describe("Wompi webhook handler", () => {
     });
   });
 
+  // --- Default backend host (2026-09-02 outage regression) ---
+
+  describe("default backend host", () => {
+    it("defaults to faceapp.powerhousegym.co when FACEGYM_API_URL is not set", async () => {
+      const event = await buildValidEvent();
+      const spy = mockHappyBackendPath();
+
+      const response = await onRequestPost({
+        request: createWebhookRequest(event),
+        env: {
+          WOMPI_EVENTS_SECRET: MOCK_EVENTS_SECRET,
+          WOMPI_INTEGRITY_SECRET: "test_integrity_secret_67890",
+          FACEGYM_PORTAL_INTERNAL_KEY: "test_portal_internal_key",
+          // FACEGYM_API_URL deliberately unset — the relay must fall back to
+          // the same host _shared.ts uses (faceapp., NOT the NXDOMAIN facegym.)
+        },
+      });
+
+      expect(response.status).toBe(200);
+      const lookupCalls = callsTo(spy, "/api/portal/pending-payment/");
+      expect(lookupCalls).toHaveLength(1);
+      expect(String(lookupCalls[0][0])).toBe(
+        `https://faceapp.powerhousegym.co/api/portal/pending-payment/${GYM_REF}`,
+      );
+    });
+  });
+
   // --- Missing data handling ---
 
   describe("missing transaction data", () => {

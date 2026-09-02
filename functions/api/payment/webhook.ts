@@ -227,7 +227,7 @@ export async function onRequestPost({
       });
 
       const facegymBase = (
-        env.FACEGYM_API_URL || "https://facegym.powerhousegym.co"
+        env.FACEGYM_API_URL || "https://faceapp.powerhousegym.co"
       ).replace(/\/$/, "");
 
       // Relay amount/currency gate (design D8): for gym plans, verify the
