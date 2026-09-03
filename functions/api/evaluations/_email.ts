@@ -200,13 +200,18 @@ export function renderEvaluationEmail(input: {
 
 /**
  * Resolve the email delivery provider from env.
- *  - 'sendgrid' → SendGrid v3 HTTP API (production — existing pipeline)
+ *  - 'gmail' | 'smtp' → Gmail SMTP with app password (existing pipeline;
+ *    STARTTLS 587 or implicit TLS 465 via cloudflare:sockets)
+ *  - 'sendgrid' → SendGrid v3 HTTP API (legacy alternative)
  *  - 'resend'   → Resend HTTP API (legacy alternative)
  *  - anything else → console provider (dev): logs the message, reports ok
  */
 
 /** Default destination for evaluation reports: the support inbox. */
 const DEFAULT_TO_EMAIL = "support@powerhousegym.co";
+
+/** Display name used for the Gmail envelope/header sender. */
+const GMAIL_FROM_NAME = "PowerHouse GYM Evaluaciones";
 
 /** Default SendGrid sender (must match a verified SendGrid sender identity). */
 const DEFAULT_SENDGRID_FROM = "PowerHouse GYM <no-reply@powerhousegym.co>";
@@ -222,6 +227,37 @@ function parseFromHeader(raw: string): { email: string; name?: string } {
 }
 
 export function getEmailProvider(env: Env): EmailProvider {
+  if (env.EMAIL_PROVIDER === "gmail" || env.EMAIL_PROVIDER === "smtp") {
+    return {
+      async send(message) {
+        const to = env.EVALUATIONS_TO_EMAIL || DEFAULT_TO_EMAIL;
+        const user = env.SMTP_USER || "powerhousegymmanizales@gmail.com";
+        // A branded EMAIL_FROM name wins; otherwise the default brand name.
+        // Gmail forces `user` as the actual sender regardless.
+        const displayName =
+          parseFromHeader(env.EMAIL_FROM || GMAIL_FROM_NAME).name ??
+          GMAIL_FROM_NAME;
+        const { sendViaSmtp } = await import("./_gmail-smtp");
+        return sendViaSmtp(
+          {
+            host: env.SMTP_HOST || "smtp.gmail.com",
+            port: Number(env.SMTP_PORT || 587),
+            user,
+            password: env.SMTP_PASSWORD ?? "",
+          },
+          {
+            from: user,
+            fromName: displayName,
+            to,
+            replyTo: to,
+            subject: message.subject,
+            text: message.text,
+            html: message.html,
+          },
+        );
+      },
+    };
+  }
   if (env.EMAIL_PROVIDER === "sendgrid") {
     return {
       async send(message) {

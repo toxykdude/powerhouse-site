@@ -18,7 +18,8 @@
  *   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_EMAIL, CLOUDFLARE_API_KEY,
  *   PAGES_PROJECT (prod project name), DEV_PAGES_PROJECT (canary target),
  *   RATE_LIMIT_SALT, ADMIN_API_KEY (values pushed as plain_text vars).
- * Optional env: D1_DATABASE_ID (binds d1_databases.DB on production).
+ * Optional env: D1_DATABASE_ID (binds d1_databases.DB on production),
+ * GMAIL_SMTP_USER/GMAIL_SMTP_PASSWORD (enables the gmail SMTP provider).
  */
 
 const {
@@ -58,24 +59,37 @@ const HEADERS = {
 
 /**
  * The evaluation env vars this script manages (nothing else).
- * Email provider flips to sendgrid automatically when a key is provided;
- * without a key it stays on console so evaluations keep persisting.
+ * Provider precedence: gmail (SMTP app password — existing pipeline) when
+ * its secret exists, then sendgrid, else console so evaluations keep
+ * persisting while email is not yet configured.
  */
 const evalEnvVars = {
-  EMAIL_PROVIDER: SENDGRID_API_KEY ? "sendgrid" : "console",
+  EMAIL_PROVIDER: GMAIL_SMTP_PASSWORD
+    ? "gmail"
+    : SENDGRID_API_KEY
+      ? "sendgrid"
+      : "console",
+  SMTP_HOST: "smtp.gmail.com",
+  // 465 implicit TLS — avoids the Workers startTls() stream-lock edge
+  // (verified end-to-end against real Gmail with an app password).
+  SMTP_PORT: "465",
+  SMTP_USER: GMAIL_SMTP_USER || "powerhousegymmanizales@gmail.com",
   EVALUATIONS_TO_EMAIL: "support@powerhousegym.co",
-  EMAIL_FROM: "PowerHouse GYM <no-reply@powerhousegym.co>",
+  EMAIL_FROM: "PowerHouse GYM Evaluaciones",
   RATE_LIMIT_SALT: RATE_LIMIT_SALT,
   ADMIN_API_KEY: ADMIN_API_KEY,
   EVAL_RATE_LIMIT_PER_HOUR: "5",
   EVAL_DUPLICATE_WINDOW_MIN: "15",
 };
-if (SENDGRID_API_KEY) {
-  evalEnvVars.SENDGRID_API_KEY = SENDGRID_API_KEY;
+if (GMAIL_SMTP_PASSWORD) {
+  evalEnvVars.SMTP_PASSWORD = GMAIL_SMTP_PASSWORD;
 } else {
   console.warn(
-    "[config] SENDGRID_API_KEY not provided — email stays on console provider.",
+    "[config] GMAIL_SMTP_PASSWORD not provided — SMTP not configured.",
   );
+}
+if (SENDGRID_API_KEY) {
+  evalEnvVars.SENDGRID_API_KEY = SENDGRID_API_KEY;
 }
 
 function maskVars(envVars) {

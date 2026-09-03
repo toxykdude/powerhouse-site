@@ -78,6 +78,8 @@ jobs:
           RATE_LIMIT_SALT: ${{ secrets.EVAL_RATE_LIMIT_SALT }}
           ADMIN_API_KEY: ${{ secrets.EVAL_ADMIN_API_KEY }}
           SENDGRID_API_KEY: ${{ secrets.EVAL_SENDGRID_API_KEY }}
+          GMAIL_SMTP_USER: powerhousegymmanizales@gmail.com
+          GMAIL_SMTP_PASSWORD: ${{ secrets.EVAL_GMAIL_APP_PASSWORD }}
           D1_DATABASE_ID: ${{ steps.d1.outputs.uuid }}
         run: node scripts/cf-pages-eval-config.mjs
 
