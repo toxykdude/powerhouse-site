@@ -23,6 +23,10 @@ export interface Env {
   EMAIL_PROVIDER?: string;
   RESEND_API_KEY?: string;
   SENDGRID_API_KEY?: string;
+  SMTP_HOST?: string;
+  SMTP_PORT?: string;
+  SMTP_USER?: string;
+  SMTP_PASSWORD?: string;
   EMAIL_FROM?: string;
   EVALUATIONS_TO_EMAIL?: string;
   /** Salt for hashing visitor IPs (rate limiting + duplicate detection). */
