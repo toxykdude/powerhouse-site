@@ -209,7 +209,7 @@ describe("POST /api/evaluations", () => {
       "Evaluación de Harold Giraldo — 5.0/5 · PowerHouse GYM",
     );
     expect(sentBody.from).toBe("PowerHouse GYM <onboarding@resend.dev>");
-    expect(sentBody.to).toEqual(["powerhousegymmanizales@gmail.com"]);
+    expect(sentBody.to).toEqual(["support@powerhousegym.co"]);
     expect(sentBody.html).toContain("Harold Giraldo");
   });
 

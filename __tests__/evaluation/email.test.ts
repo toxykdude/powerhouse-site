@@ -220,4 +220,92 @@ describe("getEmailProvider", () => {
 
     fetchSpy.mockRestore();
   });
+
+  it("sendgrid provider sends the expected v3 payload (202 accepted)", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response("", { status: 202 }));
+
+    const env = {
+      EMAIL_PROVIDER: "sendgrid",
+      SENDGRID_API_KEY: "SG.test_key_1234567890",
+      EMAIL_FROM: "PowerHouse GYM <evaluaciones@powerhousegym.co>",
+      EVALUATIONS_TO_EMAIL: "support@powerhousegym.co",
+    } as unknown as Env;
+    const provider = getEmailProvider(env);
+
+    const result = await provider.send(message);
+
+    expect(result.ok).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://api.sendgrid.com/v3/mail/send",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer SG.test_key_1234567890",
+        }),
+      }),
+    );
+    const sentBody = JSON.parse(
+      (fetchSpy.mock.calls[0]?.[1] as RequestInit).body as string,
+    );
+    expect(sentBody.personalizations[0].to[0].email).toBe(
+      "support@powerhousegym.co",
+    );
+    expect(sentBody.from).toEqual({
+      email: "evaluaciones@powerhousegym.co",
+      name: "PowerHouse GYM",
+    });
+    expect(sentBody.reply_to).toEqual({ email: "support@powerhousegym.co" });
+    expect(sentBody.subject).toBe(message.subject);
+    expect(sentBody.content).toEqual([
+      { type: "text/plain", value: message.text },
+      { type: "text/html", value: message.html },
+    ]);
+
+    fetchSpy.mockRestore();
+  });
+
+  it("sendgrid provider defaults sender and destination when unset", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response("", { status: 202 }));
+
+    const provider = getEmailProvider({
+      EMAIL_PROVIDER: "sendgrid",
+    } as Env);
+
+    await provider.send(message);
+
+    const sentBody = JSON.parse(
+      (fetchSpy.mock.calls[0]?.[1] as RequestInit).body as string,
+    );
+    expect(sentBody.from).toEqual({
+      email: "no-reply@powerhousegym.co",
+      name: "PowerHouse GYM",
+    });
+    expect(sentBody.personalizations[0].to[0].email).toBe(
+      "support@powerhousegym.co",
+    );
+
+    fetchSpy.mockRestore();
+  });
+
+  it("sendgrid provider reports failure on a non-2xx response", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response("Forbidden", { status: 403 }));
+
+    const provider = getEmailProvider({
+      EMAIL_PROVIDER: "sendgrid",
+      SENDGRID_API_KEY: "bad",
+    } as Env);
+
+    const result = await provider.send(message);
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe("sendgrid responded 403");
+
+    fetchSpy.mockRestore();
+  });
 });

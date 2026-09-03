@@ -270,18 +270,19 @@ evaluaciones históricas; los slugs deben coincidir).
 Ver `.env.example` (local) — en producción se configuran en Cloudflare
 Pages → Settings → Environment variables:
 
-| Variable                    | Requerida  | Descripción                                                                                   |
-| --------------------------- | ---------- | --------------------------------------------------------------------------------------------- |
-| `EMAIL_PROVIDER`            | sí (prod)  | `resend` para envío real; `console` registra y no envía (dev)                                 |
-| `RESEND_API_KEY`            | con resend | API key de Resend (nunca en el frontend)                                                      |
-| `EMAIL_FROM`                | con resend | Remitente, ej. `PowerHouse GYM <evaluaciones@powerhousegym.co>` (verificar dominio en Resend) |
-| `EVALUATIONS_TO_EMAIL`      | no         | Destinatario del reporte. Default: `powerhousegymmanizales@gmail.com`                         |
-| `RATE_LIMIT_SALT`           | sí (prod)  | Salt para hashear IPs (SHA-256) — no se almacena la IP real                                   |
-| `PUBLIC_TURNSTILE_SITE_KEY` | no         | Site key de Cloudflare Turnstile (se renderiza solo si existe)                                |
-| `TURNSTILE_SECRET_KEY`      | no         | Si existe, la verificación es obligatoria (fail-closed)                                       |
-| `ADMIN_API_KEY`             | no         | Protege `GET /api/admin/trainer-stats` (header `X-API-Key`)                                   |
-| `EVAL_RATE_LIMIT_PER_HOUR`  | no         | Default 5 por IP/hora                                                                         |
-| `EVAL_DUPLICATE_WINDOW_MIN` | no         | Default 15 min anti-duplicado por IP+entrenador                                               |
+| Variable                    | Requerida    | Descripción                                                                                                     |
+| --------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------- |
+| `EMAIL_PROVIDER`            | sí (prod)    | `sendgrid` para envío real (pipeline existente); `resend` como alternativa; `console` registra y no envía (dev) |
+| `SENDGRID_API_KEY`          | con sendgrid | API key de SendGrid (nunca en el frontend)                                                                      |
+| `RESEND_API_KEY`            | con resend   | API key de Resend (alternativa legacy)                                                                          |
+| `EMAIL_FROM`                | no           | Remitente. Default: `PowerHouse GYM <no-reply@powerhousegym.co>` (identidad verificada en SendGrid)             |
+| `EVALUATIONS_TO_EMAIL`      | no           | Destinatario del reporte. Default: `support@powerhousegym.co` (las respuestas también llegan ahí)               |
+| `RATE_LIMIT_SALT`           | sí (prod)    | Salt para hashear IPs (SHA-256) — no se almacena la IP real                                                     |
+| `PUBLIC_TURNSTILE_SITE_KEY` | no           | Site key de Cloudflare Turnstile (se renderiza solo si existe)                                                  |
+| `TURNSTILE_SECRET_KEY`      | no           | Si existe, la verificación es obligatoria (fail-closed)                                                         |
+| `ADMIN_API_KEY`             | no           | Protege `GET /api/admin/trainer-stats` (header `X-API-Key`)                                                     |
+| `EVAL_RATE_LIMIT_PER_HOUR`  | no           | Default 5 por IP/hora                                                                                           |
+| `EVAL_DUPLICATE_WINDOW_MIN` | no           | Default 15 min anti-duplicado por IP+entrenador                                                                 |
 
 ### Base de datos (D1)
 

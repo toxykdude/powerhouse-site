@@ -200,10 +200,72 @@ export function renderEvaluationEmail(input: {
 
 /**
  * Resolve the email delivery provider from env.
- *  - 'resend' → Resend HTTP API (production)
+ *  - 'sendgrid' → SendGrid v3 HTTP API (production — existing pipeline)
+ *  - 'resend'   → Resend HTTP API (legacy alternative)
  *  - anything else → console provider (dev): logs the message, reports ok
  */
+
+/** Default destination for evaluation reports: the support inbox. */
+const DEFAULT_TO_EMAIL = "support@powerhousegym.co";
+
+/** Default SendGrid sender (must match a verified SendGrid sender identity). */
+const DEFAULT_SENDGRID_FROM = "PowerHouse GYM <no-reply@powerhousegym.co>";
+
+/** Parse "Name <email@example.com>" into structured {email, name} fields. */
+function parseFromHeader(raw: string): { email: string; name?: string } {
+  const match = raw.match(/^(.*?)\s*<([^>]+)>$/);
+  if (match) {
+    const name = match[1].trim().replace(/^"|"$/g, "");
+    return name ? { email: match[2].trim(), name } : { email: match[2].trim() };
+  }
+  return { email: raw.trim() };
+}
+
 export function getEmailProvider(env: Env): EmailProvider {
+  if (env.EMAIL_PROVIDER === "sendgrid") {
+    return {
+      async send(message) {
+        const to = env.EVALUATIONS_TO_EMAIL || DEFAULT_TO_EMAIL;
+        const from = parseFromHeader(env.EMAIL_FROM || DEFAULT_SENDGRID_FROM);
+        try {
+          const response = await fetch(
+            "https://api.sendgrid.com/v3/mail/send",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${env.SENDGRID_API_KEY ?? ""}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                personalizations: [{ to: [{ email: to }] }],
+                from,
+                // Replies to the report land in the same support inbox.
+                reply_to: { email: to },
+                subject: message.subject,
+                content: [
+                  { type: "text/plain", value: message.text },
+                  { type: "text/html", value: message.html },
+                ],
+              }),
+            },
+          );
+          if (!response.ok) {
+            return {
+              ok: false,
+              error: `sendgrid responded ${response.status}`,
+            };
+          }
+          return { ok: true };
+        } catch (error) {
+          return {
+            ok: false,
+            error:
+              error instanceof Error ? error.message : "sendgrid fetch failed",
+          };
+        }
+      },
+    };
+  }
   if (env.EMAIL_PROVIDER === "resend") {
     return {
       async send(message) {
@@ -216,9 +278,7 @@ export function getEmailProvider(env: Env): EmailProvider {
             },
             body: JSON.stringify({
               from: env.EMAIL_FROM || "PowerHouse GYM <onboarding@resend.dev>",
-              to: [
-                env.EVALUATIONS_TO_EMAIL || "powerhousegymmanizales@gmail.com",
-              ],
+              to: [env.EVALUATIONS_TO_EMAIL || DEFAULT_TO_EMAIL],
               subject: message.subject,
               html: message.html,
               text: message.text,

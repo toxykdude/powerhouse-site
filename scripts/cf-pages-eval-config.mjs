@@ -29,6 +29,7 @@ const {
   DEV_PAGES_PROJECT,
   RATE_LIMIT_SALT,
   ADMIN_API_KEY,
+  SENDGRID_API_KEY,
   D1_DATABASE_ID,
 } = process.env;
 
@@ -55,15 +56,27 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-/** The evaluation env vars this script manages (nothing else). */
+/**
+ * The evaluation env vars this script manages (nothing else).
+ * Email provider flips to sendgrid automatically when a key is provided;
+ * without a key it stays on console so evaluations keep persisting.
+ */
 const evalEnvVars = {
-  EMAIL_PROVIDER: "console", // switch to "resend" once RESEND_API_KEY exists
-  EVALUATIONS_TO_EMAIL: "powerhousegymmanizales@gmail.com",
+  EMAIL_PROVIDER: SENDGRID_API_KEY ? "sendgrid" : "console",
+  EVALUATIONS_TO_EMAIL: "support@powerhousegym.co",
+  EMAIL_FROM: "PowerHouse GYM <no-reply@powerhousegym.co>",
   RATE_LIMIT_SALT: RATE_LIMIT_SALT,
   ADMIN_API_KEY: ADMIN_API_KEY,
   EVAL_RATE_LIMIT_PER_HOUR: "5",
   EVAL_DUPLICATE_WINDOW_MIN: "15",
 };
+if (SENDGRID_API_KEY) {
+  evalEnvVars.SENDGRID_API_KEY = SENDGRID_API_KEY;
+} else {
+  console.warn(
+    "[config] SENDGRID_API_KEY not provided — email stays on console provider.",
+  );
+}
 
 function maskVars(envVars) {
   return Object.fromEntries(

@@ -22,6 +22,7 @@ export interface Env {
   /** Email delivery mode: 'resend' uses the Resend API, anything else logs. */
   EMAIL_PROVIDER?: string;
   RESEND_API_KEY?: string;
+  SENDGRID_API_KEY?: string;
   EMAIL_FROM?: string;
   EVALUATIONS_TO_EMAIL?: string;
   /** Salt for hashing visitor IPs (rate limiting + duplicate detection). */
