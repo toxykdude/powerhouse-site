@@ -46,3 +46,8 @@
 
 # Plan variant seen in GSC 404 examples (no splat: /planes/* would loop /planes/)
 /planes/plan-mensual-flex/      /planes/        301
+
+# WordPress RSS feed: only referring URL Google reported for the homepage
+/feed/                          /blog/          301
+/feed                           /blog/          301
+/comments/feed/                 /blog/          301
