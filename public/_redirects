@@ -16,9 +16,10 @@
 /planes-entreno-militar/         /planes/        301
 
 # Old personal-training pages -> trainer profiles
+# (/entrenadores/ has no index page: trainer showcase lives on the homepage)
 /personalizado-harold/           /entrenadores/harold-giraldo/   301
-/personalizado-cristian/         /entrenadores/                   301
-/personalizado-oscar/            /entrenadores/                   301
+/personalizado-cristian/         /               301
+/personalizado-oscar/            /               301
 
 # Old content sections -> blog
 /articulos/                      /blog/          301
@@ -36,13 +37,25 @@
 /clases-asesorias/               /planes/        301
 /pago-exitoso/                   /pago/confirmacion/     301
 
-# WordPress-era URLs discovered in GSC crawled-not-indexed (Aug 2026)
-/david_vanegas                  /entrenadores/  301
+# WordPress-era URLs from GSC page-indexing report (Sep 2026)
+/david_vanegas                  /               301
 /author/n8nagent/               /               301
+/author/mediaclaw/              /               301
+/encuesta_satisfaccion/         /evaluacion/    301
+/transformacion-de-maria-de-mama-ocupada-a-atleta-en-6-meses-en-manizales-2/   /blog/   301
+/transformacion-de-maria-de-mama-ocupada-a-atleta-en-6-meses-en-manizales-3/   /blog/   301
+/recuperacion-activa-crecer-sin-sobreentrenamiento/   /blog/   301
 /search/*                       /               301
 
 # Catch-all for WordPress category paths (specific rules above win).
 /General/*                      /blog/          301
+/Noticias/*                     /blog/          301
+
+# /entrenadores/ was never built as an index page (only per-trainer pages
+# exist). Point both slash forms at the homepage trainer showcase instead
+# of leaving them 404. Exact rules: deeper trainer paths are NOT matched.
+/entrenadores                   /               301
+/entrenadores/                  /               301
 
 # Plan variant seen in GSC 404 examples (no splat: /planes/* would loop /planes/)
 /planes/plan-mensual-flex/      /planes/        301
