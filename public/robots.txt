@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+# Cloudflare internal endpoints (email-protection decode links injected by
+# Email Address Obfuscation). Not real pages; they 404 and pollute GSC.
+Disallow: /cdn-cgi/
 
 User-agent: GPTBot
 Allow: /
