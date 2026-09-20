@@ -1,0 +1,44 @@
+name: CF Email Routing Setup
+
+# One-shot: create (idempotently) a Cloudflare Email Routing rule for an
+# alias of powerhousegym.co forwarding to a verified destination address.
+# Run: gh workflow run cf-email-routing.yml -f alias=... -f destination=...
+
+on:
+  workflow_dispatch:
+    inputs:
+      alias:
+        description: "Alias address on powerhousegym.co"
+        required: true
+        default: "tvpowerhouse@powerhousegym.co"
+      destination:
+        description: "Verified destination inbox"
+        required: true
+        default: "powerhousegymmanizales@gmail.com"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Create routing rule (idempotent, probe-first)
+        env:
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          ALIAS_EMAIL: ${{ github.event.inputs.alias }}
+          DESTINATION_EMAIL: ${{ github.event.inputs.destination }}
+        run: node scripts/cf-email-routing.mjs
+
+      - name: Summary
+        run: |
+          {
+            echo "## CF Email Routing"
+            echo ""
+            echo "- \`${{ github.event.inputs.alias }}\` → \`${{ github.event.inputs.destination }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
