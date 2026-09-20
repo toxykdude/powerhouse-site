@@ -54,7 +54,11 @@ const zones = await cf(`/zones?name=powerhousegym.co`);
 if (!zones?.length)
   throw new Error("Zone powerhousegym.co not found for this account");
 const zoneId = zones[0].id;
-console.log(`zone: powerhousegym.co (${zoneId.slice(0, 8)}…)`);
+const accountId = zones[0].account?.id;
+if (!accountId) throw new Error("Zone response missing account id");
+console.log(
+  `zone: powerhousegym.co (${zoneId.slice(0, 8)}…) account ${accountId.slice(0, 8)}…`,
+);
 
 // 2) Email Routing must be enabled ------------------------------------------
 const routing = await cf(`/zones/${zoneId}/email/routing`);
@@ -66,8 +70,8 @@ if (!routing.enabled) {
   process.exit(2);
 }
 
-// 3) Destination must be a verified address ---------------------------------
-const addresses = await cf(`/zones/${zoneId}/email/routing/addresses`);
+// 3) Destination must be a verified address (ACCOUNT-level list) ------------
+const addresses = await cf(`/accounts/${accountId}/email/routing/addresses`);
 const destination = (addresses ?? []).find(
   (a) => a.email.toLowerCase() === DESTINATION_EMAIL.toLowerCase(),
 );
