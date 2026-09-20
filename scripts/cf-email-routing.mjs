@@ -105,7 +105,9 @@ if (existing) {
   const forwards = existing.actions?.some(
     (action) =>
       action.type === "forward" &&
-      (action.value ?? []).includes(destination.id),
+      (action.value ?? []).some(
+        (v) => v.toLowerCase() === DESTINATION_EMAIL.toLowerCase(),
+      ),
   );
   console.log(
     `rule already exists: "${existing.name}" (enabled=${existing.enabled}) ` +
@@ -127,7 +129,9 @@ const created = await cf(`/zones/${zoneId}/email/routing/rules`, {
     name: `${ALIAS_EMAIL} → ${DESTINATION_EMAIL}`,
     enabled: true,
     matchers: [{ type: "literal", field: "to", value: ALIAS_EMAIL }],
-    actions: [{ type: "forward", value: [destination.id] }],
+    // The forward action takes the destination EMAIL (must be a
+    // registered, verified destination address — checked above).
+    actions: [{ type: "forward", value: [DESTINATION_EMAIL] }],
   }),
 });
 console.log(
