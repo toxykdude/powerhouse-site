@@ -204,6 +204,7 @@ These must be configured in the Cloudflare Pages dashboard (all server-side only
 - `MIPAGO_API_KEY` — mipago.online tenant API key (`ph_live_…`)
 - `MIPAGO_CALLBACK_SECRET` — shared HMAC secret for hub callback verification (must match the hub's registration)
 - `MIPAGO_API_URL` — optional hub base override (staging/sandbox)
+- `MIPAGO_RETURN_URL` — optional return_url override (hub redirects back with `?mipago=<id>`; must be https + on allowed origins; defaults to `https://powerhousegym.co/pago/confirmacion`)
 - `MIPAGO_RECONCILE_KEY` — shared secret for the reconcile cron endpoint
 - KV binding `MIPAGO_KV` — payment registry + callback event dedup (optional but recommended)
 

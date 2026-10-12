@@ -200,6 +200,10 @@ describe("mipago create endpoint", () => {
     expect(hubBody.metadata.plan_id).toBe(
       "45d96de3-a086-427a-9a8a-44351abb6423",
     );
+    // Hub 302s back with ?mipago=<payment_id> after Wompi returns
+    expect(hubBody.return_url).toBe(
+      "https://powerhousegym.co/pago/confirmacion",
+    );
 
     // Guest pending store: FaceGYM contract shape with the HUB reference
     const pendingCalls = callsTo(fetchSpy, "/api/portal/pending-payment/guest");
@@ -217,6 +221,40 @@ describe("mipago create endpoint", () => {
 
     // KV registry record
     expect(kv.store.has("payment:01JTESTPAYMENT")).toBe(true);
+  });
+
+  it("honors the MIPAGO_RETURN_URL override for validation setups", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    fetchSpy.mockResolvedValueOnce(
+      new Response(JSON.stringify(HUB_PAYMENT), { status: 201 }),
+    );
+    fetchSpy.mockResolvedValueOnce(
+      new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
+
+    const response = await onRequestPost({
+      request: createGuestRequest({
+        plan: "mensual",
+        name: "Ana Ríos",
+        email: "ana@example.com",
+        phone: "3001234567",
+      }),
+      env: {
+        ...MOCK_ENV,
+        MIPAGO_RETURN_URL: "https://www.powerhousegym.co/pago/confirmacion",
+      },
+    });
+
+    expect(response.status).toBe(200);
+    const hubInit = callsTo(
+      fetchSpy,
+      "https://mipago.test/api/v1/payments",
+    )[0][1] as {
+      body: string;
+    };
+    expect(JSON.parse(hubInit.body).return_url).toBe(
+      "https://www.powerhousegym.co/pago/confirmacion",
+    );
   });
 
   it("guest flow fails closed when the pending store fails — no checkout_url", async () => {

@@ -176,7 +176,10 @@ export async function onRequestPost({
     //    (PH-01J…) — we never generate references on this rail. The
     //    customer object prefills the hub's buyer form; when we have no
     //    member email the form collects it (never fabricate one — the
-    //    hub sends receipts there).
+    //    hub sends receipts there). return_url must be https + on the
+    //    tenant's allowed origins or the hub rejects the create; the
+    //    hub appends ?mipago=<payment_id>, which confirmacion.astro
+    //    polls via the status API — the redirect itself proves nothing.
     const created = await createHubPayment(env, {
       amount: amountPesos,
       description: `${plan.name} — PowerHouse Gym`,
@@ -185,6 +188,8 @@ export async function onRequestPost({
         name: customerName || "Miembro PowerHouse Gym",
         ...(customerPhone ? { phone: customerPhone } : {}),
       },
+      return_url:
+        env.MIPAGO_RETURN_URL || "https://powerhousegym.co/pago/confirmacion",
       metadata: {
         plan_key: planId,
         plan_id: plan.facegymId ?? null,

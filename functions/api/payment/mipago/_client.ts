@@ -19,6 +19,10 @@ export interface MipagoEnv {
   MIPAGO_ENABLED?: string;
   MIPAGO_CALLBACK_SECRET?: string;
   MIPAGO_RECONCILE_KEY?: string;
+  /** Where the hub sends customers back after payment (must be https and
+   *  on the tenant's allowed origins). Defaults to the production
+   *  confirmation page; override only for special validation setups. */
+  MIPAGO_RETURN_URL?: string;
   /** KV binding (structural — see MipagoKV in _registry.ts). */
   MIPAGO_KV?: unknown;
   // FaceGYM relay (existing backend contract, unchanged)
@@ -41,6 +45,13 @@ export interface CreateHubPaymentInput {
   description: string;
   customer: HubCustomer;
   metadata: Record<string, unknown>;
+  /** Where the hub 302s the customer after Wompi returns them, as
+   *  return_url?mipago=<payment_id>. Must be https and on the tenant's
+   *  allowed origins (powerhousegym.co, www.powerhousegym.co) — the hub
+   *  REJECTS the create otherwise. Informational only: the redirect is
+   *  never trusted as payment proof (confirmacion.astro polls the
+   *  status API). */
+  return_url?: string;
 }
 
 export interface HubPaymentCreated {
@@ -121,6 +132,7 @@ export async function createHubPayment(
       description: input.description,
       customer: input.customer,
       metadata: input.metadata,
+      ...(input.return_url ? { return_url: input.return_url } : {}),
     }),
   });
   if (!result.ok) {
