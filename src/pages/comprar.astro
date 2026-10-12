@@ -363,7 +363,26 @@ import Base from '../layouts/Base.astro';
 		}
 
 		try {
-			// 1. Server-authored amount + reference (no client amounts anywhere).
+			// 1. Mipago hub rail first (side-by-side rollout): the server
+			//    creates the payment and returns a hosted checkout_url to
+			//    redirect to. Any failure here (including 503 "disabled")
+			//    falls through to the legacy Wompi widget below — a failed
+			//    create leaves nothing payable, so there is no double charge.
+			const mpResponse = await fetch('/api/payment/mipago/create', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ plan: planSlug, name, email, phone }),
+			}).catch(() => null);
+
+			if (mpResponse && mpResponse.ok) {
+				const mpData = await mpResponse.json().catch(() => null);
+				if (mpData && typeof mpData.checkout_url === 'string' && mpData.checkout_url.startsWith('https://')) {
+					window.location.href = mpData.checkout_url;
+					return;
+				}
+			}
+
+			// 2. Server-authored amount + reference (no client amounts anywhere).
 			const sigResponse = await fetch('/api/payment/signature', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -377,14 +396,14 @@ import Base from '../layouts/Base.astro';
 
 			const sigData: SignatureResponse = await sigResponse.json();
 
-			// 2. Gym plans only: without the FaceGYM plan id there is nothing
+			// 3. Gym plans only: without the FaceGYM plan id there is nothing
 			//    to bind the purchase to — refuse instead of paying blind.
 			if (!sigData.facegymPlanId) {
 				showState('stateRefusal');
 				return;
 			}
 
-			// 3. Store the guest pending record BEFORE opening Wompi, so the
+			// 4. Store the guest pending record BEFORE opening Wompi, so the
 			//    webhook can provision Member+Membership+Sale even if this
 			//    tab never comes back. Must succeed — without the pending
 			//    record an approved payment would fall to the manual path.
@@ -408,7 +427,7 @@ import Base from '../layouts/Base.astro';
 				throw new Error(detail || 'No pudimos registrar tus datos. Verifícalos e intenta de nuevo.');
 			}
 
-			// 4. Open the Wompi widget with the server-signed reference.
+			// 5. Open the Wompi widget with the server-signed reference.
 			const WidgetCheckout = window.WidgetCheckout;
 			if (!WidgetCheckout) {
 				throw new Error('El sistema de pagos no está disponible. Recarga la página e intenta de nuevo.');
