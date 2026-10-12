@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "read | fix | diag"
+        description: "read | fix | diag | sync-secret"
         required: true
         default: "read"
       url:
@@ -68,6 +68,45 @@ jobs:
                   "\(.key) = \(.value.value)"
                 end'
           done
+
+      - name: Sync hub tenant callback secret (sync-secret mode only)
+        if: ${{ github.event.inputs.mode == 'sync-secret' }}
+        run: |
+          set -euo pipefail
+          # Read the secret the Pages Functions verify with — never printed.
+          RESP_SYNC=$(curl -fsS -X GET \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}")
+          SECRET_SYNC=$(echo "$RESP_SYNC" | jq -r '.result.deployment_configs.production.env_vars.MIPAGO_CALLBACK_SECRET.value // empty')
+          if [ -z "$SECRET_SYNC" ]; then
+            echo "::error::MIPAGO_CALLBACK_SECRET missing on Pages production"
+            exit 1
+          fi
+          STAGING_DB="96ff0dc2-1ea3-4f31-aaee-dcd6bf09cedd"
+          before=$(curl -fsS -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${STAGING_DB}/query" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            --data '{"sql": "SELECT LENGTH(callback_secret) AS len FROM tenants WHERE slug = '"'"'powerhouse'"'"'"}' \
+            | jq -r '.result[0].results[0].len')
+          curl -fsS -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${STAGING_DB}/query" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            --data "$(jq -n --arg s "$SECRET_SYNC" '{sql: "UPDATE tenants SET callback_secret = \($s | @json), updated_at = 1791781200000 WHERE slug = '"'"'powerhouse'"'"'"}')" \
+            | jq -e '.result[0].success' >/dev/null && echo "UPDATE ok"
+          after=$(curl -fsS -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${STAGING_DB}/query" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            --data '{"sql": "SELECT LENGTH(callback_secret) AS len FROM tenants WHERE slug = '"'"'powerhouse'"'"'"}' \
+            | jq -r '.result[0].results[0].len')
+          echo "callback_secret length: before=${before} after=${after} (value never printed)"
+          echo "NOTE: hub retries re-sign per attempt, so pending callbacks recover automatically."
 
       - name: Diagnose hub-side state (diag mode only)
         if: ${{ github.event.inputs.mode == 'diag' }}
