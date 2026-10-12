@@ -1,0 +1,107 @@
+name: mipago-env-doctor
+
+# Ops tool for the mipago payment rail's Pages environment variables.
+# Uses the repo's existing CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID
+# secrets — no new credentials.
+#
+# Modes (workflow_dispatch input):
+#   read — print the CURRENT non-secret mipago env vars on production
+#          and preview (MIPAGO_API_URL, MIPAGO_ENABLED, MIPAGO_API_URL
+#          overrides). Secret-typed vars are listed by NAME + type only.
+#   fix  — set MIPAGO_API_URL to the `url` input on BOTH production and
+#          preview, then print the resulting values. A redeploy
+#          (rollback.yml) is required afterward for the Functions to
+#          pick up the change — Pages env vars apply per deployment.
+#
+# NEVER print secret-typed values. Only MIPAGO_API_URL and MIPAGO_ENABLED
+# (plain vars, not secrets) are echoed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "read | fix"
+        required: true
+        default: "read"
+      url:
+        description: "MIPAGO_API_URL value to set (fix mode only)"
+        required: false
+        default: "https://staging.mipago.online"
+
+concurrency:
+  group: mipago-env-doctor
+  cancel-in-progress: false
+
+jobs:
+  doctor:
+    name: Read/fix mipago Pages env vars
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      PROJECT: powerhouse-site
+    steps:
+      - name: Read current env vars
+        run: |
+          set -euo pipefail
+          resp=$(curl -fsS -X GET \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "Authorization: Bearer ${CF_TOKEN}")
+          for env_name in production preview; do
+            echo "=== ${env_name} ==="
+            echo "$resp" | jq -r --arg e "$env_name" '
+              .result.deployment_configs[$e].env_vars // {}
+              | to_entries
+              | map(select(.key | startswith("MIPAGO")))
+              | sort_by(.key)
+              | .[]
+              | if (.value.type == "secret") then
+                  "\(.key) = <secret, type=\(.value.type)>"
+                else
+                  "\(.key) = \(.value.value)"
+                end'
+          done
+
+      - name: Fix MIPAGO_API_URL (fix mode only)
+        if: ${{ github.event.inputs.mode == 'fix' }}
+        run: |
+          set -euo pipefail
+          url="${{ github.event.inputs.url }}"
+          if [[ ! "$url" =~ ^https://[a-z0-9.-]+[a-z0-9](/[a-zA-Z0-9._/-]*)?$ ]]; then
+            echo "::error::Refusing to set MIPAGO_API_URL to non-https or malformed value: $url"
+            exit 1
+          fi
+          echo "Setting MIPAGO_API_URL=$url on production + preview"
+          cat > /tmp/patch.json <<JSON
+          {
+            "deployment_configs": {
+              "production": { "env_vars": { "MIPAGO_API_URL": { "value": "$url" } } },
+              "preview":    { "env_vars": { "MIPAGO_API_URL": { "value": "$url" } } }
+            }
+          }
+          JSON
+          curl -fsS -X PATCH \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "Authorization: Bearer ${CF_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data @/tmp/patch.json \
+            | jq -e '.success' >/dev/null && echo "PATCH ok"
+
+      - name: Verify result
+        if: ${{ github.event.inputs.mode == 'fix' }}
+        run: |
+          set -euo pipefail
+          resp=$(curl -fsS -X GET \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "Authorization: Bearer ${CF_TOKEN}")
+          for env_name in production preview; do
+            echo "=== ${env_name} (after fix) ==="
+            echo "$resp" | jq -r --arg e "$env_name" '
+              .result.deployment_configs[$e].env_vars // {}
+              | to_entries
+              | map(select(.key == "MIPAGO_API_URL"))
+              | .[]
+              | "\(.key) = \(.value.value)"'
+          done
+          echo "NOTE: dispatch rollback.yml (redeploy main) so the Functions pick this up."
