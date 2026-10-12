@@ -20,9 +20,13 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "read | fix | diag | sync-secret | go-live"
+        description: "read | fix | diag | sync-secret | go-live | rotate"
         required: true
         default: "read"
+      pubkey:
+        description: "RSA public key (DER, base64, one line) — rotate mode encrypts new secrets to it"
+        required: false
+        default: ""
       url:
         description: "MIPAGO_API_URL value to set (fix mode only)"
         required: false
@@ -177,6 +181,73 @@ jobs:
           TEN2=$(q_tenant '{sql: "SELECT callback_url, (callback_secret = \($s | @json)) AS secret_match FROM tenants WHERE slug = '"'"'powerhouse'"'"'"}')
           echo "prod tenant after: $(echo "$TEN2" | jq -c '.result[0].results[0]')"
           echo "NEXT: dispatch a redeploy (rollback.yml) — Pages env vars apply per deployment."
+
+      - name: Rotate all mipago secrets (rotate mode only)
+        if: ${{ github.event.inputs.mode == 'rotate' }}
+        run: |
+          set -euo pipefail
+          PROD_DB="7a49db96-bb80-4d10-b6e2-9fc18e12df12"
+          STAGING_DB="96ff0dc2-1ea3-4f31-aaee-dcd6bf09cedd"
+          PUB='${{ github.event.inputs.pubkey }}'
+          [ ${#PUB} -gt 400 ] || { echo "::error::rotate mode needs the RSA public key input"; exit 1; }
+          echo "$PUB" | base64 -d > /tmp/rot_pub.der
+          openssl pkey -pubin -inform DER -in /tmp/rot_pub.der -out /tmp/rot_pub.pem 2>/dev/null \
+            || { echo "::error::invalid public key"; exit 1; }
+
+          enc() { printf '%s' "$1" | openssl pkeyutl -encrypt -pubin -inkey /tmp/rot_pub.pem -pkeyopt rsa_padding_mode:oaep | base64 -w0; }
+
+          d1() { # db, body
+            curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${1}/query" \
+              -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}" \
+              -H "Content-Type: application/json" --data "$2" | jq -e '.result[0].success' >/dev/null && echo ok
+          }
+
+          # --- generate fresh values (never printed in the clear) ---
+          NEW_CB="$(openssl rand -hex 32)"
+          NEW_RK="$(openssl rand -hex 32)"
+          NEW_SALVIA="$(openssl rand -hex 32)"
+          NEW_PROD_KEY="ph_live_$(openssl rand -base64 24 | tr '+/' '-_' | tr -d '=')"
+          NEW_STAGING_KEY="ph_live_$(openssl rand -base64 24 | tr '+/' '-_' | tr -d '=')"
+          phash() { printf 'mipago:v1:%s' "$1" | openssl dgst -sha256 -hex | awk '{print $NF}'; }
+          KID_P="key_$(date +%s)p$(openssl rand -hex 3)"
+          KID_S="key_$(date +%s)s$(openssl rand -hex 3)"
+          NOW_MS=$(( $(date +%s) * 1000 ))
+
+          # --- hub production D1: rotate secret, mint key, revoke all other ph keys ---
+          d1 "$PROD_DB" "{\"sql\": \"UPDATE tenants SET callback_secret = '${NEW_CB}', updated_at = ${NOW_MS} WHERE slug = 'powerhouse'\"}"
+          d1 "$PROD_DB" "{\"sql\": \"INSERT INTO api_keys (id, tenant_id, key_hash, name, prefix_hint, status, created_at) VALUES ('${KID_P}', 'powerhouse', '$(phash "$NEW_PROD_KEY")', 'rotated-2026-10-12', 'ph_live_', 'active', ${NOW_MS})\"}"
+          d1 "$PROD_DB" "{\"sql\": \"UPDATE api_keys SET status = 'revoked' WHERE tenant_id = 'powerhouse' AND id != '${KID_P}'\"}"
+
+          # --- hub staging D1: same treatment + decouple salviadigital's secret ---
+          d1 "$STAGING_DB" "{\"sql\": \"UPDATE tenants SET callback_secret = '${NEW_CB}', updated_at = ${NOW_MS} WHERE slug = 'powerhouse'\"}"
+          d1 "$STAGING_DB" "{\"sql\": \"INSERT INTO api_keys (id, tenant_id, key_hash, name, prefix_hint, status, created_at) VALUES ('${KID_S}', 'powerhouse', '$(phash "$NEW_STAGING_KEY")', 'rotated-2026-10-12-staging', 'ph_live_', 'active', ${NOW_MS})\"}"
+          d1 "$STAGING_DB" "{\"sql\": \"UPDATE api_keys SET status = 'revoked' WHERE tenant_id = 'powerhouse' AND id != '${KID_S}'\"}"
+          d1 "$STAGING_DB" "{\"sql\": \"UPDATE tenants SET callback_secret = '${NEW_SALVIA}', updated_at = ${NOW_MS} WHERE slug = 'salviadigital'\"}"
+
+          # --- Pages env (prod + preview): callback secret, api key, reconcile key ---
+          cat > /tmp/rot.json <<JSON
+          { "deployment_configs": {
+              "production": { "env_vars": {
+                "MIPAGO_CALLBACK_SECRET": { "value": "${NEW_CB}" },
+                "MIPAGO_API_KEY": { "value": "${NEW_PROD_KEY}" },
+                "MIPAGO_RECONCILE_KEY": { "value": "${NEW_RK}" } } },
+              "preview": { "env_vars": {
+                "MIPAGO_CALLBACK_SECRET": { "value": "${NEW_CB}" },
+                "MIPAGO_API_KEY": { "value": "${NEW_PROD_KEY}" },
+                "MIPAGO_RECONCILE_KEY": { "value": "${NEW_RK}" } } } } }
+          JSON
+          curl -fsS -X PATCH "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" --data @/tmp/rot.json | jq -e '.success' >/dev/null
+          rm -f /tmp/rot.json
+
+          echo "hub prod+staging rotated; salviadigital decoupled; Pages env patched (redeploy required)"
+          echo "--- encrypted bundle (RSA-OAEP to the provided public key; decrypt locally) ---"
+          echo "CALLBACK_SECRET:$(enc "$NEW_CB")"
+          echo "API_KEY_PRODUCTION:$(enc "$NEW_PROD_KEY")"
+          echo "API_KEY_STAGING:$(enc "$NEW_STAGING_KEY")"
+          echo "RECONCILE_KEY:$(enc "$NEW_RK")"
+          echo "SALVIA_CALLBACK_SECRET:$(enc "$NEW_SALVIA")"
 
       - name: Diagnose hub-side state (diag mode only)
         if: ${{ github.event.inputs.mode == 'diag' }}
