@@ -47,6 +47,7 @@ function openRecord(overrides: Record<string, unknown> = {}) {
   return {
     payment_id: "01JTEST",
     reference: "PH-01JTEST",
+    facegym_reference: "PH-mensual-1719000000-abc123",
     plan_key: "mensual",
     amount_pesos: 69900,
     created_at: Math.floor(Date.now() / 1000) - 3600, // 1h old — past the window
@@ -163,11 +164,11 @@ describe("mipago reconcile endpoint", () => {
     const body = await response.json();
     expect(body).toMatchObject({ checked: 1, fulfilled: 1 });
 
-    // Relay used the hub reference + record plan
+    // Relay used the hub reference for lookup context + record plan
     const renewCalls = callsTo(fetchSpy, "/api/portal/webhook-renew");
     expect(renewCalls).toHaveLength(1);
     const renewBody = JSON.parse((renewCalls[0][1] as { body: string }).body);
-    expect(renewBody.wompi_reference).toBe("PH-01JTEST");
+    expect(renewBody.wompi_reference).toBe("PH-mensual-1719000000-abc123");
     expect(renewBody.amount_in_cents).toBe(6990000);
 
     // Record marked fulfilled — next run does not re-relay

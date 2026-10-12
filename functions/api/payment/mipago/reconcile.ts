@@ -122,7 +122,10 @@ export async function onRequestPost({
           amount: record.amount_pesos,
           currency: "COP",
           status,
-          metadata: { plan_key: record.plan_key },
+          metadata: {
+            plan_key: record.plan_key,
+            facegym_reference: record.facegym_reference,
+          },
         };
         const outcome = await fulfillApprovedPayment(env, payment, null);
         if (outcome.outcome === "fulfilled" || outcome.outcome === "manual") {

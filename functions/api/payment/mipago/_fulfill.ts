@@ -12,6 +12,7 @@
 
 import { PLANS } from "../signature";
 import type { MipagoEnv } from "./_client";
+import { facegymReferenceFromMetadata } from "./_reference";
 
 export type { MipagoEnv };
 
@@ -137,12 +138,19 @@ export async function fulfillApprovedPayment(
   }
 
   // Pending lookup — dedicated internal key (design D2), fail closed.
+  // Lookup + relay use the FaceGYM-facing correlation reference (legacy
+  // format) that create.ts minted and stored in hub metadata.
   if (!env.FACEGYM_PORTAL_INTERNAL_KEY) {
     console.error(
       "mipago: FACEGYM_PORTAL_INTERNAL_KEY not set — failing closed (no pending lookup, no forward)",
     );
     return { outcome: "skipped", detail: "portal_key_unset" };
   }
+
+  const facegymRef = facegymReferenceFromMetadata(
+    payment.metadata,
+    payment.reference,
+  );
 
   let pendingData: {
     status: string;
@@ -153,7 +161,7 @@ export async function fulfillApprovedPayment(
   };
   try {
     const lookupResponse = await fetch(
-      `${facegymBase(env)}/api/portal/pending-payment/${encodeURIComponent(payment.reference)}`,
+      `${facegymBase(env)}/api/portal/pending-payment/${encodeURIComponent(facegymRef)}`,
       { headers: { "X-API-Key": env.FACEGYM_PORTAL_INTERNAL_KEY } },
     );
     if (!lookupResponse.ok) {
@@ -201,7 +209,7 @@ export async function fulfillApprovedPayment(
   // FaceGYM-side, from its own Redis record).
   const renewPayload: Record<string, unknown> = {
     plan_id: pendingData.plan_id,
-    wompi_reference: payment.reference,
+    wompi_reference: facegymRef,
     wompi_transaction_id: providerTransactionId ?? "",
     amount: pendingData.amount,
     amount_in_cents: payment.amount * 100,

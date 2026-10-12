@@ -68,6 +68,7 @@ async function buildSignedRequest(options: BuildEventOptions = {}): Promise<{
     metadata: {
       plan_key: "mensual",
       plan_id: "45d96de3-a086-427a-9a8a-44351abb6423",
+      facegym_reference: GYM_PENDING.wompi_reference,
       scope: "member",
     },
   };
@@ -166,13 +167,19 @@ describe("mipago callback handler", () => {
     expect(bodies).toHaveLength(1);
     expect(bodies[0]).toMatchObject({
       plan_id: "45d96de3-a086-427a-9a8a-44351abb6423",
-      wompi_reference: "PH-01JTEST",
+      // Relay keys on the FaceGYM correlation reference from metadata,
+      // NOT the hub reference (FaceGYM validates the legacy format).
+      wompi_reference: GYM_PENDING.wompi_reference,
       wompi_transaction_id: "wompi-tx-999",
       member_id: "member_123",
       amount: "69900.00",
       // hub pesos → FaceGYM cents contract
       amount_in_cents: 6990000,
     });
+    // Pending lookup used the correlation reference too
+    expect(
+      callsTo(fetchSpy, `/pending-payment/${GYM_PENDING.wompi_reference}`),
+    ).toHaveLength(1);
     // Relay carries the FaceGYM HMAC signature header
     const renewCall = callsTo(fetchSpy, "/api/portal/webhook-renew")[0];
     const headers = (renewCall[1] as { headers: Record<string, string> })

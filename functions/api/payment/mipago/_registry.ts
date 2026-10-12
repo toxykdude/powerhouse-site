@@ -31,6 +31,10 @@ export interface MipagoKV {
 export interface PaymentRecord {
   payment_id: string;
   reference: string;
+  /** FaceGYM-facing legacy-format correlation reference (pending store
+   *  + relay payload). FaceGYM validates the reference shape, and hub
+   *  references (PH-01J…) do not match it. */
+  facegym_reference: string;
   plan_key: string;
   amount_pesos: number;
   created_at: number; // unix seconds
