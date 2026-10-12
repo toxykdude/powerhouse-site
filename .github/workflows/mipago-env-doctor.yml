@@ -90,6 +90,35 @@ jobs:
           cf "$STAGING_DB" \
             "SELECT sql FROM sqlite_master WHERE name = 'api_keys'" \
             | jq -r '.result[0].results[0].sql // "api_keys table not found"'
+          echo "=== hub staging: payment + callback delivery (diag2) ==="
+          cf "$STAGING_DB" \
+            "SELECT id, reference, status, metadata_json, return_url FROM payments WHERE id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            | jq -c '.result[0].results[]'
+          cf "$STAGING_DB" \
+            "SELECT payment_id, event_type, status, response_status, attempts, last_attempt_at FROM tenant_callbacks WHERE payment_id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            | jq -c '.result[0].results[]'
+          echo "=== FaceGYM pending consumption (diag2) ==="
+          FGREF=$(cf "$STAGING_DB" \
+            "SELECT json_extract(metadata_json, '$.facegym_reference') AS fg FROM payments WHERE id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            | jq -r '.result[0].results[0].fg // empty')
+          if [ -n "$FGREF" ]; then
+            echo "correlation reference: $FGREF"
+            RESP_FOR_DIAG=$(curl -fsS -X GET \
+              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+              -H "X-Auth-Email: ${CF_EMAIL}" \
+              -H "X-Auth-Key: ${CF_KEY}")
+            PORTAL_KEY=$(echo "$RESP_FOR_DIAG" | jq -r '.result.deployment_configs.production.env_vars.FACEGYM_PORTAL_INTERNAL_KEY.value // empty')
+            if [ -n "$PORTAL_KEY" ]; then
+              curl -s -o /tmp/fg-lookup.json -w "facegym pending lookup: HTTP %{http_code}\n" \
+                "https://faceapp.powerhousegym.co/api/portal/pending-payment/${FGREF}" \
+                -H "X-API-Key: ${PORTAL_KEY}"
+              head -c 200 /tmp/fg-lookup.json; echo
+            else
+              echo "FACEGYM_PORTAL_INTERNAL_KEY not present in Pages env"
+            fi
+          else
+            echo "payment row has no facegym_reference in metadata"
+          fi
 
       - name: Fix MIPAGO_API_URL (fix mode only)
         if: ${{ github.event.inputs.mode == 'fix' }}
