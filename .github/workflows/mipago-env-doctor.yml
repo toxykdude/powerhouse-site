@@ -99,8 +99,12 @@ jobs:
             "SELECT id, reference, status, metadata_json, return_url FROM payments WHERE id = '${{ github.event.inputs.payment_id }}'" \
             | jq -c '.result[0].results[]'
           cf "$STAGING_DB" \
-            "SELECT payment_id, event_type, status, url FROM tenant_callbacks WHERE payment_id = '${{ github.event.inputs.payment_id }}'" \
+            "SELECT payment_id, event_type, status, attempts, last_error, next_attempt_at, datetime(next_attempt_at/1000, 'unixepoch') AS next_utc FROM tenant_callbacks WHERE payment_id = '${{ github.event.inputs.payment_id }}'" \
             | jq -c '.result[0].results[]'
+          echo "=== hub staging: worker cron schedules ==="
+          curl -fsS "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/workers/scripts/mipago-staging/schedules" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" | jq -c '.result' || echo "schedules fetch failed"
           echo "=== FaceGYM pending consumption (diag2) ==="
           FGREF=$(cf "$STAGING_DB" \
             "SELECT json_extract(metadata_json, '$.facegym_reference') AS fg FROM payments WHERE id = '${{ github.event.inputs.payment_id }}'" \
