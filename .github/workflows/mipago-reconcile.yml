@@ -1,0 +1,42 @@
+name: mipago-reconcile
+
+# Reconciliation safety net for the mipago.online payment rail (runbook
+# step 5): resolves hub payments whose signed callback never arrived or
+# whose fulfillment errored, by checking the hub's authoritative status
+# API and relaying approved payments to FaceGYM.
+#
+# Requires the MIPAGO_RECONCILE_KEY GitHub secret (must match the
+# Cloudflare Pages env var of the same name) and the MIPAGO_KV binding
+# on the Pages project. The job is a no-op (safe) when either is absent.
+
+on:
+  schedule:
+    # Every 15 minutes (UTC)
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: mipago-reconcile
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Reconcile mipago payments
+    runs-on: ubuntu-latest
+    if: ${{ secrets.MIPAGO_RECONCILE_KEY != '' }}
+    steps:
+      - name: Trigger reconcile endpoint
+        run: |
+          set -euo pipefail
+          response=$(curl -sS -w '\n%{http_code}' -X POST \
+            -H "X-Reconcile-Key: ${{ secrets.MIPAGO_RECONCILE_KEY }}" \
+            -H "Content-Type: application/json" \
+            --max-time 120 \
+            "https://powerhousegym.co/api/payment/mipago/reconcile")
+          body=$(echo "$response" | head -n -1)
+          code=$(echo "$response" | tail -n 1)
+          echo "HTTP $code: $body"
+          if [ "$code" != "200" ]; then
+            echo "::error::Reconcile endpoint returned HTTP $code"
+            exit 1
+          fi

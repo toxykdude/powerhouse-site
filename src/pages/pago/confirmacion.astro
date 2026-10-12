@@ -401,8 +401,114 @@ async function checkTransaction(transactionId: string): Promise<void> {
 // Main execution
 const urlParams = new URLSearchParams(window.location.search);
 const transactionId = urlParams.get('id');
+const mipagoPaymentId = urlParams.get('mipago');
 
-if (!transactionId) {
+interface MipagoPaymentStatus {
+	id?: string;
+	reference?: string;
+	status: string;
+	amount?: number; // COP pesos (major units — hub convention)
+	currency?: string;
+}
+
+function formatCOPPesos(pesos: number): string {
+	return new Intl.NumberFormat('es-CO', {
+		style: 'currency',
+		currency: 'COP',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(pesos);
+}
+
+function renderMipagoDetails(containerId: string, payment: MipagoPaymentStatus): void {
+	const container = document.getElementById(containerId);
+	if (!container) return;
+
+	const rows: string[] = [];
+	if (payment.reference) {
+		rows.push(`<div class="confirm-details__row">
+			<span class="confirm-details__label">Referencia</span>
+			<span class="confirm-details__value">${escapeHtml(payment.reference)}</span>
+		</div>`);
+	}
+	if (typeof payment.amount === 'number') {
+		rows.push(`<div class="confirm-details__row">
+			<span class="confirm-details__label">Monto</span>
+			<span class="confirm-details__value confirm-details__amount">${escapeHtml(formatCOPPesos(payment.amount))}</span>
+		</div>`);
+	}
+	container.innerHTML = rows.join('');
+}
+
+async function checkMipagoPayment(paymentId: string): Promise<void> {
+	try {
+		const response = await fetch(`/api/payment/mipago/status?id=${encodeURIComponent(paymentId)}`);
+
+		if (!response.ok) {
+			const error = await response.json().catch(() => ({}));
+			if (response.status === 404) {
+				showState('stateError');
+				const msgEl = document.getElementById('errorMessage');
+				if (msgEl) msgEl.textContent = error.error || 'Pago no encontrado.';
+			} else {
+				showState('stateError');
+				const titleEl = document.getElementById('errorTitle');
+				const msgEl = document.getElementById('errorMessage');
+				if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
+				if (msgEl) msgEl.textContent = error.error || 'No pudimos conectar con el procesador de pagos. Intenta de nuevo.';
+			}
+			return;
+		}
+
+		const payment = (await response.json()) as MipagoPaymentStatus;
+
+		switch (payment.status) {
+			case 'APPROVED':
+				showState('stateApproved');
+				renderMipagoDetails('approvedDetails', payment);
+				break;
+			case 'PENDING':
+			case 'CREATED':
+				showState('statePending');
+				renderMipagoDetails('pendingDetails', payment);
+				// Auto-refresh every 5 seconds while the hub confirms
+				setTimeout(() => checkMipagoPayment(paymentId), 5000);
+				break;
+			case 'DECLINED':
+			case 'ERROR':
+				showState('stateDeclined');
+				break;
+			case 'CANCELLED':
+				showState('stateDeclined');
+				const cancelledMsg = document.getElementById('declinedMessage');
+				if (cancelledMsg) cancelledMsg.textContent = 'El pago fue cancelado. Si quieres intentarlo de nuevo, inicia una nueva compra.';
+				break;
+			case 'EXPIRED':
+				showState('stateError');
+				const expiredTitle = document.getElementById('errorTitle');
+				const expiredMsg = document.getElementById('errorMessage');
+				if (expiredTitle) expiredTitle.textContent = 'PAGO EXPIRADO';
+				if (expiredMsg) expiredMsg.textContent = 'El tiempo para completar este pago venció. Inicia una nueva compra desde la página de planes.';
+				break;
+			default:
+				showState('stateError');
+				const unknownTitle = document.getElementById('errorTitle');
+				const unknownMsg = document.getElementById('errorMessage');
+				if (unknownTitle) unknownTitle.textContent = 'ESTADO DESCONOCIDO';
+				if (unknownMsg) unknownMsg.textContent = `Estado del pago: ${payment.status}. Contáctanos para más información.`;
+		}
+	} catch {
+		showState('stateError');
+		const titleEl = document.getElementById('errorTitle');
+		const msgEl = document.getElementById('errorMessage');
+		if (titleEl) titleEl.textContent = 'ERROR DE CONEXIÓN';
+		if (msgEl) msgEl.textContent = 'No pudimos verificar tu pago. Revisa tu conexión a internet e intenta de nuevo.';
+	}
+}
+
+if (mipagoPaymentId) {
+	checkMipagoPayment(mipagoPaymentId);
+} else if (!transactionId) {
 	showState('stateError');
 	const titleEl = document.getElementById('errorTitle');
 	const msgEl = document.getElementById('errorMessage');
@@ -414,7 +520,12 @@ if (!transactionId) {
 
 // Manual refresh button
 const refreshBtn = document.getElementById('refreshBtn');
-if (refreshBtn && transactionId) {
+if (refreshBtn && mipagoPaymentId) {
+	refreshBtn.addEventListener('click', () => {
+		showState('stateLoading');
+		checkMipagoPayment(mipagoPaymentId);
+	});
+} else if (refreshBtn && transactionId) {
 	refreshBtn.addEventListener('click', () => {
 		showState('stateLoading');
 		checkTransaction(transactionId);

@@ -10,20 +10,20 @@
 
 ## Stack
 
-| Layer | Tool | Notes |
-|---|---|---|
-| Framework | Astro 5.x | Static output (`output: "static"`) |
-| Language | TypeScript (strict) | `astro/tsconfigs/strict` |
-| Styling | CSS (theme.css) | No CSS framework; custom properties in `src/styles/theme.css` |
-| Content | Astro Content Collections | Blog posts in `src/content/blog/*.md`, schema in `src/content.config.ts` |
-| Workers | Vanilla JS | `workers/contact.js`, `workers/media-proxy.js` |
-| Storage | Cloudflare R2 | Media bucket via `wrangler-media.toml` |
-| Testing | Vitest | Config in `vitest.config.ts`, tests in `__tests__/` |
-| Linting | ESLint 9 flat config | `eslint.config.js` — Astro plugin + TypeScript |
-| Formatting | Prettier | With `prettier-plugin-astro` |
-| Versioning | Semantic Release | `.releaserc.json` — conventional commits → auto version + GitHub Release |
-| CI/CD | GitHub Actions | 4 workflows, see below |
-| Package manager | npm | Node 20 |
+| Layer           | Tool                      | Notes                                                                    |
+| --------------- | ------------------------- | ------------------------------------------------------------------------ |
+| Framework       | Astro 5.x                 | Static output (`output: "static"`)                                       |
+| Language        | TypeScript (strict)       | `astro/tsconfigs/strict`                                                 |
+| Styling         | CSS (theme.css)           | No CSS framework; custom properties in `src/styles/theme.css`            |
+| Content         | Astro Content Collections | Blog posts in `src/content/blog/*.md`, schema in `src/content.config.ts` |
+| Workers         | Vanilla JS                | `workers/contact.js`, `workers/media-proxy.js`                           |
+| Storage         | Cloudflare R2             | Media bucket via `wrangler-media.toml`                                   |
+| Testing         | Vitest                    | Config in `vitest.config.ts`, tests in `__tests__/`                      |
+| Linting         | ESLint 9 flat config      | `eslint.config.js` — Astro plugin + TypeScript                           |
+| Formatting      | Prettier                  | With `prettier-plugin-astro`                                             |
+| Versioning      | Semantic Release          | `.releaserc.json` — conventional commits → auto version + GitHub Release |
+| CI/CD           | GitHub Actions            | 5 workflows, see below                                                   |
+| Package manager | npm                       | Node 20                                                                  |
 
 ## Project Structure
 
@@ -119,6 +119,12 @@ npm run test:coverage   # Vitest with V8 coverage
 - **Inputs**: version (commit SHA / tag / release) + reason (required)
 - **Action**: Checks out the target version, builds, redeploys to production
 
+### Workflow 5: `mipago-reconcile.yml`
+
+- **Trigger**: `schedule` (every 15 min) + `workflow_dispatch`
+- **Action**: POSTs to `https://powerhousegym.co/api/payment/mipago/reconcile` with the `MIPAGO_RECONCILE_KEY` secret — resolves hub payments whose signed callback never arrived (reconciliation safety net for the mipago.online rail)
+- **Skipped automatically** when the `MIPAGO_RECONCILE_KEY` GitHub secret is unset
+
 ### Semantic Versioning
 
 - Uses **Semantic Release** with conventional commits
@@ -190,18 +196,29 @@ These secrets must be configured in GitHub repository settings:
 - `CLOUDFLARE_API_KEY`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `GH_PAT` (for semantic-release to create GitHub Releases)
+- `MIPAGO_RECONCILE_KEY` (reconcile cron auth — must match the Cloudflare Pages env var)
+
+These must be configured in the Cloudflare Pages dashboard (all server-side only):
+
+- `MIPAGO_ENABLED` — `"true"`/`"1"` enables the mipago payment rail (empty = legacy Wompi widget)
+- `MIPAGO_API_KEY` — mipago.online tenant API key (`ph_live_…`)
+- `MIPAGO_CALLBACK_SECRET` — shared HMAC secret for hub callback verification (must match the hub's registration)
+- `MIPAGO_API_URL` — optional hub base override (staging/sandbox)
+- `MIPAGO_RECONCILE_KEY` — shared secret for the reconcile cron endpoint
+- KV binding `MIPAGO_KV` — payment registry + callback event dedup (optional but recommended)
 
 **Never** commit secrets. The `.env` file is gitignored and should stay that way.
 
 ## Key Files to Know
 
-| File | Purpose |
-|---|---|
-| `astro.config.mjs` | Site URL, sitemap config, build options |
-| `wrangler.toml` | Contact worker deployment config |
-| `wrangler-media.toml` | Media proxy + R2 config |
-| `.releaserc.json` | Semantic release pipeline |
-| `src/content.config.ts` | Blog content collection schema |
-| `.github/actions/ci-validate/action.yml` | Shared CI validation composite action |
-| `src/layouts/Base.astro` | Base HTML layout for all pages |
-| `src/styles/theme.css` | CSS custom properties / design tokens |
+| File                                     | Purpose                                                                                                                                                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `astro.config.mjs`                       | Site URL, sitemap config, build options                                                                                                                                                                 |
+| `wrangler.toml`                          | Contact worker deployment config                                                                                                                                                                        |
+| `wrangler-media.toml`                    | Media proxy + R2 config                                                                                                                                                                                 |
+| `.releaserc.json`                        | Semantic release pipeline                                                                                                                                                                               |
+| `src/content.config.ts`                  | Blog content collection schema                                                                                                                                                                          |
+| `.github/actions/ci-validate/action.yml` | Shared CI validation composite action                                                                                                                                                                   |
+| `functions/api/payment/mipago/`          | mipago.online payment hub rail: `_client` (hub API), `_verify` (callback HMAC), `_registry` (KV dedup/records), `_fulfill` (FaceGYM relay), `create`/`callback`/`status`/`cancel`/`reconcile` endpoints |
+| `src/layouts/Base.astro`                 | Base HTML layout for all pages                                                                                                                                                                          |
+| `src/styles/theme.css`                   | CSS custom properties / design tokens                                                                                                                                                                   |

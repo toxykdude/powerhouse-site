@@ -967,6 +967,29 @@ function wireButtons(): void {
 			button.innerHTML = 'PROCESANDO...';
 
 			try {
+				// Mipago hub rail first (side-by-side rollout): the server
+				// creates the payment (plan amount resolved server-side,
+				// member identity from the JWT) and returns a hosted
+				// checkout_url. Any failure — including 503 "disabled" —
+				// falls through to the legacy Wompi widget below; a failed
+				// create leaves nothing payable, so there is no double charge.
+				const mpResponse = await fetch('/api/payment/mipago/create', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						...getAuthHeaders(),
+					},
+					body: JSON.stringify({ plan: plan.wompiId }),
+				}).catch(() => null);
+
+				if (mpResponse && mpResponse.ok) {
+					const mpData = await mpResponse.json().catch(() => null);
+					if (mpData && typeof mpData.checkout_url === 'string' && mpData.checkout_url.startsWith('https://')) {
+						window.location.href = mpData.checkout_url;
+						return;
+					}
+				}
+
 				const sigResponse = await fetch('/api/payment/signature', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
