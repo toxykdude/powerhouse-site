@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "read | fix"
+        description: "read | fix | diag"
         required: true
         default: "read"
       url:
@@ -58,12 +58,38 @@ jobs:
               | map(select(.key | startswith("MIPAGO")))
               | sort_by(.key)
               | .[]
-              | if (.value.type == "secret") then
-                  "\(.key) = <secret, type=\(.value.type)>"
+              | if (.key | test("KEY|SECRET")) then
+                  "\(.key) = <redacted, stored_type=\(.value.type)>"
                 else
                   "\(.key) = \(.value.value)"
                 end'
           done
+
+      - name: Diagnose hub-side state (diag mode only)
+        if: ${{ github.event.inputs.mode == 'diag' }}
+        run: |
+          set -euo pipefail
+          STAGING_DB="96ff0dc2-1ea3-4f31-aaee-dcd6bf09cedd"
+          cf() {
+            curl -fsS -X POST \
+              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${1}/query" \
+              -H "X-Auth-Email: ${CF_EMAIL}" \
+              -H "X-Auth-Key: ${CF_KEY}" \
+              -H "Content-Type: application/json" \
+              --data "{\"sql\": $(echo "$2" | jq -Rs .)}"
+          }
+          echo "=== hub staging: last 12 payments (arrivals check) ==="
+          cf "$STAGING_DB" \
+            "SELECT id, reference, status, amount_cents, created_at FROM payments ORDER BY created_at DESC LIMIT 12" \
+            | jq -c '.result[0].results[]'
+          echo "=== hub staging: tenants (no secrets) ==="
+          cf "$STAGING_DB" \
+            "SELECT slug, status, callback_url, allowed_origins_json, LENGTH(callback_secret) AS cb_secret_len FROM tenants" \
+            | jq -c '.result[0].results[]'
+          echo "=== hub staging: api_keys shape (schema only) ==="
+          cf "$STAGING_DB" \
+            "SELECT sql FROM sqlite_master WHERE name = 'api_keys'" \
+            | jq -r '.result[0].results[0].sql // "api_keys table not found"'
 
       - name: Fix MIPAGO_API_URL (fix mode only)
         if: ${{ github.event.inputs.mode == 'fix' }}
