@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "read | fix | diag | sync-secret | go-live | rotate"
+        description: "read | fix | diag | sync-secret | go-live | rotate | probe"
         required: true
         default: "read"
       pubkey:
@@ -248,6 +248,27 @@ jobs:
           echo "API_KEY_STAGING:$(enc "$NEW_STAGING_KEY")"
           echo "RECONCILE_KEY:$(enc "$NEW_RK")"
           echo "SALVIA_CALLBACK_SECRET:$(enc "$NEW_SALVIA")"
+
+      - name: Probe deployed secret consistency (probe mode only)
+        if: ${{ github.event.inputs.mode == 'probe' }}
+        run: |
+          set -euo pipefail
+          PROD_DB="7a49db96-bb80-4d10-b6e2-9fc18e12df12"
+          RESP_PR=$(curl -fsS "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}")
+          CB_PAGES=$(echo "$RESP_PR" | jq -r '.result.deployment_configs.production.env_vars.MIPAGO_CALLBACK_SECRET.value // empty')
+          echo "pages callback secret length: ${#CB_PAGES}"
+          HUB=$(curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${PROD_DB}/query" \
+            -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+            --data "$(jq -n --arg s "$CB_PAGES" '{sql: "SELECT (callback_secret = \($s | @json)) AS match, LENGTH(callback_secret) AS len FROM tenants WHERE slug = '\''powerhouse'\''"}')")
+          echo "hub D1 vs pages: $(echo "$HUB" | jq -c '.result[0].results[0]')"
+          TS=$(date +%s000)
+          BODY='{"type":"payment.declined","payment":{"id":"01JPROBECONSISTENCY000000X","reference":"PH-01JPROBECONSISTENCY0","amount":69900,"currency":"COP","status":"DECLINED","metadata":{"plan_key":"mensual"}},"provider":{"name":"wompi","transaction_id":"probe"}}'
+          SIG=$(printf '%s.%s' "$TS" "$BODY" | openssl dgst -sha256 -hmac "$CB_PAGES" -hex | awk '{print $NF}')
+          HTTP=$(curl -s -o /dev/null -w '%{http_code}' -X POST "https://powerhousegym.co/api/payment/mipago/callback" \
+            -H 'Content-Type: application/json' -H "X-Mipago-Signature: $SIG" -H "X-Mipago-Timestamp: $TS" -H "X-Mipago-Event-Id: evt_probe_consistency_1" -d "$BODY")
+          echo "endpoint accepts pages-signed request: HTTP $HTTP (200 = deployed env matches Pages config)"
 
       - name: Diagnose hub-side state (diag mode only)
         if: ${{ github.event.inputs.mode == 'diag' }}
