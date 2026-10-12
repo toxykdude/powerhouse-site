@@ -95,7 +95,7 @@ jobs:
             "SELECT id, reference, status, metadata_json, return_url FROM payments WHERE id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
             | jq -c '.result[0].results[]'
           cf "$STAGING_DB" \
-            "SELECT payment_id, event_type, status, response_status, attempts, last_attempt_at FROM tenant_callbacks WHERE payment_id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            "SELECT payment_id, event_type, status, url FROM tenant_callbacks WHERE payment_id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
             | jq -c '.result[0].results[]'
           echo "=== FaceGYM pending consumption (diag2) ==="
           FGREF=$(cf "$STAGING_DB" \
