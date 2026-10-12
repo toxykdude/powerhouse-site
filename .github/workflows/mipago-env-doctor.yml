@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "read | fix | diag | sync-secret"
+        description: "read | fix | diag | sync-secret | go-live"
         required: true
         default: "read"
       url:
@@ -107,6 +107,76 @@ jobs:
             | jq -r '.result[0].results[0].len')
           echo "callback_secret length: before=${before} after=${after} (value never printed)"
           echo "NOTE: hub retries re-sign per attempt, so pending callbacks recover automatically."
+
+      - name: Go-live on production hub (go-live mode only)
+        if: ${{ github.event.inputs.mode == 'go-live' }}
+        run: |
+          set -euo pipefail
+          PROD_DB="7a49db96-bb80-4d10-b6e2-9fc18e12df12"
+          PROD_URL="https://mipago.online"
+          CB_URL="https://powerhousegym.co/api/payment/mipago/callback"
+
+          pages() {
+            curl -fsS "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+              -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}"
+          }
+          d1() {
+            curl -fsS -X POST "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/d1/database/${PROD_DB}/query" \
+              -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}" \
+              -H "Content-Type: application/json" --data "$1"
+          }
+
+          # --- 1. Read the Pages-side values (never printed) ---
+          RESP_GL=$(pages)
+          SECRET_GL=$(echo "$RESP_GL" | jq -r '.result.deployment_configs.production.env_vars.MIPAGO_CALLBACK_SECRET.value // empty')
+          [ -n "$SECRET_GL" ] || { echo "::error::MIPAGO_CALLBACK_SECRET missing on Pages"; exit 1; }
+
+          # --- 2. Verify + fix the production tenant row ---
+          q_tenant() { d1 "$(jq -n --arg s "$SECRET_GL" "$1")"; }
+          TEN=$(q_tenant '{sql: "SELECT callback_url, allowed_origins_json, (callback_secret = \($s | @json)) AS secret_match FROM tenants WHERE slug = '"'"'powerhouse'"'"'"}')
+          echo "prod tenant before: $(echo "$TEN" | jq -c '.result[0].results[0]')"
+
+          CB_NOW=$(echo "$TEN" | jq -r '.result[0].results[0].callback_url // empty')
+          MATCH=$(echo "$TEN" | jq -r '.result[0].results[0].secret_match')
+          ORIGINS_OK=$(echo "$TEN" | jq -r '.result[0].results[0].allowed_origins_json | fromjson | index("https://powerhousegym.co") != null')
+
+          if [ "$CB_NOW" != "$CB_URL" ] || [ "$MATCH" != "1" ] || [ "$ORIGINS_OK" != "true" ]; then
+            d1 "$(jq -n --arg s "$SECRET_GL" --arg cb "$CB_URL" \
+              '{sql: ("UPDATE tenants SET callback_url = " + ($cb|@json) + ", callback_secret = " + ($s|@json) + ", allowed_origins_json = '\''[\"https://powerhousegym.co\",\"https://www.powerhousegym.co\"]'\'' WHERE slug = '\''powerhouse'\''")}')" \
+              | jq -e '.result[0].success' >/dev/null
+            echo "tenant row FIXED (callback_url/secret/origins aligned)"
+          else
+            echo "tenant row already correct"
+          fi
+
+          # --- 3. Mint a production API key (raw value never printed) ---
+          RAW="ph_live_$(openssl rand -base64 24 | tr '+/' '-_' | tr -d '=')"
+          HASH=$(printf 'mipago:v1:%s' "$RAW" | openssl dgst -sha256 -hex | awk '{print $NF}')
+          KID="key_$(date +%s)$(openssl rand -hex 4)"
+          d1 "{\"sql\": \"INSERT INTO api_keys (id, tenant_id, key_hash, name, prefix_hint, status, created_at) VALUES ('${KID}', 'powerhouse', '${HASH}', 'go-live-2026-10-12', 'ph_live_', 'active', CAST(strftime('%s','now') AS INTEGER)*1000)\"}" \
+            | jq -e '.result[0].success' >/dev/null
+          echo "production api key minted (id ${KID})"
+
+          # --- 4. Flip the Pages environment ---
+          cat > /tmp/golive.json <<JSON
+          { "deployment_configs": {
+              "production": { "env_vars": {
+                "MIPAGO_API_URL": { "value": "${PROD_URL}" },
+                "MIPAGO_API_KEY": { "value": "${RAW}" } } },
+              "preview": { "env_vars": {
+                "MIPAGO_API_URL": { "value": "${PROD_URL}" },
+                "MIPAGO_API_KEY": { "value": "${RAW}" } } } } }
+          JSON
+          curl -fsS -X PATCH "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
+            -H "X-Auth-Email: ${CF_EMAIL}" -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" --data @/tmp/golive.json | jq -e '.success' >/dev/null
+          rm -f /tmp/golive.json
+          echo "Pages env flipped: MIPAGO_API_URL=${PROD_URL} + new production key (value never printed)"
+
+          # --- 5. Post-verify (booleans only) ---
+          TEN2=$(q_tenant '{sql: "SELECT callback_url, (callback_secret = \($s | @json)) AS secret_match FROM tenants WHERE slug = '"'"'powerhouse'"'"'"}')
+          echo "prod tenant after: $(echo "$TEN2" | jq -c '.result[0].results[0]')"
+          echo "NEXT: dispatch a redeploy (rollback.yml) — Pages env vars apply per deployment."
 
       - name: Diagnose hub-side state (diag mode only)
         if: ${{ github.event.inputs.mode == 'diag' }}
