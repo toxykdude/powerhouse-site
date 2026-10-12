@@ -30,7 +30,7 @@ on:
       payment_id:
         description: "Payment id for diag2 deep-dive"
         required: false
-        default: "${{ github.event.inputs.payment_id }}"
+        default: "01M4Q590MJ1FMJ0YBH2XCNZ3BG"
 
 concurrency:
   group: mipago-env-doctor
