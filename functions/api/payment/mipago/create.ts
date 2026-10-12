@@ -19,6 +19,7 @@
 
 import { PLANS } from "../signature";
 import { createHubPayment, planAmountPesos, type MipagoEnv } from "./_client";
+import { generateFacegymReference } from "./_reference";
 import { recordCreatedPayment, type MipagoKV } from "./_registry";
 
 type Env = MipagoEnv;
@@ -172,6 +173,11 @@ export async function onRequestPost({
 
     const amountPesos = planAmountPesos(plan.amountInCents);
 
+    // FaceGYM-facing correlation reference: FaceGYM validates
+    // wompi_reference against the legacy format, so pending records are
+    // stored under this id and mapped back via hub metadata.
+    const facegymRef = generateFacegymReference(planId);
+
     // 1. Create the payment on the hub. The hub assigns the reference
     //    (PH-01J…) — we never generate references on this rail. The
     //    customer object prefills the hub's buyer form; when we have no
@@ -193,6 +199,7 @@ export async function onRequestPost({
       metadata: {
         plan_key: planId,
         plan_id: plan.facegymId ?? null,
+        facegym_reference: facegymRef,
         scope: isMember ? "member" : "guest",
         origin: "powerhouse-web",
       },
@@ -221,7 +228,7 @@ export async function onRequestPost({
               body: JSON.stringify({
                 plan_id: plan.facegymId,
                 member_id: "", // FaceGYM fills this from the JWT
-                wompi_reference: payment.reference,
+                wompi_reference: facegymRef,
                 wompi_transaction_id: "",
                 amount: amountPesos,
               }),
@@ -250,7 +257,7 @@ export async function onRequestPost({
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                wompi_reference: payment.reference,
+                wompi_reference: facegymRef,
                 guest_name: guestName,
                 guest_phone: guestPhone,
                 guest_email: customerEmail,
@@ -296,6 +303,7 @@ export async function onRequestPost({
     await recordCreatedPayment(kv, {
       payment_id: payment.id,
       reference: payment.reference,
+      facegym_reference: facegymRef,
       plan_key: planId,
       amount_pesos: amountPesos,
       created_at: Math.floor(Date.now() / 1000),

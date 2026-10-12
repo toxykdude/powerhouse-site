@@ -200,27 +200,37 @@ describe("mipago create endpoint", () => {
     expect(hubBody.metadata.plan_id).toBe(
       "45d96de3-a086-427a-9a8a-44351abb6423",
     );
+    // Correlation reference travels in metadata (FaceGYM contract)
+    expect(hubBody.metadata.facegym_reference).toMatch(
+      /^PH-mensual-\d{10}-[a-f0-9]{6}$/,
+    );
     // Hub 302s back with ?mipago=<payment_id> after Wompi returns
     expect(hubBody.return_url).toBe(
       "https://powerhousegym.co/pago/confirmacion",
     );
 
-    // Guest pending store: FaceGYM contract shape with the HUB reference
+    // Guest pending store: FaceGYM contract shape keyed on the
+    // legacy-format correlation reference, NOT the hub reference
     const pendingCalls = callsTo(fetchSpy, "/api/portal/pending-payment/guest");
     expect(pendingCalls).toHaveLength(1);
     const pendingBody = JSON.parse(
       (pendingCalls[0][1] as { body: string }).body,
     );
     expect(pendingBody).toMatchObject({
-      wompi_reference: "PH-01JTESTPAYMENT",
+      wompi_reference: hubBody.metadata.facegym_reference,
       guest_name: "Ana Ríos",
       guest_phone: "573001234567",
       guest_email: "ana@example.com",
       plan_id: "45d96de3-a086-427a-9a8a-44351abb6423",
     });
+    expect(pendingBody.wompi_reference).toMatch(
+      /^PH-[a-z0-9-]+-\d{10}-[a-f0-9]{6}$/,
+    );
 
-    // KV registry record
+    // KV registry record carries the correlation reference
     expect(kv.store.has("payment:01JTESTPAYMENT")).toBe(true);
+    const record = JSON.parse(kv.store.get("payment:01JTESTPAYMENT") ?? "{}");
+    expect(record.facegym_reference).toBe(hubBody.metadata.facegym_reference);
   });
 
   it("honors the MIPAGO_RETURN_URL override for validation setups", async () => {
@@ -325,9 +335,12 @@ describe("mipago create endpoint", () => {
     const pendingBody = JSON.parse(pendingInit.body);
     expect(pendingBody).toMatchObject({
       plan_id: "dbf0f5a4-cabb-4c73-991e-3e8b694282bf", // anual
-      wompi_reference: "PH-01JTESTPAYMENT",
       amount: 620000, // anual pesos
     });
+    // Member pending also keys on the correlation reference (legacy shape)
+    expect(pendingBody.wompi_reference).toMatch(
+      /^PH-anual-\d{10}-[a-f0-9]{6}$/,
+    );
   });
 
   it("member flow tolerates a failed pending store (manual path covers it)", async () => {
