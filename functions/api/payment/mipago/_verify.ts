@@ -78,8 +78,14 @@ export async function verifyCallbackSignature(
   if (!/^\d+$/.test(headers.timestamp)) {
     return { ok: false, reason: "bad_timestamp" };
   }
+  // Tolerate BOTH unix seconds (runbook contract) and milliseconds
+  // (what the hub actually sends — Date.now()). Values above 1e12 can
+  // only be milliseconds (seconds that large would be year 33,658), so
+  // normalize before the skew check. The HMAC itself always uses the
+  // raw header string, so signature verification is unit-agnostic.
+  const raw = parseInt(headers.timestamp, 10);
+  const ts = raw > 1e12 ? Math.floor(raw / 1000) : raw;
   const now = Math.floor(Date.now() / 1000);
-  const ts = parseInt(headers.timestamp, 10);
   if (Math.abs(now - ts) > CALLBACK_MAX_SKEW_SECONDS) {
     return { ok: false, reason: "bad_timestamp" };
   }

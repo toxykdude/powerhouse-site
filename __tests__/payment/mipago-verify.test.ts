@@ -110,6 +110,28 @@ describe("verifyCallbackSignature", () => {
     expect(result).toEqual({ ok: false, reason: "signature_mismatch" });
   });
 
+  it("accepts millisecond timestamps (hub sends Date.now(), runbook documents seconds)", async () => {
+    const tsMs = Date.now();
+    const signature = await sign(SECRET, String(tsMs), RAW_BODY);
+    const result = await verifyCallbackSignature(
+      SECRET,
+      RAW_BODY,
+      headers(signature, String(tsMs)),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  it("rejects stale millisecond timestamps (replay protection holds in both units)", async () => {
+    const tsMs = Date.now() - 301_000;
+    const signature = await sign(SECRET, String(tsMs), RAW_BODY);
+    const result = await verifyCallbackSignature(
+      SECRET,
+      RAW_BODY,
+      headers(signature, String(tsMs)),
+    );
+    expect(result).toEqual({ ok: false, reason: "bad_timestamp" });
+  });
+
   it("rejects timestamps older than 5 minutes", async () => {
     const ts = Math.floor(Date.now() / 1000) - 301;
     const signature = await sign(SECRET, ts, RAW_BODY);
