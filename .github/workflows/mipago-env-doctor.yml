@@ -27,6 +27,10 @@ on:
         description: "MIPAGO_API_URL value to set (fix mode only)"
         required: false
         default: "https://staging.mipago.online"
+      payment_id:
+        description: "Payment id for diag2 deep-dive"
+        required: false
+        default: "${{ github.event.inputs.payment_id }}"
 
 concurrency:
   group: mipago-env-doctor
@@ -92,14 +96,14 @@ jobs:
             | jq -r '.result[0].results[0].sql // "api_keys table not found"'
           echo "=== hub staging: payment + callback delivery (diag2) ==="
           cf "$STAGING_DB" \
-            "SELECT id, reference, status, metadata_json, return_url FROM payments WHERE id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            "SELECT id, reference, status, metadata_json, return_url FROM payments WHERE id = '${{ github.event.inputs.payment_id }}'" \
             | jq -c '.result[0].results[]'
           cf "$STAGING_DB" \
-            "SELECT payment_id, event_type, status, url FROM tenant_callbacks WHERE payment_id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            "SELECT payment_id, event_type, status, url FROM tenant_callbacks WHERE payment_id = '${{ github.event.inputs.payment_id }}'" \
             | jq -c '.result[0].results[]'
           echo "=== FaceGYM pending consumption (diag2) ==="
           FGREF=$(cf "$STAGING_DB" \
-            "SELECT json_extract(metadata_json, '$.facegym_reference') AS fg FROM payments WHERE id = '01M4Q590MJ1FMJ0YBH2XCNZ3BG'" \
+            "SELECT json_extract(metadata_json, '$.facegym_reference') AS fg FROM payments WHERE id = '${{ github.event.inputs.payment_id }}'" \
             | jq -r '.result[0].results[0].fg // empty')
           if [ -n "$FGREF" ]; then
             echo "correlation reference: $FGREF"
