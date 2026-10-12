@@ -39,7 +39,8 @@ jobs:
     timeout-minutes: 5
     env:
       CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+      CF_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
       PROJECT: powerhouse-site
     steps:
       - name: Read current env vars
@@ -47,7 +48,8 @@ jobs:
           set -euo pipefail
           resp=$(curl -fsS -X GET \
             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
-            -H "Authorization: Bearer ${CF_TOKEN}")
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}")
           for env_name in production preview; do
             echo "=== ${env_name} ==="
             echo "$resp" | jq -r --arg e "$env_name" '
@@ -83,7 +85,8 @@ jobs:
           JSON
           curl -fsS -X PATCH \
             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
-            -H "Authorization: Bearer ${CF_TOKEN}" \
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
             -H "Content-Type: application/json" \
             --data @/tmp/patch.json \
             | jq -e '.success' >/dev/null && echo "PATCH ok"
@@ -94,7 +97,8 @@ jobs:
           set -euo pipefail
           resp=$(curl -fsS -X GET \
             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/pages/projects/${PROJECT}" \
-            -H "Authorization: Bearer ${CF_TOKEN}")
+            -H "X-Auth-Email: ${CF_EMAIL}" \
+            -H "X-Auth-Key: ${CF_KEY}")
           for env_name in production preview; do
             echo "=== ${env_name} (after fix) ==="
             echo "$resp" | jq -r --arg e "$env_name" '
