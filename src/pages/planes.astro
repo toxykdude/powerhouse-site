@@ -67,9 +67,9 @@ const plans: PlanRow[] = [
 
 	<div class="planes-page">
 		<div class="planes-page__hero">
-			<span class="planes-page__tagline">Membresías</span>
-			<h1>ELIGE TU PODER</h1>
-			<p>Planes diseñados para cada nivel de compromiso. Sin contratos a largo plazo, solo resultados.</p>
+			<span class="planes-page__tagline">Elige tu poder</span>
+			<h1>Planes y Membresías de Gimnasio en Manizales</h1>
+			<p>Planes diseñados para cada nivel de compromiso. Sin contratos a largo plazo, solo resultados. Entrenamiento semipersonalizado incluido en todas las membresías.</p>
 		</div>
 
 		<div class="plans-sections">
@@ -88,6 +88,56 @@ const plans: PlanRow[] = [
 				))}
 			</div>
 		</div>
+
+		<section class="planes-info">
+			<div class="planes-info__inner">
+				<h2>Qué Incluye tu Membresía</h2>
+				<div class="planes-info__grid">
+					<div class="planes-info__item">
+						<h3>Entrenamiento semipersonalizado</h3>
+						<p>Seguimiento constante de entrenadores certificados en cada sesión. No entrenas solo: corrigen tu técnica y ajustan tu rutina.</p>
+					</div>
+					<div class="planes-info__item">
+						<h3>Acceso todos los días</h3>
+						<p>Lunes a viernes de 5:00am a 10:00pm, sábados y domingos de 9:00am a 2:00pm. Máquinas de tráfico pesado y zona de cardio con vista a la ciudad.</p>
+					</div>
+					<div class="planes-info__item">
+						<h3>Valoración mensual</h3>
+						<p>Medición de progreso cada mes: composición corporal, fuerza y ajustes de plan. Incluida en todas las membresías.</p>
+					</div>
+					<div class="planes-info__item">
+						<h3>Sin contrato ni permanencia</h3>
+						<p>Ningún plan exige cláusulas, documentos o permanencia. Hay planes quincenales desde $9.900 para probar el gimnasio.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="planes-faq">
+			<div class="planes-faq__inner">
+				<h2>Preguntas Frecuentes sobre Planes y Precios</h2>
+				<details>
+					<summary>¿Cuánto cuesta el gimnasio PowerHouse en Manizales?</summary>
+					<p>La membresía mensual cuesta $69.900 COP, el plan anual $51.000/mes ($620.000 total), el trimestral $65.000/mes y el semestral $62.500/mes. También hay planes quincenales desde $9.900 COP. Sin contratos ni documentos.</p>
+				</details>
+				<details>
+					<summary>¿PowerHouse Gym tiene contrato o permanencia?</summary>
+					<p>No. No exigimos contratos, documentos ni cláusulas de permanencia. Puedes inscribirte y cancelar cuando quieras.</p>
+				</details>
+				<details>
+					<summary>¿Qué incluye el entrenamiento?</summary>
+					<p>Entrenamiento semipersonalizado con seguimiento de entrenadores certificados, equipos de tráfico pesado, zona de cardio con vista a la ciudad, valoración mensual y asesoría en nutrición y suplementación.</p>
+				</details>
+				<details>
+					<summary>¿Dónde queda PowerHouse Gym y cuál es el horario?</summary>
+					<p>Avenida Santander, Parque de la Mujer, Manizales. Horario: lunes a viernes 5:00am–10:00pm, sábados y domingos 9:00am–2:00pm.</p>
+				</details>
+				<details>
+					<summary>¿Cómo me inscribo?</summary>
+					<p>Escribe por WhatsApp al +57 315 471 1900, llámanos o usa el formulario de esta página. Agenda una clase o valoración gratis antes de decidir.</p>
+				</details>
+			</div>
+		</section>
 
 		<section class="signup-section" id="signup-form">
 			<div class="signup-section__inner">
@@ -133,6 +183,59 @@ const plans: PlanRow[] = [
 </Base>
 
 <style>
+	.planes-info,
+	.planes-faq {
+		max-width: 1100px;
+		margin: 0 auto 4rem;
+		padding: 0 1.5rem;
+	}
+
+	.planes-info__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+	}
+
+	.planes-info__item {
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 12px;
+		padding: 1.5rem;
+	}
+
+	.planes-info__item h3 {
+		margin: 0 0 0.5rem;
+		font-size: 1.05rem;
+	}
+
+	.planes-info__item p {
+		margin: 0;
+		color: rgba(255, 255, 255, 0.72);
+		line-height: 1.55;
+		font-size: 0.95rem;
+	}
+
+	.planes-faq details {
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 12px;
+		padding: 1rem 1.25rem;
+		margin-top: 0.75rem;
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.planes-faq summary {
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 1.05rem;
+	}
+
+	.planes-faq details p {
+		margin: 0.75rem 0 0;
+		color: rgba(255, 255, 255, 0.72);
+		line-height: 1.55;
+	}
+
 	.planes-page {
 		padding-top: 8rem;
 		padding-bottom: 6rem;

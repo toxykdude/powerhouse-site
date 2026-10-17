@@ -50,8 +50,13 @@ function formatDate(dateStr: string | Date): string {
 		"@context": "https://schema.org",
 		"@type": "Article",
 		"headline": title,
+		"image": resolveImageUrl(featuredImage)
+			? [new URL(resolveImageUrl(featuredImage), Astro.site ?? "https://powerhousegym.co").href]
+			: undefined,
+		"description": excerpt || undefined,
+		"inLanguage": "es-CO",
 		"datePublished": date || undefined,
-		"dateModified": date || undefined,
+		"dateModified": post.data.updated || undefined,
 		"author": {
 			"@type": "Organization",
 			"name": "PowerHouse Gym Manizales",
